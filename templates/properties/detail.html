@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ property.name }} — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pb-20 bg-cream min-h-screen">
+
+  <!-- Image Gallery -->
+  <div class="relative h-[500px] overflow-hidden">
+    {% with property.images.first as primary %}
+      {% if primary %}
+        <img src="{{ primary.image.url }}" alt="{{ property.name }}"
+             class="w-full h-full object-cover"/>
+      {% else %}
+        <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
+          <span class="text-white/20 text-9xl">🏠</span>
+        </div>
+      {% endif %}
+    {% endwith %}
+    <div class="absolute inset-0"
+         style="background: linear-gradient(to top, rgba(17,17,24,0.6) 0%, transparent 50%)">
+    </div>
+
+    <!-- Overlay Info -->
+    <div class="absolute bottom-0 left-0 right-0 px-16 pb-10">
+      <div class="flex justify-between items-end">
+        <div>
+          <span class="bg-accent text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">
+            {{ property.get_property_type_display }}
+          </span>
+          <h1 class="font-display text-5xl font-bold text-white">{{ property.name }}</h1>
+          <p class="text-white/70 mt-2">📍 {{ property.address }}, {{ property.city }}, {{ property.country }}</p>
+        </div>
+        <div class="text-right">
+          <div class="font-bebas text-5xl text-accent">${{ property.price_per_night }}</div>
+          <div class="text-white/60 text-sm">per night</div>
+          {% if property.average_rating %}
+            <div class="text-white mt-1">⭐ {{ property.average_rating }} · {{ property.total_reviews }} reviews</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thumbnail Strip -->
+  {% if images.count > 1 %}
+    <div class="flex gap-2 px-16 py-4 bg-white overflow-x-auto">
+      {% for img in images %}
+        <img src="{{ img.image.url }}" alt=""
+             class="h-20 w-32 object-cover rounded-xl flex-shrink-0 hover:opacity-80 transition cursor-pointer"/>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="px-16 py-12 grid grid-cols-3 gap-10">
+
+    <!-- Left: Details -->
+    <div class="col-span-2 flex flex-col gap-8">
+
+      <!-- Quick Facts -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm flex gap-8">
+        <div class="text-center">
+          <div class="text-2xl mb-1">👥</div>
+          <div class="font-bold text-dark">{{ property.max_guests }}</div>
+          <div class="text-xs text-gray-400">Guests</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl mb-1">🛏</div>
+          <div class="font-bold text-dark">{{ property.bedrooms }}</div>
+          <div class="text-xs text-gray-400">Bedrooms</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl mb-1">🚿</div>
+          <div class="font-bold text-dark">{{ property.bathrooms }}</div>
+          <div class="text-xs text-gray-400">Bathrooms</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl mb-1">
+            {% if property.is_available %}✅{% else %}❌{% endif %}
+          </div>
+          <div class="font-bold text-dark">
+            {% if property.is_available %}Available{% else %}Unavailable{% endif %}
+          </div>
+          <div class="text-xs text-gray-400">Status</div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <h2 class="font-display text-2xl font-bold text-dark mb-4">About this place</h2>
+        <p class="text-gray-500 leading-relaxed">{{ property.description }}</p>
+      </div>
+
+      <!-- Extras -->
+      {% if extras %}
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <h2 class="font-display text-2xl font-bold text-dark mb-2">Available Add-ons</h2>
+          <p class="text-gray-400 text-sm mb-6">
+            Select extras when booking — charged based on your stay.
+          </p>
+          <div class="grid grid-cols-2 gap-3">
+            {% for extra in extras %}
+              <div class="flex items-center justify-between p-4 bg-cream rounded-xl border-2 border-transparent hover:border-accent transition">
+                <div>
+                  <p class="font-semibold text-dark text-sm">{{ extra.name }}</p>
+                  <p class="text-xs text-gray-400 mt-0.5">
+                    ${{ extra.price }} · {{ extra.get_charge_type_display }}
+                  </p>
+                  {% if extra.description %}
+                    <p class="text-xs text-gray-400 mt-1">{{ extra.description }}</p>
+                  {% endif %}
+                </div>
+                <span class="text-accent font-bold text-sm">${{ extra.price }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Reviews -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <h2 class="font-display text-2xl font-bold text-dark mb-6">
+          Guest Reviews
+          {% if property.total_reviews %}
+            <span class="text-gray-400 font-normal text-base ml-2">
+              ({{ property.total_reviews }})
+            </span>
+          {% endif %}
+        </h2>
+
+        {% if reviews %}
+          <div class="flex flex-col gap-5">
+            {% for review in reviews %}
+              <div class="border-b border-gray-100 pb-5">
+                <div class="flex justify-between items-start mb-2">
+                  <div>
+                    <p class="font-semibold text-dark text-sm">{{ review.traveller.get_full_name|default:review.traveller.username }}</p>
+                    <p class="text-xs text-gray-400">{{ review.created_at|date:"F j, Y" }}</p>
+                  </div>
+                  <div class="flex gap-1">
+                    {% for i in "12345" %}
+                      <span class="{% if forloop.counter <= review.rating %}text-gold{% else %}text-gray-200{% endif %}">★</span>
+                    {% endfor %}
+                  </div>
+                </div>
+                <p class="font-semibold text-dark text-sm mb-1">{{ review.title }}</p>
+                <p class="text-gray-500 text-sm leading-relaxed">{{ review.comment }}</p>
+                <div class="flex gap-4 mt-2">
+                  <span class="text-xs text-gray-400">🧹 Cleanliness: {{ review.cleanliness }}/5</span>
+                  <span class="text-xs text-gray-400">📍 Location: {{ review.location }}/5</span>
+                  <span class="text-xs text-gray-400">💰 Value: {{ review.value }}/5</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-gray-400 text-sm text-center py-8">
+            No reviews yet — be the first to review!
+          </p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right: Booking Widget -->
+    <div class="col-span-1">
+      <div class="bg-white rounded-2xl p-6 shadow-lg sticky top-24">
+
+        <div class="mb-5">
+          <span class="font-bebas text-4xl text-dark">${{ property.price_per_night }}</span>
+          <span class="text-gray-400 text-sm"> / night</span>
+        </div>
+
+        {% if user.is_authenticated and user.is_traveller %}
+          {% if property.is_available %}
+            <form method="POST" action="{% url 'bookings:add_to_cart' property.slug %}"
+                  class="flex flex-col gap-4">
+              {% csrf_token %}
+
+              <div class="border-2 border-gray-200 rounded-xl overflow-hidden">
+                <div class="flex border-b border-gray-200">
+                  <div class="flex-1 p-3 border-r border-gray-200">
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
+                      Check-in
+                    </label>
+                    <input type="date" name="check_in" required
+                           min="{{ today }}"
+                           class="w-full outline-none text-sm font-medium text-dark"/>
+                  </div>
+                  <div class="flex-1 p-3">
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
+                      Check-out
+                    </label>
+                    <input type="date" name="check_out" required
+                           min="{{ today }}"
+                           class="w-full outline-none text-sm font-medium text-dark"/>
+                  </div>
+                </div>
+                <div class="p-3">
+                  <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
+                    Guests
+                  </label>
+                  <select name="guests" class="w-full outline-none text-sm font-medium text-dark bg-transparent">
+                    {% for i in "123456789" %}
+                      {% if forloop.counter <= property.max_guests %}
+                        <option value="{{ forloop.counter }}">{{ forloop.counter }} guest{{ forloop.counter|pluralize }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit"
+                      class="w-full bg-accent text-white py-3.5 rounded-xl font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                Reserve → Add to Cart
+              </button>
+
+              <p class="text-center text-xs text-gray-400">
+                You won't be charged yet
+              </p>
+            </form>
+
+          {% else %}
+            <div class="text-center py-6 text-gray-400">
+              <div class="text-4xl mb-3">😔</div>
+              <p class="font-semibold text-dark">Not Available</p>
+              <p class="text-sm mt-1">This property is currently unavailable.</p>
+            </div>
+          {% endif %}
+
+        {% elif user.is_authenticated %}
+          <div class="text-center py-6 text-gray-400">
+            <p class="text-sm">Only traveller accounts can make bookings.</p>
+          </div>
+
+        {% else %}
+          <a href="{% url 'users:login' %}?next={{ request.path }}"
+             class="block w-full bg-accent text-white py-3.5 rounded-xl font-semibold text-center hover:shadow-lg transition-all">
+            Login to Book
+          </a>
+          <p class="text-center text-xs text-gray-400 mt-3">
+            Don't have an account?
+            <a href="{% url 'users:register' %}" class="text-accent font-semibold">Sign up free</a>
+          </p>
+        {% endif %}
+
+        <!-- Owner Info -->
+        <div class="mt-6 pt-6 border-t border-gray-100 flex items-center gap-3">
+          {% if property.owner.profile_photo %}
+            <img src="{{ property.owner.profile_photo.url }}"
+                 class="w-10 h-10 rounded-full object-cover"/>
+          {% else %}
+            <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
+              {{ property.owner.first_name|first }}
+            </div>
+          {% endif %}
+          <div>
+            <p class="text-sm font-semibold text-dark">
+              Hosted by {{ property.owner.get_full_name|default:property.owner.username }}
+            </p>
+            <p class="text-xs text-gray-400">
+              Member since {{ property.owner.created_at|date:"Y" }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Extras — {{ property.name }}{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+  <div class="max-w-3xl mx-auto">
+
+    <div class="mb-8">
+      <a href="{% url 'properties:owner_dashboard' %}"
+         class="text-sm text-gray-400 hover:text-accent transition">← Back to Dashboard</a>
+      <h1 class="font-display text-4xl font-bold text-dark mt-3">
+        Manage <em class="text-primary">Extras</em>
+      </h1>
+      <p class="text-gray-400 mt-1">{{ property.name }}</p>
+    </div>
+
+    <!-- Add Extra Form -->
+    <div class="bg-white rounded-2xl p-8 shadow-sm mb-8">
+      <h3 class="font-semibold text-dark mb-6">Add New Extra</h3>
+      <form method="POST" class="flex flex-col gap-4">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Extra Name *</label>
+            {{ form.name }}
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Price ($) *</label>
+            {{ form.price }}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Charge Type</label>
+            {{ form.charge_type }}
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Description</label>
+            {{ form.description }}
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          {{ form.is_available }}
+          <label class="text-sm font-medium text-dark">Available to guests</label>
+        </div>
+
+        <button type="submit"
+                class="bg-accent text-white py-3 rounded-xl font-semibold text-sm hover:shadow-lg transition-all">
+          + Add Extra
+        </button>
+      </form>
+    </div>
+
+    <!-- Existing Extras -->
+    <div class="bg-white rounded-2xl p-8 shadow-sm">
+      <h3 class="font-semibold text-dark mb-6">
+        Current Extras
+        <span class="text-gray-400 font-normal text-sm ml-2">({{ extras.count }})</span>
+      </h3>
+
+      {% if extras %}
+        <div class="flex flex-col gap-3">
+          {% for extra in extras %}
+            <div class="flex items-center justify-between p-4 bg-cream rounded-xl">
+              <div>
+                <p class="font-semibold text-dark text-sm">{{ extra.name }}</p>
+                <p class="text-gray-400 text-xs mt-0.5">
+                  ${{ extra.price }} · {{ extra.get_charge_type_display }}
+                  {% if not extra.is_available %}
+                    · <span class="text-red-400">Unavailable</span>
+                  {% endif %}
+                </p>
+              </div>
+              <form method="POST" action="{% url 'properties:delete_extra' extra.pk %}"
+                    onsubmit="return confirm('Remove {{ extra.name }}?')">
+                {% csrf_token %}
+                <button type="submit"
+                        class="text-xs text-red-400 hover:text-red-600 font-semibold transition">
+                  Remove
+                </button>
+              </form>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-gray-400 text-sm text-center py-8">
+          No extras added yet. Add your first one above!
+        </p>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+<style>
+  input[type="text"], input[type="number"],
+  select, textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #E5E7EB;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  input:focus, select:focus, textarea:focus { border-color: #F97316; }
+</style>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Owner Dashboard — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-10">
+    <div>
+      <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Owner Panel</span>
+      <h1 class="font-display text-5xl font-bold text-dark mt-1">
+        Your <em class="text-primary">Dashboard</em>
+      </h1>
+      <p class="text-gray-400 mt-1">Welcome back, {{ user.first_name }}!</p>
+    </div>
+    <a href="{% url 'properties:add_property' %}"
+       class="bg-accent text-white px-6 py-3 rounded-full font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all">
+      + Add New Property
+    </a>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-3 gap-6 mb-12">
+    <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Total Properties</p>
+      <p class="font-bebas text-5xl text-dark">{{ total }}</p>
+    </div>
+    <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Active Listings</p>
+      <p class="font-bebas text-5xl text-green-500">{{ active }}</p>
+    </div>
+    <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Pending Review</p>
+      <p class="font-bebas text-5xl text-accent">{{ pending }}</p>
+    </div>
+  </div>
+
+  <!-- Properties List -->
+  {% if properties %}
+    <div class="flex flex-col gap-4">
+      {% for prop in properties %}
+        <div class="bg-white rounded-2xl p-6 shadow-sm flex gap-6 items-center">
+
+          <!-- Thumbnail -->
+          <div class="w-28 h-20 rounded-xl overflow-hidden flex-shrink-0">
+            {% with prop.images.first as img %}
+              {% if img %}
+                <img src="{{ img.image.url }}" alt="{{ prop.name }}"
+                     class="w-full h-full object-cover"/>
+              {% else %}
+                <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
+                  <span class="text-white/40 text-2xl">🏠</span>
+                </div>
+              {% endif %}
+            {% endwith %}
+          </div>
+
+          <!-- Info -->
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-1">
+              <h3 class="font-display text-xl font-bold text-dark">{{ prop.name }}</h3>
+              <span class="text-xs font-bold px-3 py-1 rounded-full
+                {% if prop.status == 'active' %}bg-green-100 text-green-700
+                {% elif prop.status == 'pending' %}bg-orange-100 text-orange-700
+                {% else %}bg-gray-100 text-gray-500{% endif %}">
+                {{ prop.get_status_display }}
+              </span>
+            </div>
+            <p class="text-gray-400 text-sm">
+              📍 {{ prop.city }} &nbsp;·&nbsp;
+              {{ prop.get_property_type_display }} &nbsp;·&nbsp;
+              ${{ prop.price_per_night }}/night &nbsp;·&nbsp;
+              {{ prop.extras.count }} extras
+            </p>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex gap-3 flex-shrink-0">
+            <a href="{% url 'properties:detail' prop.slug %}"
+               class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 hover:border-primary hover:text-primary transition">
+              View
+            </a>
+            <a href="{% url 'properties:manage_extras' prop.slug %}"
+               class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 hover:border-gold hover:text-gold transition">
+              Extras
+            </a>
+            <a href="{% url 'properties:edit_property' prop.slug %}"
+               class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 hover:border-accent hover:text-accent transition">
+              Edit
+            </a>
+            <form method="POST" action="{% url 'properties:delete_property' prop.slug %}"
+                  onsubmit="return confirm('Delete {{ prop.name }}? This cannot be undone.')">
+              {% csrf_token %}
+              <button type="submit"
+                      class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 hover:border-red-400 hover:text-red-400 transition">
+                Delete
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="text-center py-24 text-gray-400">
+      <div class="text-7xl mb-6">🏠</div>
+      <h3 class="text-xl font-semibold text-dark mb-2">No properties yet</h3>
+      <p class="text-sm mb-6">Start earning by listing your first property.</p>
+      <a href="{% url 'properties:add_property' %}"
+         class="inline-block bg-accent text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition">
+        + List Your First Property
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

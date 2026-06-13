@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Cart — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+
+  <div class="mb-10">
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Your Selection</span>
+    <h1 class="font-display text-5xl font-bold text-dark mt-1">
+      Your <em class="text-primary">Cart</em>
+    </h1>
+  </div>
+
+  {% if cart and cart.booking_property %}
+    <div class="grid grid-cols-3 gap-8">
+
+      <!-- Left: Cart Details -->
+      <div class="col-span-2 flex flex-col gap-6">
+
+        <!-- Property Card -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm flex gap-5">
+          <div class="w-36 h-24 rounded-xl overflow-hidden flex-shrink-0">
+            {% with cart.booking_property.images.first as img %}
+              {% if img %}
+                <img src="{{ img.image.url }}" alt=""
+                     class="w-full h-full object-cover"/>
+              {% else %}
+                <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
+                  <span class="text-white/30 text-3xl">🏠</span>
+                </div>
+              {% endif %}
+            {% endwith %}
+          </div>
+          <div class="flex-1">
+            <p class="text-xs text-gray-400 mb-1">📍 {{ cart.booking_property.city }}</p>
+            <h3 class="font-display text-xl font-bold text-dark">
+              {{ cart.booking_property.name }}
+            </h3>
+            <p class="text-sm text-gray-400 mt-1">
+              {{ cart.get_property_type_display|default:cart.booking_property.get_property_type_display }}
+            </p>
+          </div>
+          <a href="{% url 'properties:detail' cart.booking_property.slug %}"
+             class="text-accent text-sm font-semibold hover:underline self-start">
+            Change
+          </a>
+        </div>
+
+        <!-- Dates & Guests -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <h3 class="font-semibold text-dark mb-4">Stay Details</h3>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="bg-cream rounded-xl p-4 text-center">
+              <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Check-in</p>
+              <p class="font-bold text-dark">{{ cart.check_in|date:"M j, Y" }}</p>
+            </div>
+            <div class="bg-cream rounded-xl p-4 text-center">
+              <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Check-out</p>
+              <p class="font-bold text-dark">{{ cart.check_out|date:"M j, Y" }}</p>
+            </div>
+            <div class="bg-cream rounded-xl p-4 text-center">
+              <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Guests</p>
+              <p class="font-bold text-dark">{{ cart.guests }} guest{{ cart.guests|pluralize }}</p>
+            </div>
+          </div>
+          <p class="text-center text-sm text-gray-400 mt-4">
+            🌙 <span class="font-semibold text-dark">{{ cart.nights }} night{{ cart.nights|pluralize }}</span>
+          </p>
+        </div>
+
+        <!-- Extras -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <h3 class="font-semibold text-dark mb-2">Add-on Services</h3>
+          <p class="text-gray-400 text-xs mb-5">
+            Optional extras offered by this property.
+          </p>
+
+          {% with cart.booking_property.extras.all as available_extras %}
+            {% if available_extras %}
+              <div class="flex flex-col gap-3">
+                {% for extra in available_extras %}
+                  {% if extra.is_available %}
+                    <div class="flex items-center justify-between p-4 rounded-xl border-2
+                      {% for item in cart.items.all %}
+                        {% if item.extra == extra %}border-accent bg-orange-50
+                        {% endif %}
+                      {% endfor %}
+                      border-gray-200">
+
+                      <div>
+                        <p class="font-semibold text-dark text-sm">{{ extra.name }}</p>
+                        <p class="text-xs text-gray-400 mt-0.5">
+                          ${{ extra.price }} · {{ extra.get_charge_type_display }}
+                          {% if extra.description %} · {{ extra.description }}{% endif %}
+                        </p>
+                      </div>
+
+                      <div class="flex gap-2">
+                        {% comment %}Check if this extra is in cart{% endcomment %}
+                        {% with in_cart=False %}
+                          {% for item in cart.items.all %}
+                            {% if item.extra.pk == extra.pk %}
+                              <form method="POST" action="{% url 'bookings:remove_extra' extra.pk %}">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="text-xs font-semibold px-4 py-2 rounded-xl bg-red-50 text-red-400 hover:bg-red-100 transition">
+                                  Remove
+                                </button>
+                              </form>
+                            {% endif %}
+                          {% endfor %}
+
+                          {% with found=cart.items.filter %}
+                            <form method="POST" action="{% url 'bookings:add_extra' extra.pk %}">
+                              {% csrf_token %}
+                              <button type="submit"
+                                      class="text-xs font-semibold px-4 py-2 rounded-xl bg-accent/10 text-accent hover:bg-accent hover:text-white transition">
+                                + Add
+                              </button>
+                            </form>
+                          {% endwith %}
+                        {% endwith %}
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="text-gray-400 text-sm text-center py-4">
+                This property has no add-ons available.
+              </p>
+            {% endif %}
+          {% endwith %}
+        </div>
+
+        <!-- Clear Cart -->
+        <form method="POST" action="{% url 'bookings:clear_cart' %}"
+              onsubmit="return confirm('Clear your entire cart?')">
+          {% csrf_token %}
+          <button type="submit"
+                  class="text-red-400 text-sm font-semibold hover:text-red-600 transition">
+            🗑 Clear Cart
+          </button>
+        </form>
+      </div>
+
+      <!-- Right: Summary -->
+      <div class="col-span-1">
+        <div class="bg-white rounded-2xl p-6 shadow-lg sticky top-24">
+          <h3 class="font-display text-2xl font-bold text-dark mb-6">Price Summary</h3>
+
+          <!-- Room Cost -->
+          <div class="flex flex-col gap-3 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">
+                ${{ cart.booking_property.price_per_night }} × {{ cart.nights }} night{{ cart.nights|pluralize }}
+              </span>
+              <span class="font-semibold text-dark">${{ cart.room_total }}</span>
+            </div>
+
+            <!-- Extras Breakdown -->
+            {% for item in cart.items.all %}
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-500">
+                  {{ item.extra.name }}
+                  {% if item.extra.charge_type == 'per_night' %}
+                    × {{ cart.nights }}n
+                  {% elif item.extra.charge_type == 'per_person' %}
+                    × {{ cart.guests }}p
+                  {% endif %}
+                </span>
+                <span class="font-semibold text-dark">
+                  ${% if item.extra.charge_type == 'per_night' %}
+                    {{ item.extra.price|floatformat:2 }}
+                  {% elif item.extra.charge_type == 'per_person' %}
+                    {{ item.extra.price|floatformat:2 }}
+                  {% else %}
+                    {{ item.extra.price|floatformat:2 }}
+                  {% endif %}
+                </span>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="border-t border-gray-100 pt-4 mb-6">
+            <div class="flex justify-between">
+              <span class="font-bold text-dark">Total</span>
+              <span class="font-bebas text-3xl text-accent">${{ cart.grand_total }}</span>
+            </div>
+            <p class="text-xs text-gray-400 mt-1 text-right">
+              Taxes and fees included
+            </p>
+          </div>
+
+          {#<a href="{% url 'payments:checkout' %}"
+             class="block w-full bg-accent text-white py-4 rounded-xl font-semibold text-center hover:shadow-xl hover:-translate-y-0.5 transition-all">
+            Proceed to Checkout →
+          </a>#}
+
+          <button disabled
+        class="block w-full bg-gray-300 text-gray-500 py-4 rounded-xl font-semibold text-center cursor-not-allowed">
+  Checkout — Coming Soon
+</button>
+
+          <p class="text-center text-xs text-gray-400 mt-3">
+            🔒 Secure payment · Cancel anytime
+          </p>
+        </div>
+      </div>
+    </div>
+
+  {% else %}
+    <!-- Empty Cart -->
+    <div class="text-center py-32 text-gray-400">
+      <div class="text-8xl mb-6">🛒</div>
+      <h3 class="text-2xl font-semibold text-dark mb-2">Your cart is empty</h3>
+      <p class="text-sm mb-8">Find a property you love and add it to your cart.</p>
+      <a href="{% url 'properties:list' %}"
+         class="inline-block bg-accent text-white px-8 py-3.5 rounded-full font-semibold hover:shadow-lg transition">
+        Browse Properties
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
