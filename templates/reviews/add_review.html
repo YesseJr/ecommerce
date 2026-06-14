@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block title %}Leave a Review — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+  <div class="max-w-2xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-8">
+      <a href="{% url 'payments:my_bookings' %}"
+         class="text-sm text-gray-400 hover:text-accent transition">
+        ← Back to My Bookings
+      </a>
+      <h1 class="font-display text-5xl font-bold text-dark mt-3">
+        Leave a <em class="text-primary">Review</em>
+      </h1>
+      <p class="text-gray-400 mt-1">
+        Share your experience at {{ booking.booking_property.name }}
+      </p>
+    </div>
+
+    <!-- Property Summary -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm mb-8 flex gap-4 items-center">
+      <div class="w-24 h-16 rounded-xl overflow-hidden flex-shrink-0">
+        {% with booking.booking_property.images.first as img %}
+          {% if img %}
+            <img src="{{ img.image.url }}" alt=""
+                 class="w-full h-full object-cover"/>
+          {% else %}
+            <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
+              <span class="text-white/30 text-2xl">🏠</span>
+            </div>
+          {% endif %}
+        {% endwith %}
+      </div>
+      <div>
+        <h3 class="font-display text-lg font-bold text-dark">
+          {{ booking.booking_property.name }}
+        </h3>
+        <p class="text-gray-400 text-xs mt-0.5">
+          📍 {{ booking.booking_property.city }} &nbsp;·&nbsp;
+          {{ booking.check_in|date:"M j" }} – {{ booking.check_out|date:"M j, Y" }} &nbsp;·&nbsp;
+          {{ booking.nights }} night{{ booking.nights|pluralize }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Review Form -->
+    <form method="POST" class="flex flex-col gap-6">
+      {% csrf_token %}
+
+      <!-- Star Ratings -->
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <h3 class="font-semibold text-dark mb-6 text-lg">Rate Your Experience</h3>
+
+        <div class="flex flex-col gap-6">
+
+          <!-- Overall Rating -->
+          <div>
+            <label class="block text-sm font-bold text-dark mb-3">
+              Overall Rating *
+            </label>
+            <div class="flex gap-2" id="rating-overall">
+              {% for choice in form.rating %}
+                <label class="star-label cursor-pointer text-3xl text-gray-300 hover:text-gold transition-all"
+                       data-value="{{ choice.data.value }}">
+                  {{ choice.tag }}★
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Sub Ratings Grid -->
+          <div class="grid grid-cols-3 gap-6 pt-4 border-t border-gray-100">
+
+            <!-- Cleanliness -->
+            <div>
+              <label class="block text-sm font-bold text-dark mb-3">
+                🧹 Cleanliness
+              </label>
+              <div class="flex gap-1" id="rating-cleanliness">
+                {% for choice in form.cleanliness %}
+                  <label class="star-label cursor-pointer text-xl text-gray-300 hover:text-gold transition-all"
+                         data-value="{{ choice.data.value }}">
+                    {{ choice.tag }}★
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Location -->
+            <div>
+              <label class="block text-sm font-bold text-dark mb-3">
+                📍 Location
+              </label>
+              <div class="flex gap-1" id="rating-location">
+                {% for choice in form.location %}
+                  <label class="star-label cursor-pointer text-xl text-gray-300 hover:text-gold transition-all"
+                         data-value="{{ choice.data.value }}">
+                    {{ choice.tag }}★
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Value -->
+            <div>
+              <label class="block text-sm font-bold text-dark mb-3">
+                💰 Value for Money
+              </label>
+              <div class="flex gap-1" id="rating-value">
+                {% for choice in form.value %}
+                  <label class="star-label cursor-pointer text-xl text-gray-300 hover:text-gold transition-all"
+                         data-value="{{ choice.data.value }}">
+                    {{ choice.tag }}★
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Written Review -->
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <h3 class="font-semibold text-dark mb-6 text-lg">Write Your Review</h3>
+
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+              Review Title *
+            </label>
+            {{ form.title }}
+            {% if form.title.errors %}
+              <p class="text-red-500 text-xs mt-1">{{ form.title.errors.0 }}</p>
+            {% endif %}
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+              Your Experience *
+            </label>
+            {{ form.comment }}
+            {% if form.comment.errors %}
+              <p class="text-red-500 text-xs mt-1">{{ form.comment.errors.0 }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <button type="submit"
+              class="w-full bg-accent text-white py-4 rounded-2xl font-bold text-base hover:shadow-xl hover:-translate-y-0.5 transition-all">
+        Submit Review 🌟
+      </button>
+    </form>
+  </div>
+</div>
+
+<style>
+  input[type="radio"] { display: none; }
+
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #E5E7EB;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  input:focus, textarea:focus { border-color: #F97316; }
+
+  .star-label { user-select: none; }
+  .star-label.active { color: #D97706; }
+</style>
+
+<script>
+  // Star rating interaction for each group
+  document.querySelectorAll('[id^="rating-"]').forEach(group => {
+    const stars = group.querySelectorAll('.star-label')
+
+    stars.forEach((star, index) => {
+      // Hover effect
+      star.addEventListener('mouseenter', () => {
+        stars.forEach((s, i) => {
+          s.style.color = i <= index ? '#D97706' : '#D1D5DB'
+        })
+      })
+
+      // Mouse leave — restore selected state
+      group.addEventListener('mouseleave', () => {
+        const selected = group.querySelector('input:checked')
+        const selectedVal = selected ? parseInt(selected.value) : 0
+        stars.forEach((s, i) => {
+          s.style.color = i < selectedVal ? '#D97706' : '#D1D5DB'
+        })
+      })
+
+      // Click to select
+      star.addEventListener('click', () => {
+        const radio = star.querySelector('input[type="radio"]')
+        radio.checked = true
+        stars.forEach((s, i) => {
+          s.style.color = i <= index ? '#D97706' : '#D1D5DB'
+        })
+      })
+    })
+  })
+</script>
+{% endblock %}

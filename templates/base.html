@@ -31,79 +31,186 @@
 </head>
 <body class="font-body bg-cream text-dark">
 
-  <!-- NAVBAR -->
+  <!-- ─── NAVBAR ─── -->
   <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-16 py-4 bg-dark">
+
+    <!-- Logo -->
     <a href="{% url 'properties:home' %}" class="font-bebas text-3xl tracking-widest text-white">
       Book<span class="text-accent">MyStay</span>
     </a>
 
     <div class="flex items-center gap-8">
-      <a href="{% url 'properties:home' %}" class="text-white/80 hover:text-accent text-sm font-medium transition">Home</a>
-      <a href="{% url 'properties:list' %}" class="text-white/80 hover:text-accent text-sm font-medium transition">Properties</a>
+
+      <!-- Always visible -->
+      <a href="{% url 'properties:home' %}"
+         class="text-white/80 hover:text-accent text-sm font-medium transition">
+        Home
+      </a>
+      <a href="{% url 'properties:list' %}"
+         class="text-white/80 hover:text-accent text-sm font-medium transition">
+        Properties
+      </a>
 
       {% if user.is_authenticated %}
-        {% if user.is_owner %}
-          <a href="{% url 'properties:owner_dashboard' %}" class="text-white/80 hover:text-accent text-sm font-medium transition">Dashboard</a>
+
+        <!-- ── SUPERUSER / ADMIN ── -->
+        {% if user.is_superuser %}
+          <a href="{% url 'admin:index' %}"
+             class="text-white/80 hover:text-accent text-sm font-medium transition">
+            ⚙️ Admin Panel
+          </a>
+          <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
+            Admin
+          </span>
+
+        <!-- ── PROPERTY OWNER ── -->
+        {% elif user.is_owner %}
+          <a href="{% url 'properties:owner_dashboard' %}"
+             class="text-white/80 hover:text-accent text-sm font-medium transition">
+            Dashboard
+          </a>
+          <a href="{% url 'properties:add_property' %}"
+             class="text-white/80 hover:text-accent text-sm font-medium transition">
+            + List Property
+          </a>
+          <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
+            Owner
+          </span>
+
+        <!-- ── TRAVELLER ── -->
+        {% elif user.is_traveller %}
+          <a href="{% url 'bookings:cart' %}"
+             class="text-white/80 hover:text-accent text-sm font-medium transition">
+            🛒 Cart
+          </a>
+          <a href="{% url 'payments:my_bookings' %}"
+             class="text-white/80 hover:text-accent text-sm font-medium transition">
+            My Bookings
+          </a>
+          <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
+            Traveller
+          </span>
+
         {% endif %}
-        <a href="{% url 'bookings:cart' %}" class="text-white/80 hover:text-accent text-sm font-medium transition">
-          🛒 Cart
+
+        <!-- Profile & Logout — visible to all logged in users -->
+        <a href="{% url 'users:profile' %}"
+           class="text-white/80 hover:text-accent text-sm font-medium transition">
+          👤 {{ user.first_name|default:user.username }}
         </a>
-        <a href="{% url 'users:profile' %}" class="text-white/80 hover:text-accent text-sm font-medium transition">
-          {{ user.first_name }}
-        </a>
-        <a href="{% url 'users:logout' %}" class="bg-white/10 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-white/20 transition">
+        <a href="{% url 'users:logout' %}"
+           class="bg-white/10 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-white/20 transition">
           Logout
         </a>
+
       {% else %}
-        <a href="{% url 'users:login' %}" class="text-white/80 hover:text-accent text-sm font-medium transition">Login</a>
-        <a href="{% url 'users:register' %}" class="bg-accent text-white px-5 py-2 rounded-full text-sm font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all">
+
+        <!-- ── GUEST (not logged in) ── -->
+        <a href="{% url 'users:login' %}"
+           class="text-white/80 hover:text-accent text-sm font-medium transition">
+          Login
+        </a>
+        <a href="{% url 'users:register' %}"
+           class="bg-accent text-white px-5 py-2 rounded-full text-sm font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all">
           Get Started
         </a>
+
       {% endif %}
-      {% if user.is_authenticated and user.is_traveller %}
-  <a href="{% url 'bookings:cart' %}"
-     class="text-white/80 hover:text-accent text-sm font-medium transition">
-    🛒 Cart
-  </a>
-  <a href="{% url 'payments:my_bookings' %}"
-     class="text-white/80 hover:text-accent text-sm font-medium transition">
-    My Bookings
-  </a>
-{% endif %}
+
     </div>
   </nav>
 
-  <!-- MESSAGES -->
+  <!-- ─── MESSAGES ─── -->
   {% if messages %}
-    <div class="fixed top-20 right-6 z-50 flex flex-col gap-2">
+    <div class="fixed top-20 right-6 z-50 flex flex-col gap-2" id="messages-container">
       {% for message in messages %}
-        <div class="px-5 py-3 rounded-xl text-sm font-medium shadow-lg
+        <div class="px-5 py-3 rounded-xl text-sm font-medium shadow-lg flex items-center gap-3
           {% if message.tags == 'error' %}bg-red-500 text-white
           {% elif message.tags == 'success' %}bg-green-500 text-white
+          {% elif message.tags == 'warning' %}bg-yellow-500 text-white
           {% else %}bg-primary text-white{% endif %}">
+          <span>
+            {% if message.tags == 'error' %}❌
+            {% elif message.tags == 'success' %}✅
+            {% elif message.tags == 'warning' %}⚠️
+            {% else %}ℹ️{% endif %}
+          </span>
           {{ message }}
         </div>
       {% endfor %}
     </div>
   {% endif %}
 
-  <!-- MAIN CONTENT -->
+  <!-- ─── MAIN CONTENT ─── -->
   <main class="pt-16">
     {% block content %}{% endblock %}
   </main>
 
-  <!-- FOOTER -->
+  <!-- ─── FOOTER ─── -->
   <footer class="bg-dark text-white py-12 px-16 mt-20">
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-start">
+
       <div>
         <div class="font-bebas text-2xl tracking-widest mb-2">
           Book<span class="text-accent">MyStay</span>
         </div>
-        <p class="text-white/40 text-sm">Tanzania's trusted accommodation marketplace.</p>
+        <p class="text-white/40 text-sm max-w-xs leading-relaxed">
+          Tanzania's trusted accommodation marketplace. Find your perfect place to stay.
+        </p>
       </div>
-      <p class="text-white/30 text-sm">© 2026 BookMyStay. Built with ❤️ by Group 3!.</p>
+
+      <div class="flex gap-16">
+        <div>
+          <h5 class="text-white/60 text-xs font-bold uppercase tracking-widest mb-3">Explore</h5>
+          <ul class="flex flex-col gap-2">
+            <li><a href="{% url 'properties:list' %}" class="text-white/40 text-sm hover:text-accent transition">All Properties</a></li>
+            <li><a href="{% url 'properties:list' %}?type=hotel" class="text-white/40 text-sm hover:text-accent transition">Hotels</a></li>
+            <li><a href="{% url 'properties:list' %}?type=villa" class="text-white/40 text-sm hover:text-accent transition">Villas</a></li>
+            <li><a href="{% url 'properties:list' %}?type=apartment" class="text-white/40 text-sm hover:text-accent transition">Apartments</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h5 class="text-white/60 text-xs font-bold uppercase tracking-widest mb-3">Account</h5>
+          <ul class="flex flex-col gap-2">
+            {% if user.is_authenticated %}
+              <li><a href="{% url 'users:profile' %}" class="text-white/40 text-sm hover:text-accent transition">My Profile</a></li>
+              {% if user.is_traveller %}
+                <li><a href="{% url 'payments:my_bookings' %}" class="text-white/40 text-sm hover:text-accent transition">My Bookings</a></li>
+                <li><a href="{% url 'bookings:cart' %}" class="text-white/40 text-sm hover:text-accent transition">My Cart</a></li>
+              {% endif %}
+              {% if user.is_owner %}
+                <li><a href="{% url 'properties:owner_dashboard' %}" class="text-white/40 text-sm hover:text-accent transition">Dashboard</a></li>
+                <li><a href="{% url 'properties:add_property' %}" class="text-white/40 text-sm hover:text-accent transition">Add Property</a></li>
+              {% endif %}
+              <li><a href="{% url 'users:logout' %}" class="text-white/40 text-sm hover:text-accent transition">Logout</a></li>
+            {% else %}
+              <li><a href="{% url 'users:login' %}" class="text-white/40 text-sm hover:text-accent transition">Login</a></li>
+              <li><a href="{% url 'users:register' %}" class="text-white/40 text-sm hover:text-accent transition">Register</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="border-t border-white/10 mt-10 pt-6 flex justify-between items-center">
+      <p class="text-white/30 text-xs">© 2026 BookMyStay. Built with ❤️ by Group 3.</p>
+      <p class="text-white/20 text-xs">Tanzania's Accommodation Marketplace</p>
     </div>
   </footer>
+
+  <!-- ─── AUTO DISMISS MESSAGES ─── -->
+  <script>
+    setTimeout(() => {
+      const container = document.getElementById('messages-container')
+      if (container) {
+        container.style.transition = 'opacity 0.5s'
+        container.style.opacity = '0'
+        setTimeout(() => container.remove(), 500)
+      }
+    }, 4000)
+  </script>
 
   {% block extra_js %}{% endblock %}
 </body>

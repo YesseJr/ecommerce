@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Property Bookings — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+
+  <div class="flex justify-between items-center mb-10">
+    <div>
+      <a href="{% url 'properties:owner_dashboard' %}"
+         class="text-sm text-gray-400 hover:text-accent transition">
+        ← Back to Dashboard
+      </a>
+      <span class="text-xs font-bold tracking-widest uppercase text-accent block mt-3">
+        ✦ Reservations
+      </span>
+      <h1 class="font-display text-5xl font-bold text-dark mt-1">
+        Property <em class="text-primary">Bookings</em>
+      </h1>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-3 gap-6 mb-10">
+    <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
+        Total Bookings
+      </p>
+      <p class="font-bebas text-5xl text-dark">{{ total }}</p>
+    </div>
+    <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
+        Confirmed
+      </p>
+      <p class="font-bebas text-5xl text-green-500">{{ confirmed }}</p>
+    </div>
+    <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
+        Total Revenue
+      </p>
+      <p class="font-bebas text-5xl text-accent">${{ revenue }}</p>
+    </div>
+  </div>
+
+  <!-- Bookings Table -->
+  {% if bookings %}
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-gray-100">
+            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
+              Reference
+            </th>
+            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
+              Property
+            </th>
+            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
+              Guest
+            </th>
+            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
+              Dates
+            </th>
+            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
+              Total
+            </th>
+            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
+              Status
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in bookings %}
+            <tr class="border-b border-gray-50 hover:bg-cream transition">
+              <td class="px-6 py-4">
+                <span class="font-mono text-sm font-semibold text-dark">
+                  {{ booking.reference }}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <p class="font-semibold text-dark text-sm">
+                  {{ booking.booking_property.name }}
+                </p>
+                <p class="text-xs text-gray-400">
+                  {{ booking.booking_property.city }}
+                </p>
+              </td>
+              <td class="px-6 py-4">
+                <p class="font-semibold text-dark text-sm">
+                  {{ booking.traveller.get_full_name|default:booking.traveller.username }}
+                </p>
+                <p class="text-xs text-gray-400">{{ booking.traveller.email }}</p>
+              </td>
+              <td class="px-6 py-4">
+                <p class="text-sm text-dark">
+                  {{ booking.check_in|date:"M j" }} – {{ booking.check_out|date:"M j, Y" }}
+                </p>
+                <p class="text-xs text-gray-400">
+                  {{ booking.nights }} night{{ booking.nights|pluralize }} ·
+                  {{ booking.guests }} guest{{ booking.guests|pluralize }}
+                </p>
+              </td>
+              <td class="px-6 py-4">
+                <span class="font-bold text-dark">${{ booking.grand_total }}</span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="text-xs font-bold px-3 py-1 rounded-full
+                  {% if booking.status == 'confirmed' %}bg-green-100 text-green-700
+                  {% elif booking.status == 'pending' %}bg-orange-100 text-orange-700
+                  {% elif booking.status == 'cancelled' %}bg-red-100 text-red-500
+                  {% else %}bg-gray-100 text-gray-500{% endif %}">
+                  {{ booking.get_status_display }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  {% else %}
+    <div class="text-center py-24 text-gray-400">
+      <div class="text-7xl mb-6">📋</div>
+      <h3 class="text-xl font-semibold text-dark mb-2">No bookings yet</h3>
+      <p class="text-sm">Bookings for your properties will appear here.</p>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

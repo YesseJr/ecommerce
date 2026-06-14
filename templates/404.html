@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found: BookMyStay{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-cream flex items-center justify-center px-16">
+  <div class="text-center max-w-lg">
+
+    <div class="font-bebas text-[10rem] leading-none text-primary/10 mb-0">
+      404
+    </div>
+
+    <h1 class="font-display text-5xl font-bold text-dark -mt-6 mb-4">
+      Page <em class="text-accent">Not Found</em>
+    </h1>
+
+    <p class="text-gray-400 text-lg mb-10 leading-relaxed">
+      Looks like this page checked out early.
+      Let's get you back on track.
+    </p>
+
+    <div class="flex gap-4 justify-center">
+      <a href="{% url 'properties:home' %}"
+         class="bg-accent text-white px-8 py-3.5 rounded-full font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all">
+        Back to Home
+      </a>
+      <a href="{% url 'properties:list' %}"
+         class="border-2 border-gray-200 text-gray-600 px-8 py-3.5 rounded-full font-semibold hover:border-accent hover:text-accent transition-all">
+        Browse Properties
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

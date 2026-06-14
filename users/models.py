@@ -27,17 +27,30 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def save(self, *args, **kwargs):
+        # Superusers always get admin role — no exceptions
+        if self.is_superuser:
+            self.role = 'admin'
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.username} ({self.get_role_display()})"
 
     @property
     def is_traveller(self):
+        # Superusers are never travellers
+        if self.is_superuser:
+            return False
         return self.role == 'traveller'
 
     @property
     def is_owner(self):
+        # Superusers are never owners
+        if self.is_superuser:
+            return False
         return self.role == 'owner'
-    
+
     @property
     def is_admin(self):
-        return self.role == 'admin'
+        # Either superuser OR role set to admin
+        return self.is_superuser or self.role == 'admin'

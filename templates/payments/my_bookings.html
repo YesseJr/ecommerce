@@ -59,14 +59,37 @@
 
           <!-- Total + Actions -->
           <div class="flex flex-col items-end gap-3 flex-shrink-0">
+
+            <!-- Total Paid -->
             <div class="text-right">
               <span class="font-bebas text-2xl text-dark">${{ booking.grand_total }}</span>
               <p class="text-xs text-gray-400">total paid</p>
             </div>
-            <a href="{% url 'payments:confirmation' booking.reference %}"
-               class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 hover:border-accent hover:text-accent transition">
-              View Details
-            </a>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-2">
+
+              <!-- View Details -->
+              <a href="{% url 'payments:confirmation' booking.reference %}"
+                 class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 hover:border-accent hover:text-accent transition">
+                View Details
+              </a>
+
+              <!-- Review Button -->
+              {% if booking.status == 'confirmed' %}
+                {% if booking.review %}
+                  <span class="text-xs font-semibold px-4 py-2 rounded-xl bg-green-50 text-green-600 border-2 border-green-100">
+                    ✅ Reviewed
+                  </span>
+                {% else %}
+                  <a href="{% url 'reviews:add_review' booking.reference %}"
+                     class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 hover:border-gold hover:text-gold transition">
+                    ⭐ Review
+                  </a>
+                {% endif %}
+              {% endif %}
+
+            </div>
           </div>
         </div>
       {% endfor %}

@@ -14,10 +14,16 @@
       </h1>
       <p class="text-gray-400 mt-1">Welcome back, {{ user.first_name }}!</p>
     </div>
-    <a href="{% url 'properties:add_property' %}"
-       class="bg-accent text-white px-6 py-3 rounded-full font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all">
-      + Add New Property
-    </a>
+   <div class="flex gap-3">
+  <a href="{% url 'properties:owner_bookings' %}"
+     class="bg-primary text-white px-6 py-3 rounded-full font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all">
+    View Bookings
+  </a>
+  <a href="{% url 'properties:add_property' %}"
+     class="bg-accent text-white px-6 py-3 rounded-full font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all">
+    + Add New Property
+  </a>
+</div>
   </div>
 
   <!-- Stats -->

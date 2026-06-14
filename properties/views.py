@@ -239,3 +239,28 @@ def delete_extra(request, pk):
     extra.delete()
     messages.success(request, "Extra removed.")
     return redirect('properties:manage_extras', slug=slug)
+
+@login_required
+def owner_bookings(request):
+    if not request.user.is_owner:
+        messages.error(request, "Access denied.")
+        return redirect('properties:home')
+
+    from bookings.models import Booking
+
+    # Get all bookings for this owner's properties
+    bookings = Booking.objects.filter(
+        booking_property__owner=request.user
+    ).order_by('-created_at')
+
+    # Stats
+    total     = bookings.count()
+    confirmed = bookings.filter(status='confirmed').count()
+    revenue   = sum(b.grand_total for b in bookings.filter(status='confirmed'))
+
+    return render(request, 'properties/owner_bookings.html', {
+        'bookings':  bookings,
+        'total':     total,
+        'confirmed': confirmed,
+        'revenue':   revenue,
+    })

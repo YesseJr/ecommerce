@@ -1,0 +1,383 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-10">
+      <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Account</span>
+      <h1 class="font-display text-5xl font-bold text-dark mt-1">
+        My <em class="text-primary">Profile</em>
+      </h1>
+    </div>
+
+    <div class="grid grid-cols-3 gap-8">
+
+      <!-- Left: Profile Card + Stats -->
+      <div class="col-span-1 flex flex-col gap-6">
+
+        <!-- Profile Card -->
+        <div class="bg-white rounded-2xl p-8 shadow-sm text-center">
+
+          <!-- Avatar -->
+          <div class="relative inline-block mb-4">
+            {% if user.profile_photo %}
+              <img src="{{ user.profile_photo.url }}"
+                   class="w-24 h-24 rounded-full object-cover border-4 border-accent mx-auto"/>
+            {% else %}
+              <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center mx-auto border-4 border-accent">
+                <span class="text-white font-bebas text-4xl">
+                  {{ user.first_name|first|default:user.username|first }}
+                </span>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Name & Role -->
+          <h2 class="font-display text-2xl font-bold text-dark">
+            {{ user.get_full_name|default:user.username }}
+          </h2>
+          <p class="text-gray-400 text-sm mt-1">@{{ user.username }}</p>
+
+          <!-- Role Badge -->
+          <span class="inline-block mt-3 text-xs font-bold px-4 py-1.5 rounded-full
+            {% if user.is_owner %}bg-blue-100 text-blue-700
+            {% elif user.is_traveller %}bg-orange-100 text-orange-700
+            {% else %}bg-gray-100 text-gray-600{% endif %}">
+            {% if user.is_owner %}🏠 Property Owner
+            {% elif user.is_traveller %}🧳 Traveller
+            {% else %}⚙️ Admin{% endif %}
+          </span>
+
+          <!-- Verified Badge -->
+          {% if user.is_verified %}
+            <div class="mt-2">
+              <span class="text-xs text-green-600 font-semibold">✅ Verified Account</span>
+            </div>
+          {% endif %}
+
+          <!-- Quick Info -->
+          <div class="mt-5 pt-5 border-t border-gray-100 flex flex-col gap-2 text-left">
+            {% if user.email %}
+              <p class="text-xs text-gray-400 flex items-center gap-2">
+                <span>📧</span> {{ user.email }}
+              </p>
+            {% endif %}
+            {% if user.phone %}
+              <p class="text-xs text-gray-400 flex items-center gap-2">
+                <span>📱</span> {{ user.phone }}
+              </p>
+            {% endif %}
+            {% if user.location %}
+              <p class="text-xs text-gray-400 flex items-center gap-2">
+                <span>📍</span> {{ user.location }}
+              </p>
+            {% endif %}
+            <p class="text-xs text-gray-400 flex items-center gap-2">
+              <span>📅</span> Member since {{ user.created_at|date:"M Y" }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <h3 class="font-semibold text-dark mb-4 text-sm uppercase tracking-widest">
+            My Stats
+          </h3>
+
+          {% if user.is_traveller %}
+            <div class="flex flex-col gap-4">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Total Bookings</span>
+                <span class="font-bebas text-2xl text-accent">{{ total_bookings }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Reviews Written</span>
+                <span class="font-bebas text-2xl text-accent">{{ total_reviews }}</span>
+              </div>
+            </div>
+
+          {% elif user.is_owner %}
+            <div class="flex flex-col gap-4">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Total Properties</span>
+                <span class="font-bebas text-2xl text-accent">{{ total_properties }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Active Listings</span>
+                <span class="font-bebas text-2xl text-green-500">{{ active_properties }}</span>
+              </div>
+            </div>
+
+          {% else %}
+            <p class="text-gray-400 text-sm text-center py-4">
+              Platform Administrator
+            </p>
+          {% endif %}
+        </div>
+
+        <!-- Quick Links -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <h3 class="font-semibold text-dark mb-4 text-sm uppercase tracking-widest">
+            Quick Links
+          </h3>
+          <div class="flex flex-col gap-2">
+            {% if user.is_traveller %}
+              <a href="{% url 'payments:my_bookings' %}"
+                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
+                <span>📋</span> My Bookings
+              </a>
+              <a href="{% url 'bookings:cart' %}"
+                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
+                <span>🛒</span> My Cart
+              </a>
+              <a href="{% url 'properties:list' %}"
+                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
+                <span>🔍</span> Browse Properties
+              </a>
+
+            {% elif user.is_owner %}
+              <a href="{% url 'properties:owner_dashboard' %}"
+                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
+                <span>📊</span> Dashboard
+              </a>
+              <a href="{% url 'properties:add_property' %}"
+                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
+                <span>➕</span> Add Property
+              </a>
+
+            {% elif user.is_superuser %}
+              <a href="{% url 'admin:index' %}"
+                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
+                <span>⚙️</span> Admin Panel
+              </a>
+            {% endif %}
+
+            <a href="{% url 'users:logout' %}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 transition text-sm text-red-400 hover:text-red-600 font-medium mt-2 border-t border-gray-100 pt-4">
+              <span>🚪</span> Logout
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Edit Form + Recent Activity -->
+      <div class="col-span-2 flex flex-col gap-6">
+
+        <!-- Edit Profile Form -->
+        <div class="bg-white rounded-2xl p-8 shadow-sm">
+          <h3 class="font-semibold text-dark mb-6 text-lg">Edit Profile</h3>
+
+          <form method="POST" enctype="multipart/form-data"
+                class="flex flex-col gap-4">
+            {% csrf_token %}
+
+            <!-- Name Row -->
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                  First Name
+                </label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                  <p class="text-red-500 text-xs mt-1">{{ form.first_name.errors.0 }}</p>
+                {% endif %}
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                  Last Name
+                </label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                  <p class="text-red-500 text-xs mt-1">{{ form.last_name.errors.0 }}</p>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Email & Phone -->
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                  Email
+                </label>
+                {{ form.email }}
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                  Phone
+                </label>
+                {{ form.phone }}
+              </div>
+            </div>
+
+            <!-- Location -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                Location
+              </label>
+              {{ form.location }}
+            </div>
+
+            <!-- Bio -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                Bio
+              </label>
+              {{ form.bio }}
+            </div>
+
+            <!-- Profile Photo -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                Profile Photo
+              </label>
+              {% if user.profile_photo %}
+                <div class="flex items-center gap-4 mb-3">
+                  <img src="{{ user.profile_photo.url }}"
+                       class="w-14 h-14 rounded-full object-cover border-2 border-gray-200"/>
+                  <p class="text-xs text-gray-400">Current photo. Upload new to replace.</p>
+                </div>
+              {% endif %}
+              {{ form.profile_photo }}
+            </div>
+
+            <button type="submit"
+                    class="bg-accent text-white py-3.5 rounded-xl font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all mt-2">
+              Save Changes ✅
+            </button>
+          </form>
+        </div>
+
+        <!-- Recent Activity -->
+        {% if user.is_traveller and recent_bookings %}
+          <div class="bg-white rounded-2xl p-8 shadow-sm">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-semibold text-dark text-lg">Recent Bookings</h3>
+              <a href="{% url 'payments:my_bookings' %}"
+                 class="text-accent text-sm font-semibold hover:underline">
+                View all →
+              </a>
+            </div>
+
+            <div class="flex flex-col gap-3">
+              {% for booking in recent_bookings %}
+                <div class="flex items-center gap-4 p-4 bg-cream rounded-xl">
+                  <div class="w-14 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                    {% with booking.booking_property.images.first as img %}
+                      {% if img %}
+                        <img src="{{ img.image.url }}" alt=""
+                             class="w-full h-full object-cover"/>
+                      {% else %}
+                        <div class="w-full h-full bg-primary flex items-center justify-center">
+                          <span class="text-white/40 text-lg">🏠</span>
+                        </div>
+                      {% endif %}
+                    {% endwith %}
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-dark text-sm">
+                      {{ booking.booking_property.name }}
+                    </p>
+                    <p class="text-xs text-gray-400">
+                      {{ booking.check_in|date:"M j" }} – {{ booking.check_out|date:"M j, Y" }}
+                    </p>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-bold text-dark text-sm">${{ booking.grand_total }}</p>
+                    <span class="text-xs
+                      {% if booking.status == 'confirmed' %}text-green-600
+                      {% elif booking.status == 'cancelled' %}text-red-400
+                      {% else %}text-gray-400{% endif %}">
+                      {{ booking.get_status_display }}
+                    </span>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if user.is_owner and recent_properties %}
+          <div class="bg-white rounded-2xl p-8 shadow-sm">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-semibold text-dark text-lg">Recent Listings</h3>
+              <a href="{% url 'properties:owner_dashboard' %}"
+                 class="text-accent text-sm font-semibold hover:underline">
+                View all →
+              </a>
+            </div>
+
+            <div class="flex flex-col gap-3">
+              {% for prop in recent_properties %}
+                <div class="flex items-center gap-4 p-4 bg-cream rounded-xl">
+                  <div class="w-14 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                    {% with prop.images.first as img %}
+                      {% if img %}
+                        <img src="{{ img.image.url }}" alt=""
+                             class="w-full h-full object-cover"/>
+                      {% else %}
+                        <div class="w-full h-full bg-primary flex items-center justify-center">
+                          <span class="text-white/40 text-lg">🏠</span>
+                        </div>
+                      {% endif %}
+                    {% endwith %}
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-dark text-sm">{{ prop.name }}</p>
+                    <p class="text-xs text-gray-400">
+                      📍 {{ prop.city }} · ${{ prop.price_per_night }}/night
+                    </p>
+                  </div>
+                  <span class="text-xs font-bold px-3 py-1 rounded-full
+                    {% if prop.status == 'active' %}bg-green-100 text-green-700
+                    {% elif prop.status == 'pending' %}bg-orange-100 text-orange-700
+                    {% else %}bg-gray-100 text-gray-500{% endif %}">
+                    {{ prop.get_status_display }}
+                  </span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  input[type="text"], input[type="email"],
+  input[type="tel"], textarea, select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #E5E7EB;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  input:focus, textarea:focus, select:focus { border-color: #F97316; }
+  input[type="file"] {
+    width: 100%;
+    font-size: 0.85rem;
+    color: #6B7280;
+  }
+  input[type="file"]::file-selector-button {
+    margin-right: 1rem;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    border: none;
+    background: #F97316;
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+</style>
+{% endblock %}

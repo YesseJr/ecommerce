@@ -16,4 +16,5 @@ urlpatterns = [
     path('dashboard/delete/<slug:slug>/', views.delete_property, name='delete_property'),
     path('dashboard/extras/<slug:slug>/', views.manage_extras, name='manage_extras'),
     path('dashboard/extras/delete/<int:pk>/', views.delete_extra, name='delete_extra'),
+    path('dashboard/bookings/', views.owner_bookings, name='owner_bookings'),
 ]
