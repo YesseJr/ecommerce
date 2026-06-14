@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking Confirmed — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+
+  <!-- Success Banner -->
+  <div class="max-w-2xl mx-auto text-center mb-12">
+    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
+      <span class="text-4xl">✅</span>
+    </div>
+    <h1 class="font-display text-5xl font-bold text-dark mb-2">
+      You're <em class="text-green-500">Booked!</em>
+    </h1>
+    <p class="text-gray-400 text-lg">
+      Your reservation is confirmed. Have an amazing stay!
+    </p>
+  </div>
+
+  <div class="max-w-2xl mx-auto flex flex-col gap-6">
+
+    <!-- Reference Card -->
+    <div class="bg-white rounded-2xl p-8 shadow-sm text-center">
+      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+        Booking Reference
+      </p>
+      <div class="font-bebas text-5xl text-accent tracking-widest mb-2">
+        {{ booking.reference }}
+      </div>
+      <p class="text-gray-400 text-sm">
+        Save this reference number for your records.
+      </p>
+    </div>
+
+    <!-- Booking Details -->
+    <div class="bg-white rounded-2xl p-8 shadow-sm">
+      <h3 class="font-semibold text-dark mb-5 text-lg">Booking Details</h3>
+
+      <div class="flex gap-5 mb-6">
+        <div class="w-28 h-20 rounded-xl overflow-hidden flex-shrink-0">
+          {% with booking.booking_property.images.first as img %}
+            {% if img %}
+              <img src="{{ img.image.url }}" alt=""
+                   class="w-full h-full object-cover"/>
+            {% else %}
+              <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
+                <span class="text-white/30 text-2xl">🏠</span>
+              </div>
+            {% endif %}
+          {% endwith %}
+        </div>
+        <div>
+          <h4 class="font-display text-xl font-bold text-dark">
+            {{ booking.booking_property.name }}
+          </h4>
+          <p class="text-gray-400 text-sm mt-1">
+            📍 {{ booking.booking_property.city }}, {{ booking.booking_property.country }}
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-cream rounded-xl p-4">
+          <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Check-in</p>
+          <p class="font-bold text-dark">{{ booking.check_in|date:"D, M j, Y" }}</p>
+        </div>
+        <div class="bg-cream rounded-xl p-4">
+          <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Check-out</p>
+          <p class="font-bold text-dark">{{ booking.check_out|date:"D, M j, Y" }}</p>
+        </div>
+        <div class="bg-cream rounded-xl p-4">
+          <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Guests</p>
+          <p class="font-bold text-dark">{{ booking.guests }} guest{{ booking.guests|pluralize }}</p>
+        </div>
+        <div class="bg-cream rounded-xl p-4">
+          <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Duration</p>
+          <p class="font-bold text-dark">{{ booking.nights }} night{{ booking.nights|pluralize }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Extras -->
+    {% if booking.extras.all %}
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <h3 class="font-semibold text-dark mb-4 text-lg">Add-ons Included</h3>
+        <div class="flex flex-col gap-3">
+          {% for extra in booking.extras.all %}
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+              <div>
+                <p class="font-medium text-dark text-sm">{{ extra.extra_name }}</p>
+                <p class="text-gray-400 text-xs">{{ extra.charge_type }}</p>
+              </div>
+              <p class="font-semibold text-dark">${{ extra.subtotal }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Payment Summary -->
+    <div class="bg-white rounded-2xl p-8 shadow-sm">
+      <h3 class="font-semibold text-dark mb-4 text-lg">Payment Summary</h3>
+      <div class="flex flex-col gap-3">
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Room total</span>
+          <span class="font-medium">${{ booking.room_total }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Extras total</span>
+          <span class="font-medium">${{ booking.extras_total }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Payment method</span>
+          <span class="font-medium">{{ payment.get_method_display }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Transaction ID</span>
+          <span class="font-medium text-xs text-gray-400">{{ payment.transaction_id }}</span>
+        </div>
+        <div class="flex justify-between pt-3 border-t border-gray-100">
+          <span class="font-bold text-dark">Total Paid</span>
+          <span class="font-bebas text-3xl text-accent">${{ booking.grand_total }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-4">
+      <a href="{% url 'payments:my_bookings' %}"
+         class="flex-1 bg-primary text-white py-4 rounded-2xl font-semibold text-center hover:shadow-lg transition-all">
+        View My Bookings
+      </a>
+      <a href="{% url 'properties:list' %}"
+         class="flex-1 border-2 border-gray-200 text-gray-600 py-4 rounded-2xl font-semibold text-center hover:border-accent hover:text-accent transition-all">
+        Browse More Properties
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

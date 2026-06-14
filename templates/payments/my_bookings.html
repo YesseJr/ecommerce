@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}My Bookings — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+
+  <div class="mb-10">
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Travel History</span>
+    <h1 class="font-display text-5xl font-bold text-dark mt-1">
+      My <em class="text-primary">Bookings</em>
+    </h1>
+  </div>
+
+  {% if bookings %}
+    <div class="flex flex-col gap-5">
+      {% for booking in bookings %}
+        <div class="bg-white rounded-2xl p-6 shadow-sm flex gap-6 items-center">
+
+          <!-- Thumbnail -->
+          <div class="w-32 h-24 rounded-xl overflow-hidden flex-shrink-0">
+            {% with booking.booking_property.images.first as img %}
+              {% if img %}
+                <img src="{{ img.image.url }}" alt=""
+                     class="w-full h-full object-cover"/>
+              {% else %}
+                <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
+                  <span class="text-white/30 text-3xl">🏠</span>
+                </div>
+              {% endif %}
+            {% endwith %}
+          </div>
+
+          <!-- Info -->
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-1">
+              <h3 class="font-display text-xl font-bold text-dark">
+                {{ booking.booking_property.name }}
+              </h3>
+              <span class="text-xs font-bold px-3 py-1 rounded-full
+                {% if booking.status == 'confirmed' %}bg-green-100 text-green-700
+                {% elif booking.status == 'pending' %}bg-orange-100 text-orange-700
+                {% elif booking.status == 'cancelled' %}bg-red-100 text-red-500
+                {% else %}bg-gray-100 text-gray-500{% endif %}">
+                {{ booking.get_status_display }}
+              </span>
+            </div>
+            <p class="text-gray-400 text-sm">
+              📍 {{ booking.booking_property.city }} &nbsp;·&nbsp;
+              {{ booking.check_in|date:"M j" }} → {{ booking.check_out|date:"M j, Y" }} &nbsp;·&nbsp;
+              {{ booking.nights }} night{{ booking.nights|pluralize }} &nbsp;·&nbsp;
+              {{ booking.guests }} guest{{ booking.guests|pluralize }}
+            </p>
+            <p class="text-xs text-gray-400 mt-1">
+              Ref: <span class="font-mono font-semibold text-dark">{{ booking.reference }}</span>
+              &nbsp;·&nbsp; Booked {{ booking.created_at|date:"M j, Y" }}
+            </p>
+          </div>
+
+          <!-- Total + Actions -->
+          <div class="flex flex-col items-end gap-3 flex-shrink-0">
+            <div class="text-right">
+              <span class="font-bebas text-2xl text-dark">${{ booking.grand_total }}</span>
+              <p class="text-xs text-gray-400">total paid</p>
+            </div>
+            <a href="{% url 'payments:confirmation' booking.reference %}"
+               class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 hover:border-accent hover:text-accent transition">
+              View Details
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="text-center py-32 text-gray-400">
+      <div class="text-8xl mb-6">🧳</div>
+      <h3 class="text-2xl font-semibold text-dark mb-2">No bookings yet</h3>
+      <p class="text-sm mb-8">Your travel history will appear here after your first booking.</p>
+      <a href="{% url 'properties:list' %}"
+         class="inline-block bg-accent text-white px-8 py-3.5 rounded-full font-semibold hover:shadow-lg transition">
+        Find a Place to Stay
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

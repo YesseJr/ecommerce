@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+
+  <div class="mb-10">
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Almost There</span>
+    <h1 class="font-display text-5xl font-bold text-dark mt-1">
+      Review & <em class="text-primary">Pay</em>
+    </h1>
+  </div>
+
+  <div class="grid grid-cols-3 gap-8">
+
+    <!-- Left: Payment Form -->
+    <div class="col-span-2 flex flex-col gap-6">
+
+      <!-- Booking Summary -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <h3 class="font-semibold text-dark mb-5 text-lg">Booking Summary</h3>
+
+        <div class="flex gap-5 mb-5">
+          <div class="w-32 h-24 rounded-xl overflow-hidden flex-shrink-0">
+            {% with cart.booking_property.images.first as img %}
+              {% if img %}
+                <img src="{{ img.image.url }}" alt=""
+                     class="w-full h-full object-cover"/>
+              {% else %}
+                <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
+                  <span class="text-white/30 text-3xl">🏠</span>
+                </div>
+              {% endif %}
+            {% endwith %}
+          </div>
+          <div>
+            <h4 class="font-display text-xl font-bold text-dark">
+              {{ cart.booking_property.name }}
+            </h4>
+            <p class="text-gray-400 text-sm mt-1">
+              📍 {{ cart.booking_property.city }}, {{ cart.booking_property.country }}
+            </p>
+            <div class="flex gap-4 mt-2 text-sm text-gray-500">
+              <span>📅 {{ cart.check_in|date:"M j" }} → {{ cart.check_out|date:"M j, Y" }}</span>
+              <span>🌙 {{ cart.nights }} night{{ cart.nights|pluralize }}</span>
+              <span>👥 {{ cart.guests }} guest{{ cart.guests|pluralize }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Extras Selected -->
+        {% if cart.items.all %}
+          <div class="border-t border-gray-100 pt-4">
+            <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
+              Selected Add-ons
+            </p>
+            <div class="flex flex-col gap-2">
+              {% for item in cart.items.all %}
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">
+                    ✅ {{ item.extra.name }}
+                    <span class="text-gray-400">
+                      ({{ item.extra.get_charge_type_display }})
+                    </span>
+                  </span>
+                  <span class="font-medium text-dark">${{ item.extra.price }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Payment Method -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <h3 class="font-semibold text-dark mb-5 text-lg">Payment Method</h3>
+
+        <form method="POST" action="{% url 'payments:process_payment' %}"
+              id="payment-form">
+          {% csrf_token %}
+
+          <div class="flex flex-col gap-3 mb-6">
+
+            <!-- M-Pesa -->
+            <label class="payment-option flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-accent transition-all">
+              <input type="radio" name="payment_method" value="mpesa"
+                     class="hidden" checked/>
+              <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-xl">
+                📱
+              </div>
+              <div class="flex-1">
+                <p class="font-semibold text-dark text-sm">M-Pesa</p>
+                <p class="text-gray-400 text-xs">Pay via mobile money</p>
+              </div>
+              <div class="check-icon w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-accent hidden"></div>
+              </div>
+            </label>
+
+            <!-- Airtel Money -->
+            <label class="payment-option flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-accent transition-all">
+              <input type="radio" name="payment_method" value="airtel"
+                     class="hidden"/>
+              <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-xl">
+                📲
+              </div>
+              <div class="flex-1">
+                <p class="font-semibold text-dark text-sm">Airtel Money</p>
+                <p class="text-gray-400 text-xs">Pay via Airtel mobile money</p>
+              </div>
+              <div class="check-icon w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-accent hidden"></div>
+              </div>
+            </label>
+
+            <!-- Card -->
+            <label class="payment-option flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-accent transition-all">
+              <input type="radio" name="payment_method" value="card"
+                     class="hidden"/>
+              <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-xl">
+                💳
+              </div>
+              <div class="flex-1">
+                <p class="font-semibold text-dark text-sm">Debit / Credit Card</p>
+                <p class="text-gray-400 text-xs">Visa, Mastercard accepted</p>
+              </div>
+              <div class="check-icon w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-accent hidden"></div>
+              </div>
+            </label>
+
+            <!-- Cash -->
+            <label class="payment-option flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-accent transition-all">
+              <input type="radio" name="payment_method" value="cash"
+                     class="hidden"/>
+              <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-xl">
+                💵
+              </div>
+              <div class="flex-1">
+                <p class="font-semibold text-dark text-sm">Cash on Arrival</p>
+                <p class="text-gray-400 text-xs">Pay when you check in</p>
+              </div>
+              <div class="check-icon w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-accent hidden"></div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Simulated notice -->
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+            <p class="text-blue-700 text-sm font-medium">
+              🧪 Demo Mode — No real payment is processed.
+              Clicking confirm will simulate a successful payment.
+            </p>
+          </div>
+
+          <button type="submit"
+                  class="w-full bg-accent text-white py-4 rounded-xl font-bold text-base hover:shadow-xl hover:-translate-y-0.5 transition-all">
+            Confirm & Pay ${{ cart.grand_total }} →
+          </button>
+
+          <p class="text-center text-xs text-gray-400 mt-3">
+            🔒 Your booking is protected · Free cancellation within 24hrs
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right: Price Summary -->
+    <div class="col-span-1">
+      <div class="bg-white rounded-2xl p-6 shadow-lg sticky top-24">
+        <h3 class="font-display text-2xl font-bold text-dark mb-6">Price Breakdown</h3>
+
+        <div class="flex flex-col gap-3 mb-4">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">
+              ${{ cart.booking_property.price_per_night }} × {{ cart.nights }} night{{ cart.nights|pluralize }}
+            </span>
+            <span class="font-semibold">${{ cart.room_total }}</span>
+          </div>
+
+          {% for item in cart.items.all %}
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">{{ item.extra.name }}</span>
+              <span class="font-semibold">${{ item.extra.price }}</span>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="border-t border-gray-100 pt-4">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-dark">Total</span>
+            <span class="font-bebas text-3xl text-accent">${{ cart.grand_total }}</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1 text-right">All taxes included</p>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-gray-100">
+          <div class="flex items-center gap-2 text-xs text-gray-400 mb-2">
+            <span>📅</span>
+            <span>Check-in: <strong class="text-dark">{{ cart.check_in|date:"D, M j, Y" }}</strong></span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-gray-400">
+            <span>📅</span>
+            <span>Check-out: <strong class="text-dark">{{ cart.check_out|date:"D, M j, Y" }}</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Payment option selection UI
+  document.querySelectorAll('.payment-option').forEach(option => {
+    option.addEventListener('click', () => {
+      // Reset all
+      document.querySelectorAll('.payment-option').forEach(o => {
+        o.classList.remove('border-accent', 'bg-orange-50')
+        o.classList.add('border-gray-200')
+        o.querySelector('.check-icon div').classList.add('hidden')
+      })
+      // Activate selected
+      option.classList.add('border-accent', 'bg-orange-50')
+      option.classList.remove('border-gray-200')
+      option.querySelector('input').checked = true
+      option.querySelector('.check-icon div').classList.remove('hidden')
+    })
+  })
+
+  // Activate first by default
+  document.querySelector('.payment-option').click()
+</script>
+{% endblock %}

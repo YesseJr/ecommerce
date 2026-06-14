@@ -75,16 +75,30 @@ def property_list(request):
 
 
 def property_detail(request, slug):
-    prop = get_object_or_404(Property, slug=slug, status='active')
-    extras = prop.extras.filter(is_available=True)
-    images = prop.images.all()
+    # Owners can preview their own pending properties
+    # Everyone else only sees active ones
+    if request.user.is_authenticated and request.user.is_owner:
+        prop = get_object_or_404(
+            Property,
+            slug=slug,
+            owner=request.user
+        )
+    else:
+        prop = get_object_or_404(
+            Property,
+            slug=slug,
+            status='active'
+        )
+
+    extras  = prop.extras.filter(is_available=True)
+    images  = prop.images.all()
     reviews = prop.reviews.all().order_by('-created_at')[:5]
 
     return render(request, 'properties/detail.html', {
         'property': prop,
-        'extras': extras,
-        'images': images,
-        'reviews': reviews,
+        'extras':   extras,
+        'images':   images,
+        'reviews':  reviews,
         'today':    date.today().isoformat(),
     })
 

@@ -16,9 +16,9 @@ class Cart(models.Model):
         null=True,
         blank=True
     )
-    check_in = models.DateField(null=True, blank=True)
+    check_in  = models.DateField(null=True, blank=True)
     check_out = models.DateField(null=True, blank=True)
-    guests = models.PositiveIntegerField(default=1)
+    guests    = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -33,8 +33,8 @@ class Cart(models.Model):
 
     @property
     def room_total(self):
-        if self.property and self.nights > 0:
-            return self.property.price_per_night * self.nights
+        if self.booking_property and self.nights > 0:
+            return self.booking_property.price_per_night * self.nights
         return 0
 
     @property
@@ -67,7 +67,6 @@ class CartItem(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        # Prevent duplicate extras in same cart
         unique_together = ['cart', 'extra']
 
     def __str__(self):
@@ -83,7 +82,6 @@ class Booking(models.Model):
         ('completed', 'Completed'),
     ]
 
-    # Who and what
     traveller = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -95,19 +93,16 @@ class Booking(models.Model):
         related_name='bookings'
     )
 
-    # Dates
-    check_in = models.DateField()
+    check_in  = models.DateField()
     check_out = models.DateField()
-    guests = models.PositiveIntegerField(default=1)
+    guests    = models.PositiveIntegerField(default=1)
 
-    # Pricing snapshot
-    # (we snapshot prices at booking time so future
-    # price changes don't affect past bookings)
+    # Pricing snapshot at booking time
     price_per_night = models.DecimalField(max_digits=10, decimal_places=2)
-    nights = models.PositiveIntegerField()
-    room_total = models.DecimalField(max_digits=10, decimal_places=2)
-    extras_total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    grand_total = models.DecimalField(max_digits=10, decimal_places=2)
+    nights          = models.PositiveIntegerField()
+    room_total      = models.DecimalField(max_digits=10, decimal_places=2)
+    extras_total    = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    grand_total     = models.DecimalField(max_digits=10, decimal_places=2)
 
     status = models.CharField(
         max_length=20,
@@ -115,9 +110,7 @@ class Booking(models.Model):
         default='pending'
     )
 
-    # Booking reference
-    reference = models.CharField(max_length=20, unique=True, blank=True)
-
+    reference  = models.CharField(max_length=20, unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -134,10 +127,10 @@ class BookingExtra(models.Model):
         on_delete=models.CASCADE,
         related_name='extras'
     )
-    extra_name = models.CharField(max_length=100)
+    extra_name  = models.CharField(max_length=100)
     extra_price = models.DecimalField(max_digits=8, decimal_places=2)
     charge_type = models.CharField(max_length=20)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    subtotal    = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f"{self.extra_name} for Booking {self.booking.reference}"

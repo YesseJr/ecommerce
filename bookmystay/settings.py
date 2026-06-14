@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -131,3 +132,108 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+JAZZMIN_SETTINGS = {
+    # ─── BRANDING ───────────────────────────────────────
+    "site_title":        "BookMyStay Admin",
+    "site_header":       "BookMyStay",
+    "site_brand":        "BookMyStay",
+    "welcome_sign":      "Welcome to BookMyStay Admin Panel",
+    "copyright":         "BookMyStay Tanzania © 2025",
+
+    # ─── ICONS ──────────────────────────────────────────
+    "site_icon": None,
+    "site_logo": None,
+
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index"},
+        {"name": "View Site", "url": "/", "new_window": True},
+        {"name": "Properties", "url": "/properties/", "new_window": True},
+    ],
+
+    # ─── USER MENU ──────────────────────────────────────
+    "usermenu_links": [
+        {"name": "View Site", "url": "/", "new_window": True},
+    ],
+
+    # ─── SIDEBAR ────────────────────────────────────────
+    "show_sidebar":          True,
+    "navigation_expanded":   True,
+    "hide_apps":             [],
+    "hide_models":           [],
+
+    "order_with_respect_to": [
+        "users",
+        "properties",
+        "bookings",
+        "payments",
+        "reviews",
+    ],
+
+    # ─── MODEL ICONS ────────────────────────────────────
+    "icons": {
+        "auth":                     "fas fa-users-cog",
+        "users.user":               "fas fa-user",
+        "properties.property":      "fas fa-building",
+        "properties.propertyimage": "fas fa-image",
+        "properties.propertyextra": "fas fa-concierge-bell",
+        "properties.amenity":       "fas fa-wifi",
+        "properties.propertyamenity": "fas fa-check-circle",
+        "bookings.cart":            "fas fa-shopping-cart",
+        "bookings.cartitem":        "fas fa-plus-circle",
+        "bookings.booking":         "fas fa-calendar-check",
+        "bookings.bookingextra":    "fas fa-receipt",
+        "payments.payment":         "fas fa-credit-card",
+        "reviews.review":           "fas fa-star",
+    },
+
+    "default_icon_parents":  "fas fa-folder",
+    "default_icon_children": "fas fa-circle",
+
+    # ─── RELATED MODAL ──────────────────────────────────
+    "related_modal_active": True,
+
+    # ─── UI TWEAKS ──────────────────────────────────────
+    "custom_css": None,
+    "custom_js":  None,
+    "use_google_fonts_cdn": True,
+    "show_ui_builder":      False,
+    "changeform_format":    "horizontal_tabs",
+
+    "changeform_format_overrides": {
+        "auth.user":  "collapsible",
+        "auth.group": "vertical_tabs",
+    },
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text":      False,
+    "footer_small_text":      False,
+    "body_small_text":        False,
+    "brand_small_text":       False,
+    "brand_colour":           "navbar-dark",
+    "accent":                 "accent-orange",
+    "navbar":                 "navbar-dark",
+    "no_navbar_border":       True,
+    "navbar_fixed":           True,
+    "layout_boxed":           False,
+    "footer_fixed":           False,
+    "sidebar_fixed":          True,
+    "sidebar":                "sidebar-dark-orange",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style":  False,
+    "sidebar_nav_flat_style":    False,
+    "theme":                  "flatly",
+    "dark_mode_theme":        "darkly",
+    "button_classes": {
+        "primary":   "btn-primary",
+        "secondary": "btn-secondary",
+        "info":      "btn-info",
+        "warning":   "btn-warning",
+        "danger":    "btn-danger",
+        "success":   "btn-success",
+    },
+}

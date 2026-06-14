@@ -60,6 +60,16 @@
           Get Started
         </a>
       {% endif %}
+      {% if user.is_authenticated and user.is_traveller %}
+  <a href="{% url 'bookings:cart' %}"
+     class="text-white/80 hover:text-accent text-sm font-medium transition">
+    🛒 Cart
+  </a>
+  <a href="{% url 'payments:my_bookings' %}"
+     class="text-white/80 hover:text-accent text-sm font-medium transition">
+    My Bookings
+  </a>
+{% endif %}
     </div>
   </nav>
 
