@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Create Account — TravelSphere{% endblock %}
+{% block title %}Create Account — BookMyStay{% endblock %}
 
 {% block content %}
 <div class="min-h-screen flex items-center justify-center py-20 px-4"
@@ -11,7 +11,7 @@
     <!-- Header -->
     <div class="text-center mb-8">
       <h1 class="font-display text-4xl font-bold text-dark mb-2">
-        Join Our Community!
+        Join BookMyStay!
       </h1>
       <p class="text-gray-500 text-sm">
         Already have an account?
@@ -41,17 +41,22 @@
             </label>
           {% endfor %}
         </div>
+        {% if form.role.errors %}
+          <p class="text-red-500 text-xs mt-1">{{ form.role.errors.0 }}</p>
+        {% endif %}
       </div>
 
-      <!-- Name Row -->
+      <!-- First & Last Name -->
       <div class="grid grid-cols-2 gap-3">
         <div>
+          <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">First Name</label>
           {{ form.first_name }}
           {% if form.first_name.errors %}
             <p class="text-red-500 text-xs mt-1">{{ form.first_name.errors.0 }}</p>
           {% endif %}
         </div>
         <div>
+          <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Last Name</label>
           {{ form.last_name }}
           {% if form.last_name.errors %}
             <p class="text-red-500 text-xs mt-1">{{ form.last_name.errors.0 }}</p>
@@ -59,17 +64,59 @@
         </div>
       </div>
 
-      <!-- Other Fields -->
-      {% for field in form %}
-        {% if field.name not in 'first_name,last_name,role' %}
-          <div>
-            {{ field }}
-            {% if field.errors %}
-              <p class="text-red-500 text-xs mt-1">{{ field.errors.0 }}</p>
-            {% endif %}
-          </div>
+      <!-- Username -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Username</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <p class="text-red-500 text-xs mt-1">{{ form.username.errors.0 }}</p>
         {% endif %}
-      {% endfor %}
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Email Address</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <p class="text-red-500 text-xs mt-1">{{ form.email.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Phone -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Phone (optional)</label>
+        {{ form.phone }}
+        {% if form.phone.errors %}
+          <p class="text-red-500 text-xs mt-1">{{ form.phone.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Password</label>
+        {{ form.password1 }}
+        {% if form.password1.errors %}
+          <p class="text-red-500 text-xs mt-1">{{ form.password1.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Confirm Password -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Confirm Password</label>
+        {{ form.password2 }}
+        {% if form.password2.errors %}
+          <p class="text-red-500 text-xs mt-1">{{ form.password2.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Non-field errors -->
+      {% if form.non_field_errors %}
+        <div class="bg-red-50 border border-red-200 rounded-xl p-3">
+          {% for error in form.non_field_errors %}
+            <p class="text-red-500 text-xs">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
 
       <button type="submit"
         class="w-full bg-accent text-white py-3.5 rounded-2xl font-semibold text-base hover:shadow-xl hover:-translate-y-0.5 transition-all mt-2">
@@ -93,9 +140,43 @@
   }
   input:focus { border-color: #F97316; }
   input[type="radio"] { display: none; }
-  .role-option:has(input:checked) {
+  .role-option.selected {
     border-color: #F97316;
     background: #FFF7ED;
   }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const radios   = document.querySelectorAll('input[type="radio"][name="role"]')
+    const options  = document.querySelectorAll('.role-option')
+
+    // Highlight whichever card matches a checked radio
+    function syncHighlight() {
+      radios.forEach((radio, i) => {
+        if (radio.checked) {
+          options[i].classList.add('selected')
+        } else {
+          options[i].classList.remove('selected')
+        }
+      })
+    }
+
+    // Auto-select first option (Traveller) on load
+    if (radios.length > 0 && !Array.from(radios).some(r => r.checked)) {
+      radios[0].checked = true
+    }
+    syncHighlight()
+
+    // When a card is clicked — check its radio and re-highlight
+    options.forEach((option, i) => {
+      option.addEventListener('click', () => {
+        radios[i].checked = true
+        syncHighlight()
+      })
+    })
+  })
+</script>
 {% endblock %}

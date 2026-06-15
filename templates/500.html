@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-cream flex items-center justify-center px-16">
+  <div class="text-center max-w-lg">
+
+    <div class="font-bebas text-[10rem] leading-none text-red-100 mb-0">
+      500
+    </div>
+
+    <h1 class="font-display text-5xl font-bold text-dark -mt-6 mb-4">
+      Something Went <em class="text-red-400">Wrong</em>
+    </h1>
+
+    <p class="text-gray-400 text-lg mb-10 leading-relaxed">
+      Our servers hit a bump. We're on it.
+      Please try again in a moment.
+    </p>
+
+    <a href="{% url 'properties:home' %}"
+       class="inline-block bg-accent text-white px-8 py-3.5 rounded-full font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all">
+      Back to Home
+    </a>
+  </div>
+</div>
+{% endblock %}
