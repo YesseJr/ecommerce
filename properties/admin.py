@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.contrib import messages
 from .models import Property, PropertyImage, Amenity, PropertyAmenity, PropertyExtra
 
@@ -42,13 +43,10 @@ class PropertyAdmin(admin.ModelAdmin):
     search_fields     = ['name', 'city', 'owner__username']
     prepopulated_fields = {'slug': ('name',)}
     inlines           = [PropertyImageInline, PropertyExtraInline, PropertyAmenityInline]
-
-    # ✅ Status now editable directly from the list
     list_editable     = ['is_available']
     ordering          = ['-created_at']
     readonly_fields   = ['created_at', 'updated_at', 'average_rating_display']
 
-    # ✅ Bulk actions for approving/rejecting properties
     actions = [
         'approve_properties',
         'reject_properties',
@@ -110,7 +108,8 @@ class PropertyAdmin(admin.ModelAdmin):
                 'object-fit:cover; border-radius:8px;"/>',
                 img.image.url
             )
-        return format_html('<span style="color:#ccc;">No image</span>')
+        # ✅ Fixed: use mark_safe for static strings with no placeholders
+        return mark_safe('<span style="color:#ccc;">No image</span>')
     property_thumbnail.short_description = ''
 
     def status_badge(self, obj):
@@ -136,6 +135,7 @@ class PropertyAdmin(admin.ModelAdmin):
                 rating,
                 obj.total_reviews()
             )
+        # ✅ Fixed: plain string, no HTML needed, no format_html call needed
         return "No reviews yet"
     average_rating_display.short_description = 'Rating'
 
@@ -153,6 +153,7 @@ class PropertyImageAdmin(admin.ModelAdmin):
                 'object-fit:cover; border-radius:6px;"/>',
                 obj.image.url
             )
+        # ✅ Fixed: plain string instead of format_html with no args
         return "—"
     image_preview.short_description = ''
 

@@ -202,21 +202,35 @@ def edit_property(request, slug):
     prop = get_object_or_404(Property, slug=slug, owner=request.user)
 
     if request.method == 'POST':
+
+        # ── Photo-only upload (comes from the separate "Add More Photos" form)
+        # Detected by the absence of the 'name' field which the main form always sends
+        if 'name' not in request.POST:
+            images = request.FILES.getlist('images')
+            for image in images:
+                PropertyImage.objects.create(property=prop, image=image, is_primary=False)
+            messages.success(request, "Photos uploaded successfully! 📸")
+            return redirect('properties:edit_property', slug=prop.slug)
+
+        # ── Main property edit form
         form = PropertyForm(request.POST, request.FILES, instance=prop)
         if form.is_valid():
-            form.save()
+            prop = form.save(commit=False)
 
-            # Handle new image uploads
-            images = request.FILES.getlist('images')
-            for i, image in enumerate(images):
-                PropertyImage.objects.create(
-                    property=prop,
-                    image=image,
-                    is_primary=False
-                )
+            # FIX #1: Regenerate slug if name changed
+            new_slug = slugify(prop.name)
+            if new_slug != prop.slug:
+                base_slug = new_slug
+                counter = 1
+                while Property.objects.filter(slug=new_slug).exclude(pk=prop.pk).exists():
+                    new_slug = f"{base_slug}-{counter}"
+                    counter += 1
+                prop.slug = new_slug
 
+            prop.save()
             messages.success(request, "Property updated successfully! ✅")
-            return redirect('properties:owner_dashboard')
+            return redirect('properties:edit_property', slug=prop.slug)
+
     else:
         form = PropertyForm(instance=prop)
 

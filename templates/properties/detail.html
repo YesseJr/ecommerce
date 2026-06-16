@@ -310,7 +310,7 @@
 
 {% block extra_js %}
 <script>
-   // eslint-disable-next-line
+   //eslint-disable-next-line
   const unavailableRanges = {{ unavailable_dates_json|default:"[]"|safe }};
 
   function rangesOverlap(checkIn, checkOut, bookedIn, bookedOut) {
