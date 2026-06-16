@@ -39,6 +39,10 @@ def checkout(request):
     return render(request, 'payments/checkout.html', {'cart': cart})
 
 
+# ─── REPLACE process_payment() in payments/views.py ───
+# Only the top section changes — add the availability re-check
+# right after fetching the cart, before generating the reference.
+
 @login_required
 def process_payment(request):
     if not request.user.is_traveller:
@@ -53,6 +57,22 @@ def process_payment(request):
         messages.error(request, "Your cart is empty.")
         return redirect('properties:home')
 
+    if not cart.booking_property or not cart.check_in or not cart.check_out:
+        messages.error(request, "Please select a property and dates first.")
+        return redirect('bookings:cart')
+
+    # ✅ NEW: Final safety check — someone else may have booked
+    # these exact dates while this traveller was at checkout.
+    from properties.models import check_property_availability
+
+    if not check_property_availability(cart.booking_property, cart.check_in, cart.check_out):
+        messages.error(
+            request,
+            f"😔 Sorry, '{cart.booking_property.name}' was just booked for "
+            f"those dates by someone else. Please choose different dates."
+        )
+        return redirect('properties:detail', slug=cart.booking_property.slug)
+
     payment_method = request.POST.get('payment_method', 'mpesa')
 
     # Simulate payment processing
@@ -60,8 +80,6 @@ def process_payment(request):
     payment_success = True  # Always succeeds in our simulation
 
     if payment_success:
-
-        # Generate unique reference
         reference = generate_reference()
         while Booking.objects.filter(reference=reference).exists():
             reference = generate_reference()

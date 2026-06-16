@@ -90,25 +90,64 @@
         </div>
       </div>
 
-      <!-- Add More Images -->
+      <!-- Manage Existing Images -->
       <div class="bg-white rounded-2xl p-8 shadow-sm">
-        <h3 class="font-semibold text-dark mb-2 text-lg">Add More Photos</h3>
-        <p class="text-gray-400 text-sm mb-4">Existing photos are kept. Upload more if needed.</p>
+        <h3 class="font-semibold text-dark mb-2 text-lg">Manage Photos</h3>
+        <p class="text-gray-400 text-sm mb-5">
+          Set a cover photo or remove images you no longer want.
+        </p>
 
-        <!-- Current Images Preview -->
         {% with property.images.all as imgs %}
           {% if imgs %}
-            <div class="flex gap-3 flex-wrap mb-4">
+            <div class="grid grid-cols-4 gap-4 mb-6">
               {% for img in imgs %}
-                <img src="{{ img.image.url }}" alt=""
-                     class="w-24 h-16 object-cover rounded-lg border-2 {% if img.is_primary %}border-accent{% else %}border-gray-200{% endif %}"/>
+                <div class="relative group rounded-xl overflow-hidden border-2
+                  {% if img.is_primary %}border-accent{% else %}border-gray-200{% endif %}">
+
+                  <img src="{{ img.image.url }}" alt=""
+                       class="w-full h-28 object-cover"/>
+
+                  {% if img.is_primary %}
+                    <span class="absolute top-2 left-2 bg-accent text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                      Cover
+                    </span>
+                  {% endif %}
+
+                  <!-- Hover overlay with actions -->
+                  <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                    {% if not img.is_primary %}
+                      <form method="POST" action="{% url 'properties:set_primary_image' img.pk %}">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="text-xs font-semibold bg-white text-dark px-3 py-1.5 rounded-full hover:bg-accent hover:text-white transition w-full">
+                          ⭐ Set as Cover
+                        </button>
+                      </form>
+                    {% endif %}
+                    <form method="POST" action="{% url 'properties:delete_image' img.pk %}"
+                          onsubmit="return confirm('Remove this photo?')">
+                      {% csrf_token %}
+                      <button type="submit"
+                              class="text-xs font-semibold bg-white text-red-500 px-3 py-1.5 rounded-full hover:bg-red-500 hover:text-white transition w-full">
+                        🗑 Remove
+                      </button>
+                    </form>
+                  </div>
+                </div>
               {% endfor %}
             </div>
+          {% else %}
+            <p class="text-gray-400 text-sm mb-5">No photos uploaded yet.</p>
           {% endif %}
         {% endwith %}
 
-        <input type="file" name="images" multiple accept="image/*"
-               class="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-white hover:file:bg-orange-600 cursor-pointer"/>
+        <div class="border-t border-gray-100 pt-5">
+          <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
+            Add More Photos
+          </p>
+          <input type="file" name="images" multiple accept="image/*"
+                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-white hover:file:bg-orange-600 cursor-pointer"/>
+        </div>
       </div>
 
       <div class="flex gap-4">

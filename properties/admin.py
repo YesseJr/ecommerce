@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from django.contrib import messages
 from .models import Property, PropertyImage, Amenity, PropertyAmenity, PropertyExtra
 
 
@@ -41,9 +42,18 @@ class PropertyAdmin(admin.ModelAdmin):
     search_fields     = ['name', 'city', 'owner__username']
     prepopulated_fields = {'slug': ('name',)}
     inlines           = [PropertyImageInline, PropertyExtraInline, PropertyAmenityInline]
+
+    # ✅ Status now editable directly from the list
     list_editable     = ['is_available']
     ordering          = ['-created_at']
     readonly_fields   = ['created_at', 'updated_at', 'average_rating_display']
+
+    # ✅ Bulk actions for approving/rejecting properties
+    actions = [
+        'approve_properties',
+        'reject_properties',
+        'mark_inactive',
+    ]
 
     fieldsets = (
         ('Basic Info', {
@@ -61,11 +71,43 @@ class PropertyAdmin(admin.ModelAdmin):
         }),
     )
 
+    # ─── BULK ACTIONS ───────────────────────────────────
+
+    @admin.action(description='✅ Approve selected properties')
+    def approve_properties(self, request, queryset):
+        updated = queryset.update(status='active')
+        self.message_user(
+            request,
+            f'{updated} propert{"y" if updated == 1 else "ies"} approved and set to Active.',
+            messages.SUCCESS
+        )
+
+    @admin.action(description='❌ Reject selected properties')
+    def reject_properties(self, request, queryset):
+        updated = queryset.update(status='inactive')
+        self.message_user(
+            request,
+            f'{updated} propert{"y" if updated == 1 else "ies"} rejected and set to Inactive.',
+            messages.WARNING
+        )
+
+    @admin.action(description='⏸ Mark selected properties as Inactive')
+    def mark_inactive(self, request, queryset):
+        updated = queryset.update(status='inactive', is_available=False)
+        self.message_user(
+            request,
+            f'{updated} propert{"y" if updated == 1 else "ies"} marked as Inactive.',
+            messages.WARNING
+        )
+
+    # ─── CUSTOM DISPLAY METHODS ─────────────────────────
+
     def property_thumbnail(self, obj):
         img = obj.images.filter(is_primary=True).first() or obj.images.first()
         if img:
             return format_html(
-                '<img src="{}" style="height:45px; width:65px; object-fit:cover; border-radius:8px;"/>',
+                '<img src="{}" style="height:45px; width:65px; '
+                'object-fit:cover; border-radius:8px;"/>',
                 img.image.url
             )
         return format_html('<span style="color:#ccc;">No image</span>')
@@ -73,15 +115,15 @@ class PropertyAdmin(admin.ModelAdmin):
 
     def status_badge(self, obj):
         colors = {
-            'active':   '#22c55e',
-            'pending':  '#f97316',
-            'inactive': '#9ca3af',
+            'active':   ('#dcfce7', '#15803d'),
+            'pending':  ('#fff7ed', '#c2410c'),
+            'inactive': ('#f3f4f6', '#6b7280'),
         }
-        color = colors.get(obj.status, '#9ca3af')
+        bg, text = colors.get(obj.status, ('#f3f4f6', '#6b7280'))
         return format_html(
-            '<span style="background:{}; color:white; padding:3px 10px; '
-            'border-radius:999px; font-size:11px; font-weight:600;">{}</span>',
-            color,
+            '<span style="background:{}; color:{}; padding:4px 12px; '
+            'border-radius:999px; font-size:11px; font-weight:700;">{}</span>',
+            bg, text,
             obj.get_status_display()
         )
     status_badge.short_description = 'Status'
@@ -100,8 +142,19 @@ class PropertyAdmin(admin.ModelAdmin):
 
 @admin.register(PropertyImage)
 class PropertyImageAdmin(admin.ModelAdmin):
-    list_display  = ['property', 'is_primary', 'caption', 'uploaded_at']
+    list_display  = ['image_preview', 'property', 'is_primary', 'caption', 'uploaded_at']
     list_filter   = ['is_primary']
+    search_fields = ['property__name']
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" style="height:40px; width:60px; '
+                'object-fit:cover; border-radius:6px;"/>',
+                obj.image.url
+            )
+        return "—"
+    image_preview.short_description = ''
 
 
 @admin.register(Amenity)
@@ -112,6 +165,17 @@ class AmenityAdmin(admin.ModelAdmin):
 
 @admin.register(PropertyExtra)
 class PropertyExtraAdmin(admin.ModelAdmin):
-    list_display  = ['name', 'property', 'price', 'charge_type', 'is_available']
+    list_display  = [
+        'name', 'property', 'price_display',
+        'charge_type', 'is_available'
+    ]
     list_filter   = ['charge_type', 'is_available']
+    list_editable = ['is_available']
     search_fields = ['name', 'property__name']
+
+    def price_display(self, obj):
+        return format_html(
+            '<strong style="color:#f97316;">${}</strong>',
+            obj.price
+        )
+    price_display.short_description = 'Price'

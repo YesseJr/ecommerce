@@ -17,4 +17,6 @@ urlpatterns = [
     path('dashboard/extras/<slug:slug>/', views.manage_extras, name='manage_extras'),
     path('dashboard/extras/delete/<int:pk>/', views.delete_extra, name='delete_extra'),
     path('dashboard/bookings/', views.owner_bookings, name='owner_bookings'),
+    path('dashboard/images/delete/<int:pk>/', views.delete_image, name='delete_image'),
+    path('dashboard/images/set-primary/<int:pk>/', views.set_primary_image, name='set_primary_image'),
 ]

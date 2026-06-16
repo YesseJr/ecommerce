@@ -5,24 +5,47 @@
 {% block content %}
 <div class="pb-20 bg-cream min-h-screen">
 
-  <!-- Image Gallery -->
-  <div class="relative h-[500px] overflow-hidden">
-    {% with property.images.first as primary %}
-      {% if primary %}
-        <img src="{{ primary.image.url }}" alt="{{ property.name }}"
-             class="w-full h-full object-cover"/>
-      {% else %}
-        <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
-          <span class="text-white/20 text-9xl">🏠</span>
-        </div>
-      {% endif %}
-    {% endwith %}
-    <div class="absolute inset-0"
+  <!-- ─── IMAGE GALLERY / SLIDER ─── -->
+  <div class="relative h-[500px] overflow-hidden bg-dark" id="gallery">
+
+    {% if images %}
+      {% for img in images %}
+        <img src="{{ img.image.url }}" alt="{{ property.name }}"
+             class="gallery-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-500
+               {% if forloop.first %}opacity-100{% else %}opacity-0 pointer-events-none{% endif %}"
+             data-index="{{ forloop.counter0 }}"/>
+      {% endfor %}
+    {% else %}
+      <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
+        <span class="text-white/20 text-9xl">🏠</span>
+      </div>
+    {% endif %}
+
+    <!-- Gradient overlay -->
+    <div class="absolute inset-0 pointer-events-none"
          style="background: linear-gradient(to top, rgba(17,17,24,0.6) 0%, transparent 50%)">
     </div>
 
+    <!-- Prev / Next arrows -->
+    <!-- FIX #6: Use images_count (passed from view) instead of images.count to avoid double DB query -->
+    {% if images_count > 1 %}
+      <button type="button" id="gallery-prev"
+              class="absolute left-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-xl font-bold text-dark shadow-lg transition z-10">
+        ‹
+      </button>
+      <button type="button" id="gallery-next"
+              class="absolute right-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-xl font-bold text-dark shadow-lg transition z-10">
+        ›
+      </button>
+
+      <!-- Counter -->
+      <div class="absolute top-5 right-5 bg-black/50 text-white text-xs font-semibold px-3 py-1.5 rounded-full z-10">
+        <span id="gallery-current">1</span> / {{ images_count }}
+      </div>
+    {% endif %}
+
     <!-- Overlay Info -->
-    <div class="absolute bottom-0 left-0 right-0 px-16 pb-10">
+    <div class="absolute bottom-0 left-0 right-0 px-16 pb-10 z-10">
       <div class="flex justify-between items-end">
         <div>
           <span class="bg-accent text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">
@@ -42,12 +65,15 @@
     </div>
   </div>
 
-  <!-- Thumbnail Strip -->
-  {% if images.count > 1 %}
+  <!-- Thumbnail Strip — clickable to jump to a slide -->
+  <!-- FIX #6: Use images_count instead of images.count -->
+  {% if images_count > 1 %}
     <div class="flex gap-2 px-16 py-4 bg-white overflow-x-auto">
       {% for img in images %}
         <img src="{{ img.image.url }}" alt=""
-             class="h-20 w-32 object-cover rounded-xl flex-shrink-0 hover:opacity-80 transition cursor-pointer"/>
+             data-index="{{ forloop.counter0 }}"
+             class="gallery-thumb h-20 w-32 object-cover rounded-xl flex-shrink-0 cursor-pointer transition
+               {% if forloop.first %}thumb-active opacity-100{% else %}opacity-60 hover:opacity-100{% endif %}"/>
       {% endfor %}
     </div>
   {% endif %}
@@ -132,8 +158,6 @@
           <div class="flex flex-col gap-5">
             {% for review in reviews %}
               <div class="border-b border-gray-100 pb-5 last:border-0">
-
-                <!-- Reviewer Info + Rating -->
                 <div class="flex justify-between items-start mb-2">
                   <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
@@ -147,12 +171,12 @@
                     </div>
                   </div>
                   <div class="flex items-center gap-2">
+                    <!-- FIX #4: Use rating_range (list of 1..5) passed from view for proper integer comparison -->
                     <div class="flex gap-0.5">
-                      {% for i in "12345" %}
-                        <span class="text-lg {% if forloop.counter <= review.rating %}text-gold{% else %}text-gray-200{% endif %}">★</span>
+                      {% for i in rating_range %}
+                        <span class="text-lg {% if i <= review.rating %}text-gold{% else %}text-gray-200{% endif %}">★</span>
                       {% endfor %}
                     </div>
-                    <!-- Delete button — only visible to review author -->
                     {% if user == review.traveller %}
                       <form method="POST" action="{% url 'reviews:delete_review' review.pk %}"
                             onsubmit="return confirm('Delete this review?')">
@@ -165,27 +189,16 @@
                     {% endif %}
                   </div>
                 </div>
-
-                <!-- Review Content -->
                 <p class="font-semibold text-dark text-sm mb-1">{{ review.title }}</p>
                 <p class="text-gray-500 text-sm leading-relaxed mb-3">{{ review.comment }}</p>
-
-                <!-- Sub Ratings -->
                 <div class="flex gap-4">
-                  <span class="text-xs bg-cream text-gray-500 px-3 py-1 rounded-full">
-                    🧹 Cleanliness: {{ review.cleanliness }}/5
-                  </span>
-                  <span class="text-xs bg-cream text-gray-500 px-3 py-1 rounded-full">
-                    📍 Location: {{ review.location }}/5
-                  </span>
-                  <span class="text-xs bg-cream text-gray-500 px-3 py-1 rounded-full">
-                    💰 Value: {{ review.value }}/5
-                  </span>
+                  <span class="text-xs bg-cream text-gray-500 px-3 py-1 rounded-full">🧹 Cleanliness: {{ review.cleanliness }}/5</span>
+                  <span class="text-xs bg-cream text-gray-500 px-3 py-1 rounded-full">📍 Location: {{ review.location }}/5</span>
+                  <span class="text-xs bg-cream text-gray-500 px-3 py-1 rounded-full">💰 Value: {{ review.value }}/5</span>
                 </div>
               </div>
             {% endfor %}
           </div>
-
         {% else %}
           <div class="text-center py-10 text-gray-400">
             <div class="text-5xl mb-3">💬</div>
@@ -210,53 +223,36 @@
             <form method="POST" action="{% url 'bookings:add_to_cart' property.slug %}"
                   class="flex flex-col gap-4">
               {% csrf_token %}
-
               <div class="border-2 border-gray-200 rounded-xl overflow-hidden">
                 <div class="flex border-b border-gray-200">
                   <div class="flex-1 p-3 border-r border-gray-200">
-                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
-                      Check-in
-                    </label>
-                    <input type="date" name="check_in" required
-                           min="{{ today }}"
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Check-in</label>
+                    <input type="date" name="check_in" required min="{{ today }}"
                            class="w-full outline-none text-sm font-medium text-dark"/>
                   </div>
                   <div class="flex-1 p-3">
-                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
-                      Check-out
-                    </label>
-                    <input type="date" name="check_out" required
-                           min="{{ today }}"
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Check-out</label>
+                    <!-- FIX #5: min is set dynamically via JS when check_in changes -->
+                    <input type="date" name="check_out" required min="{{ today }}"
                            class="w-full outline-none text-sm font-medium text-dark"/>
                   </div>
                 </div>
                 <div class="p-3">
-                  <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
-                    Guests
-                  </label>
-                  <select name="guests"
-                          class="w-full outline-none text-sm font-medium text-dark bg-transparent">
-                    {% for i in "123456789" %}
-                      {% if forloop.counter <= property.max_guests %}
-                        <option value="{{ forloop.counter }}">
-                          {{ forloop.counter }} guest{{ forloop.counter|pluralize }}
-                        </option>
-                      {% endif %}
+                  <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Guests</label>
+                  <!-- FIX #3: Use guest_range from view instead of iterating over a string -->
+                  <select name="guests" class="w-full outline-none text-sm font-medium text-dark bg-transparent">
+                    {% for i in guest_range %}
+                      <option value="{{ i }}">{{ i }} guest{{ i|pluralize }}</option>
                     {% endfor %}
                   </select>
                 </div>
               </div>
-
               <button type="submit"
                       class="w-full bg-accent text-white py-3.5 rounded-xl font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all">
                 Reserve → Add to Cart
               </button>
-
-              <p class="text-center text-xs text-gray-400">
-                You won't be charged yet
-              </p>
+              <p class="text-center text-xs text-gray-400">You won't be charged yet</p>
             </form>
-
           {% else %}
             <div class="text-center py-6 text-gray-400">
               <div class="text-4xl mb-3">😔</div>
@@ -264,19 +260,15 @@
               <p class="text-sm mt-1">This property is currently unavailable.</p>
             </div>
           {% endif %}
-
         {% elif user.is_authenticated and user.is_owner %}
           <div class="text-center py-6 text-gray-400">
             <div class="text-3xl mb-3">🏠</div>
             <p class="text-sm">Property owners cannot make bookings.</p>
-            <p class="text-xs mt-1 text-gray-300">Switch to a traveller account to book.</p>
           </div>
-
         {% elif user.is_authenticated and user.is_superuser %}
           <div class="text-center py-6 text-gray-400">
             <p class="text-sm">Admin accounts cannot make bookings.</p>
           </div>
-
         {% else %}
           <a href="{% url 'users:login' %}?next={{ request.path }}"
              class="block w-full bg-accent text-white py-3.5 rounded-xl font-semibold text-center hover:shadow-lg transition-all">
@@ -288,11 +280,9 @@
           </p>
         {% endif %}
 
-        <!-- Owner Info -->
         <div class="mt-6 pt-6 border-t border-gray-100 flex items-center gap-3">
           {% if property.owner.profile_photo %}
-            <img src="{{ property.owner.profile_photo.url }}"
-                 class="w-10 h-10 rounded-full object-cover"/>
+            <img src="{{ property.owner.profile_photo.url }}" class="w-10 h-10 rounded-full object-cover"/>
           {% else %}
             <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
               {{ property.owner.first_name|first|default:"?" }}
@@ -302,14 +292,162 @@
             <p class="text-sm font-semibold text-dark">
               Hosted by {{ property.owner.get_full_name|default:property.owner.username }}
             </p>
-            <p class="text-xs text-gray-400">
-              Member since {{ property.owner.created_at|date:"Y" }}
-            </p>
+            <p class="text-xs text-gray-400">Member since {{ property.owner.created_at|date:"Y" }}</p>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </div>
+
+<style>
+  /* FIX #2: Define ring-3 and thumb-active here so active thumbnail highlight works
+     without relying on a Tailwind ring-accent custom class that may not be configured */
+  .ring-3        { box-shadow: 0 0 0 3px #F97316; }
+  .thumb-active  { box-shadow: 0 0 0 3px #F97316; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+   // eslint-disable-next-line
+  const unavailableRanges = {{ unavailable_dates_json|default:"[]"|safe }};
+
+  function rangesOverlap(checkIn, checkOut, bookedIn, bookedOut) {
+    const dCheckIn   = new Date(checkIn);
+    const dCheckOut  = new Date(checkOut);
+    const dBookedIn  = new Date(bookedIn);
+    const dBookedOut = new Date(bookedOut);
+    return dCheckIn < dBookedOut && dCheckOut > dBookedIn;
+  }
+
+  // FIX #1: Merged both DOMContentLoaded blocks into one
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // ── Booking / Date Validation ──────────────────────────────────────────
+    const checkInInput  = document.querySelector('input[name="check_in"]');
+    const checkOutInput = document.querySelector('input[name="check_out"]');
+    const bookingForm   = document.querySelector('form[action*="add_to_cart"]');
+
+    if (checkInInput && checkOutInput && bookingForm) {
+
+      function validateDates() {
+        const checkIn  = checkInInput.value;
+        const checkOut = checkOutInput.value;
+        if (!checkIn || !checkOut) return true;
+        for (const range of unavailableRanges) {
+          if (rangesOverlap(checkIn, checkOut, range.check_in, range.check_out)) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function showLiveWarning() {
+        let warningEl = document.getElementById('date-conflict-warning');
+        if (!validateDates()) {
+          if (!warningEl) {
+            warningEl = document.createElement('p');
+            warningEl.id = 'date-conflict-warning';
+            warningEl.className = 'text-red-500 text-xs mt-2 font-medium';
+            warningEl.textContent = '⚠️ These dates overlap with an existing booking.';
+            bookingForm.insertBefore(warningEl, bookingForm.querySelector('button[type="submit"]'));
+          }
+        } else if (warningEl) {
+          warningEl.remove();
+        }
+      }
+
+      bookingForm.addEventListener('submit', (e) => {
+        if (!validateDates()) {
+          e.preventDefault();
+          alert(
+            '😔 This property is already booked for some of those dates.\n' +
+            'Please choose a different date range.'
+          );
+        }
+      });
+
+      // FIX #5: Update check_out min whenever check_in changes so user
+      // cannot select a check-out date before (or equal to) check-in
+      checkInInput.addEventListener('change', () => {
+        if (checkInInput.value) {
+          // Set check_out minimum to the day after check_in
+          const nextDay = new Date(checkInInput.value);
+          nextDay.setDate(nextDay.getDate() + 1);
+          checkOutInput.min = nextDay.toISOString().split('T')[0];
+          // Clear check_out if it's now before the new minimum
+          if (checkOutInput.value && checkOutInput.value <= checkInInput.value) {
+            checkOutInput.value = '';
+          }
+        }
+        showLiveWarning();
+      });
+
+      checkOutInput.addEventListener('change', showLiveWarning);
+    }
+
+    // ── Image Gallery Slider ───────────────────────────────────────────────
+    const slides    = document.querySelectorAll('.gallery-slide');
+    const thumbs    = document.querySelectorAll('.gallery-thumb');
+    const prevBtn   = document.getElementById('gallery-prev');
+    const nextBtn   = document.getElementById('gallery-next');
+    const counterEl = document.getElementById('gallery-current');
+
+    if (slides.length === 0) return;
+
+    let current = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        if (i === index) {
+          slide.classList.remove('opacity-0', 'pointer-events-none');
+          slide.classList.add('opacity-100');
+        } else {
+          slide.classList.add('opacity-0', 'pointer-events-none');
+          slide.classList.remove('opacity-100');
+        }
+      });
+
+      // FIX #2: Use thumb-active CSS class instead of ring-accent (which needs Tailwind config)
+      thumbs.forEach((thumb, i) => {
+        if (i === index) {
+          thumb.classList.add('thumb-active', 'opacity-100');
+          thumb.classList.remove('opacity-60');
+        } else {
+          thumb.classList.remove('thumb-active', 'opacity-100');
+          thumb.classList.add('opacity-60');
+        }
+      });
+
+      if (counterEl) counterEl.textContent = index + 1;
+      current = index;
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        showSlide((current + 1) % slides.length);
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        showSlide((current - 1 + slides.length) % slides.length);
+      });
+    }
+
+    thumbs.forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        showSlide(parseInt(thumb.dataset.index, 10));
+      });
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' && nextBtn) nextBtn.click();
+      if (e.key === 'ArrowLeft'  && prevBtn) prevBtn.click();
+    });
+
+  }); // end DOMContentLoaded
+</script>
 {% endblock %}

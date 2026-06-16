@@ -6,6 +6,7 @@ from django.db.models import Q
 from .models import Property, PropertyImage, PropertyExtra, Amenity
 from .forms import PropertyForm, PropertyExtraForm
 from datetime import date
+from django.http import Http404
 
 
 # ─── PUBLIC VIEWS ───────────────────────────────────────
@@ -74,35 +75,60 @@ def property_list(request):
     })
 
 
+# ─── REPLACE the existing property_detail() view in properties/views.py ───
+
+# ─── UPDATE property_detail() in properties/views.py ───
+# Add unavailable_dates to the context so the template can
+# pass them to JavaScript for date-picker validation.
+
 def property_detail(request, slug):
-    # Owners can preview their own pending properties
-    # Everyone else only sees active ones
-    if request.user.is_authenticated and request.user.is_owner:
-        prop = get_object_or_404(
-            Property,
-            slug=slug,
-            owner=request.user
-        )
-    else:
-        prop = get_object_or_404(
-            Property,
-            slug=slug,
-            status='active'
-        )
+    prop = Property.objects.filter(slug=slug, status='active').first()
+
+    if not prop:
+        if request.user.is_authenticated:
+            prop = get_object_or_404(
+                Property,
+                slug=slug,
+                owner=request.user
+            )
+        else:
+            raise Http404("Property not found.")
 
     extras  = prop.extras.filter(is_available=True)
     images  = prop.images.all()
     reviews = prop.reviews.all().order_by('-created_at')[:5]
 
+    # Unavailable date ranges from confirmed/pending bookings
+    import json
+    from bookings.models import Booking
+
+    bookings = Booking.objects.filter(
+        booking_property=prop,
+        status__in=['confirmed', 'pending']
+    ).values('check_in', 'check_out')
+
+    unavailable_dates = [
+        {
+            'check_in':  b['check_in'].strftime('%Y-%m-%d'),
+            'check_out': b['check_out'].strftime('%Y-%m-%d'),
+        }
+        for b in bookings
+    ]
+
+    images_qs = prop.images.all()
+    images_count = images_qs.count()
+
     return render(request, 'properties/detail.html', {
-        'property': prop,
-        'extras':   extras,
-        'images':   images,
-        'reviews':  reviews,
-        'today':    date.today().isoformat(),
+        'property':               prop,
+        'extras':                 extras,
+        'images':                 images_qs,
+        'images_count':           images_count,
+        'reviews':                reviews,
+        'today':                  date.today().isoformat(),
+        'unavailable_dates_json': json.dumps(unavailable_dates),
+        'guest_range':            range(1, prop.max_guests + 1),
+        'rating_range':           range(1, 6),
     })
-
-
 # ─── OWNER VIEWS ────────────────────────────────────────
 
 
@@ -239,6 +265,59 @@ def delete_extra(request, pk):
     extra.delete()
     messages.success(request, "Extra removed.")
     return redirect('properties:manage_extras', slug=slug)
+
+# ─── ADD THESE TWO NEW VIEWS to properties/views.py ─────
+# Place them right after delete_extra() and before owner_bookings()
+
+@login_required
+def delete_image(request, pk):
+    """Owner deletes one of their property images."""
+    image = get_object_or_404(
+        PropertyImage,
+        pk=pk,
+        property__owner=request.user
+    )
+    slug = image.property.slug
+    was_primary = image.is_primary
+
+    if request.method == 'POST':
+        image.delete()
+
+        # If we deleted the primary image, promote another one
+        if was_primary:
+            next_image = PropertyImage.objects.filter(
+                property__slug=slug
+            ).first()
+            if next_image:
+                next_image.is_primary = True
+                next_image.save()
+
+        messages.success(request, "Image removed.")
+
+    return redirect('properties:edit_property', slug=slug)
+
+
+@login_required
+def set_primary_image(request, pk):
+    """Owner sets a specific image as the primary/cover photo."""
+    image = get_object_or_404(
+        PropertyImage,
+        pk=pk,
+        property__owner=request.user
+    )
+
+    if request.method == 'POST':
+        # Unset all other images as primary first
+        PropertyImage.objects.filter(
+            property=image.property
+        ).update(is_primary=False)
+
+        image.is_primary = True
+        image.save()
+
+        messages.success(request, "Cover photo updated! ✅")
+
+    return redirect('properties:edit_property', slug=image.property.slug)
 
 @login_required
 def owner_bookings(request):

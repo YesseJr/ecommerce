@@ -177,3 +177,52 @@ class PropertyExtra(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.property.name}"
+
+# ─── ADD this helper function to properties/models.py ───
+# Place it at the bottom of the file, outside any class
+
+def check_property_availability(property_obj, check_in, check_out, exclude_booking_id=None):
+    """
+    Returns True if the property is available for the given date range.
+    Returns False if there's an overlapping CONFIRMED booking.
+
+    Two date ranges overlap when:
+        existing.check_in  <  new.check_out
+        AND
+        existing.check_out >  new.check_in
+    """
+    from bookings.models import Booking  # local import avoids circular import
+
+    overlapping = Booking.objects.filter(
+        booking_property=property_obj,
+        status='confirmed',
+        check_in__lt=check_out,
+        check_out__gt=check_in,
+    )
+
+    if exclude_booking_id:
+        overlapping = overlapping.exclude(pk=exclude_booking_id)
+
+    return not overlapping.exists()
+
+
+def get_unavailable_dates(property_obj):
+    """
+    Returns a list of {check_in, check_out} dicts for all
+    confirmed bookings on this property — used to disable
+    those dates on the booking calendar in the frontend.
+    """
+    from bookings.models import Booking
+
+    bookings = Booking.objects.filter(
+        booking_property=property_obj,
+        status='confirmed'
+    ).values('check_in', 'check_out')
+
+    return [
+        {
+            'check_in':  b['check_in'].isoformat(),
+            'check_out': b['check_out'].isoformat(),
+        }
+        for b in bookings
+    ]
