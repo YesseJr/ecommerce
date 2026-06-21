@@ -1,38 +1,39 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}BookMyStay — Find Your Perfect Stay{% endblock %}
 
 {% block content %}
 
-<!-- HERO -->
+<!-- ─── HERO ─── -->
 <section class="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
-  <div class="absolute inset-0 scale-105"
-       style="background: linear-gradient(to bottom, rgba(17,17,24,0.3) 0%, rgba(17,17,24,0.6) 60%, rgba(17,17,24,0.88) 100%), url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1800&q=80') center/cover no-repeat;">
-  </div>
+<div class="absolute inset-0"
+     style="background: linear-gradient(to bottom, rgba(17,17,24,0.25) 0%, rgba(17,17,24,0.6) 55%, rgba(17,17,24,0.92) 100%),
+            url('{% static "images/hero-bg.jpeg" %}') center/cover no-repeat;">
+</div>
 
-  <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
-    <div class="inline-flex items-center gap-2 bg-accent/20 border border-accent/40 text-accent px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6">
+  <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+    <div class="inline-flex items-center gap-2 bg-dark/80 border border-accent/40 text-accent px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6">
       🏠 Tanzania's Trusted Accommodation Platform
     </div>
 
-    <h1 class="font-display text-6xl md:text-8xl font-bold text-white leading-none mb-6">
+    <h1 class="font-display font-bold text-white leading-none mb-6"
+        style="font-size: clamp(3.5rem, 9vw, 7rem);">
       Find Your <em class="text-accent not-italic">Perfect</em><br/>Place to Stay
     </h1>
 
-    <p class="text-white/70 text-lg font-light max-w-xl mx-auto mb-10 leading-relaxed">
-      Browse verified properties across Tanzania — hotels, apartments, villas and more. Book in minutes.
+    <p class="text-white/65 text-lg font-light max-w-xl mx-auto mb-10 leading-relaxed">
+      Browse verified hotels, villas and apartments across Tanzania.<br/>Book in minutes, stay in comfort.
     </p>
 
     <!-- Search Bar -->
     <form method="GET" action="{% url 'properties:list' %}"
           class="bg-white rounded-2xl p-2 flex gap-2 max-w-2xl mx-auto shadow-2xl">
-
       <div class="flex-1 flex flex-col px-4 py-2 border-r border-gray-200">
         <label class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Destination</label>
         <input type="text" name="q" placeholder="City or property name..."
                class="outline-none text-sm font-medium text-dark bg-transparent"/>
       </div>
-
       <div class="flex flex-col px-4 py-2 border-r border-gray-200">
         <label class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Type</label>
         <select name="type" class="outline-none text-sm font-medium text-dark bg-transparent cursor-pointer">
@@ -42,42 +43,49 @@
           {% endfor %}
         </select>
       </div>
-
       <div class="flex flex-col px-4 py-2">
         <label class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Guests</label>
         <input type="number" name="guests" placeholder="2" min="1"
                class="outline-none text-sm font-medium text-dark bg-transparent w-16"/>
       </div>
-
       <button type="submit"
               class="bg-accent text-white px-6 py-3 rounded-xl font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all whitespace-nowrap">
         Search ✦
       </button>
     </form>
   </div>
+
+  <!-- Scroll hint -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+    <div class="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-1.5">
+      <div class="w-1 h-2 bg-white/50 rounded-full"></div>
+    </div>
+  </div>
 </section>
 
-<!-- STATS -->
-<div class="bg-dark py-8 px-16 flex justify-center gap-20">
-  <div class="text-center">
-    <div class="font-bebas text-4xl text-accent">500+</div>
-    <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Properties</div>
-  </div>
-  <div class="text-center">
-    <div class="font-bebas text-4xl text-accent">20+</div>
-    <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Cities</div>
-  </div>
-  <div class="text-center">
-    <div class="font-bebas text-4xl text-accent">10K+</div>
-    <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Happy Guests</div>
-  </div>
-  <div class="text-center">
-    <div class="font-bebas text-4xl text-accent">4.9★</div>
-    <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Avg Rating</div>
+<!-- ─── STATS ─── -->
+<div class="bg-dark py-8">
+  <div class="flex justify-center gap-20 px-16 flex-wrap">
+    <div class="text-center">
+      <div class="font-bebas text-4xl text-accent">500+</div>
+      <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Properties</div>
+    </div>
+    <div class="text-center">
+      <div class="font-bebas text-4xl text-accent">20+</div>
+      <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Cities</div>
+    </div>
+    <div class="text-center">
+      <div class="font-bebas text-4xl text-accent">10K+</div>
+      <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Happy Guests</div>
+    </div>
+    <div class="text-center">
+      <div class="font-bebas text-4xl text-accent">4.9★</div>
+      <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Avg Rating</div>
+    </div>
   </div>
 </div>
 
-<!-- FEATURED PROPERTIES -->
+<!-- ─── FEATURED PROPERTIES ─── -->
 <section class="py-24 px-16 bg-cream">
   <div class="flex justify-between items-end mb-12">
     <div>
@@ -97,7 +105,7 @@
     <div class="grid grid-cols-3 gap-6">
       {% for prop in featured %}
         <a href="{% url 'properties:detail' prop.slug %}"
-           class="bg-white rounded-2xl overflow-hidden shadow-md hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group">
+           class="bg-white rounded-2xl overflow-hidden shadow-sm hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group">
           <div class="relative h-56 overflow-hidden">
             {% with prop.images.first as img %}
               {% if img %}
@@ -105,26 +113,27 @@
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
               {% else %}
                 <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
-                  <span class="text-white/30 text-6xl">🏠</span>
+                  <span class="text-white/20 text-6xl">🏠</span>
                 </div>
               {% endif %}
             {% endwith %}
-            <span class="absolute top-3 left-3 bg-white text-dark text-xs font-bold px-3 py-1 rounded-full">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark/40 to-transparent"></div>
+            <span class="absolute top-3 left-3 bg-white/95 text-dark text-xs font-bold px-3 py-1 rounded-full shadow-sm">
               {{ prop.get_property_type_display }}
             </span>
-            <span class="absolute top-3 right-3 bg-white/90 text-dark text-xs font-bold px-3 py-1 rounded-full">
+            <span class="absolute top-3 right-3 bg-white/95 text-dark text-xs font-bold px-3 py-1 rounded-full shadow-sm">
               {% if prop.average_rating %}⭐ {{ prop.average_rating }}{% else %}✨ New{% endif %}
             </span>
           </div>
           <div class="p-5">
             <p class="text-xs text-gray-400 mb-1">📍 {{ prop.city }}, {{ prop.country }}</p>
-            <h3 class="font-display text-xl font-bold text-dark mb-3">{{ prop.name }}</h3>
+            <h3 class="font-display text-xl font-bold text-dark mb-3 leading-tight">{{ prop.name }}</h3>
             <div class="flex justify-between items-center pt-3 border-t border-gray-100">
               <div>
-                <span class="font-bold text-dark">${{ prop.price_per_night }}</span>
+                <span class="font-bold text-dark text-lg">${{ prop.price_per_night }}</span>
                 <span class="text-gray-400 text-sm"> / night</span>
               </div>
-              <div class="text-xs text-gray-400">👥 Up to {{ prop.max_guests }} guests</div>
+              <span class="text-xs text-gray-400">👥 Up to {{ prop.max_guests }}</span>
             </div>
           </div>
         </a>
@@ -139,7 +148,7 @@
   {% endif %}
 </section>
 
-<!-- PROPERTY TYPES -->
+<!-- ─── PROPERTY TYPES ─── -->
 <section class="py-20 px-16 bg-white">
   <div class="text-center mb-12">
     <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Browse By Type</span>
@@ -150,7 +159,7 @@
   <div class="flex justify-center gap-4 flex-wrap">
     {% for value, label in property_types %}
       <a href="{% url 'properties:list' %}?type={{ value }}"
-         class="flex items-center gap-3 px-6 py-4 bg-cream border-2 border-transparent rounded-2xl hover:border-accent hover:bg-orange-50 hover:-translate-y-1 transition-all cursor-pointer">
+         class="flex items-center gap-3 px-6 py-4 bg-cream border-2 border-transparent rounded-2xl hover:border-accent hover:bg-orange-50 hover:-translate-y-1 transition-all">
         <span class="text-2xl">
           {% if value == 'hotel' %}🏨
           {% elif value == 'apartment' %}🏢
@@ -166,7 +175,7 @@
   </div>
 </section>
 
-<!-- WHY BOOKMYSTAY -->
+<!-- ─── WHY BOOKMYSTAY ─── -->
 <section class="py-20 px-16" style="background: linear-gradient(135deg, #1B3A6B 0%, #0F2347 100%)">
   <div class="text-center mb-14">
     <span class="text-xs font-bold tracking-widest uppercase text-gold">✦ Why BookMyStay</span>
@@ -174,54 +183,75 @@
       The Smarter Way to <em class="text-accent">Book</em>
     </h2>
   </div>
-
   <div class="grid grid-cols-4 gap-6 max-w-5xl mx-auto">
-    <div class="text-center p-6">
-      <div class="text-4xl mb-4">✅</div>
-      <h4 class="text-white font-semibold mb-2">Verified Properties</h4>
-      <p class="text-white/40 text-sm leading-relaxed">Every listing is reviewed before going live.</p>
-    </div>
-    <div class="text-center p-6">
-      <div class="text-4xl mb-4">🔒</div>
-      <h4 class="text-white font-semibold mb-2">Secure Booking</h4>
-      <p class="text-white/40 text-sm leading-relaxed">Your payment is protected until check-in.</p>
-    </div>
-    <div class="text-center p-6">
-      <div class="text-4xl mb-4">🛒</div>
-      <h4 class="text-white font-semibold mb-2">Custom Add-ons</h4>
-      <p class="text-white/40 text-sm leading-relaxed">Add meals, pool, gym and more at checkout.</p>
-    </div>
-    <div class="text-center p-6">
-      <div class="text-4xl mb-4">⭐</div>
-      <h4 class="text-white font-semibold mb-2">Real Reviews</h4>
-      <p class="text-white/40 text-sm leading-relaxed">Honest reviews from real verified guests.</p>
-    </div>
+    {% for icon, title, desc in why_items %}
+      <div class="text-center p-6 group">
+        <div class="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-accent/20 group-hover:border-accent/30 transition">
+          <span class="text-3xl">{{ icon }}</span>
+        </div>
+        <h4 class="text-white font-semibold mb-2">{{ title }}</h4>
+        <p class="text-white/40 text-sm leading-relaxed">{{ desc }}</p>
+      </div>
+    {% empty %}
+      {% for item in "1234" %}
+        <div class="text-center p-6 group">
+          <div class="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-accent/20 transition">
+            <span class="text-3xl">
+              {% if forloop.counter == 1 %}✅
+              {% elif forloop.counter == 2 %}🔒
+              {% elif forloop.counter == 3 %}🛒
+              {% elif forloop.counter == 4 %}⭐{% endif %}
+            </span>
+          </div>
+          <h4 class="text-white font-semibold mb-2">
+            {% if forloop.counter == 1 %}Verified Properties
+            {% elif forloop.counter == 2 %}Secure Booking
+            {% elif forloop.counter == 3 %}Custom Add-ons
+            {% elif forloop.counter == 4 %}Real Reviews{% endif %}
+          </h4>
+          <p class="text-white/40 text-sm leading-relaxed">
+            {% if forloop.counter == 1 %}Every listing reviewed before going live.
+            {% elif forloop.counter == 2 %}Payment protected until check-in.
+            {% elif forloop.counter == 3 %}Add meals, pool, gym at checkout.
+            {% elif forloop.counter == 4 %}Honest reviews from real guests.{% endif %}
+          </p>
+        </div>
+      {% endfor %}
+    {% endfor %}
   </div>
 </section>
 
-<!-- CTA -->
+<!-- ─── CTA ─── -->
 <section class="py-20 px-16 bg-cream">
   <div class="bg-accent rounded-3xl p-16 text-center relative overflow-hidden">
-    <h2 class="font-display text-5xl font-bold text-white mb-4">Ready to List Your Property?</h2>
-    <p class="text-white/80 max-w-md mx-auto mb-8 leading-relaxed">
-      Join hundreds of property owners earning more by listing on BookMyStay.
-    </p>
-    <div class="flex gap-4 justify-center">
-      {% if user.is_authenticated and user.is_owner %}
-        <a href="{% url 'properties:add_property' %}"
-           class="bg-white text-accent font-bold px-8 py-3.5 rounded-full hover:shadow-xl hover:-translate-y-1 transition-all">
-          Add a Property
-        </a>
-      {% else %}
-        <a href="{% url 'users:register' %}"
-           class="bg-white text-accent font-bold px-8 py-3.5 rounded-full hover:shadow-xl hover:-translate-y-1 transition-all">
-          Get Started Free
-        </a>
-        <a href="{% url 'properties:list' %}"
-           class="border-2 border-white text-white font-semibold px-8 py-3.5 rounded-full hover:bg-white/10 transition-all">
-          Browse Properties
-        </a>
-      {% endif %}
+    <div class="absolute inset-0 opacity-40"
+          style="background: url('{% static "images/cta-bg.png" %}') center/cover">
+    </div>
+    <div class="relative z-10">
+      <h2 class="font-display text-5xl font-bold text-white mb-4">
+        Ready to List Your Property?
+      </h2>
+      <p class="text-white/80 max-w-md mx-auto mb-8 leading-relaxed">
+        Join hundreds of property owners earning more by listing on BookMyStay.
+        It's free to get started.
+      </p>
+      <div class="flex gap-4 justify-center">
+        {% if user.is_authenticated and user.is_owner %}
+          <a href="{% url 'properties:add_property' %}"
+             class="bg-white text-accent font-bold px-8 py-3.5 rounded-full hover:shadow-xl hover:-translate-y-1 transition-all">
+            + Add a Property
+          </a>
+        {% else %}
+          <a href="{% url 'users:register' %}"
+             class="bg-white text-accent font-bold px-8 py-3.5 rounded-full hover:shadow-xl hover:-translate-y-1 transition-all">
+            Get Started Free
+          </a>
+          <a href="{% url 'properties:list' %}"
+             class="border-2 border-white/70 text-white font-semibold px-8 py-3.5 rounded-full hover:bg-white/10 hover:border-white transition-all">
+            Browse Properties
+          </a>
+        {% endif %}
+      </div>
     </div>
   </div>
 </section>

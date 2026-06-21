@@ -3,127 +3,173 @@
 {% block title %}Property Bookings — BookMyStay{% endblock %}
 
 {% block content %}
-<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+<div class="min-h-screen bg-cream">
 
-  <div class="flex justify-between items-center mb-10">
-    <div>
-      <a href="{% url 'properties:owner_dashboard' %}"
-         class="text-sm text-gray-400 hover:text-accent transition">
-        ← Back to Dashboard
+  <!-- ─── HERO HEADER ─── -->
+  <div class="bg-dark px-16 pt-24 pb-10">
+    <div class="flex justify-between items-end">
+      <div>
+        <a href="{% url 'properties:owner_dashboard' %}"
+           class="text-white/40 hover:text-white text-sm transition">← Dashboard</a>
+        <span class="text-xs font-bold tracking-widest uppercase text-accent block mt-4">
+          ✦ Reservations
+        </span>
+        <h1 class="font-display text-6xl font-bold text-white mt-2 leading-none">
+          Property <em class="text-accent not-italic">Bookings</em>
+        </h1>
+      </div>
+      <a href="{% url 'properties:owner_revenue' %}"
+         class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-5 py-2.5 rounded-full text-sm font-semibold transition">
+        📊 Revenue Analytics
       </a>
-      <span class="text-xs font-bold tracking-widest uppercase text-accent block mt-3">
-        ✦ Reservations
-      </span>
-      <h1 class="font-display text-5xl font-bold text-dark mt-1">
-        Property <em class="text-primary">Bookings</em>
-      </h1>
+    </div>
+
+    <!-- Stats Strip -->
+    <div class="grid grid-cols-3 gap-4 mt-10">
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Total Bookings</p>
+        <p class="font-bebas text-5xl text-white">{{ total }}</p>
+        <p class="text-white/30 text-xs mt-1">all time</p>
+      </div>
+      <div class="bg-green-500/10 border border-green-500/20 rounded-2xl p-5">
+        <p class="text-green-400/80 text-xs font-bold uppercase tracking-widest mb-2">Confirmed</p>
+        <p class="font-bebas text-5xl text-white">{{ confirmed }}</p>
+        <p class="text-white/30 text-xs mt-1">paid reservations</p>
+      </div>
+      <div class="bg-accent/20 border border-accent/30 rounded-2xl p-5">
+        <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Total Revenue</p>
+        <p class="font-bebas text-5xl text-white">${{ revenue|floatformat:0 }}</p>
+        <p class="text-white/30 text-xs mt-1">from confirmed only</p>
+      </div>
     </div>
   </div>
 
-  <!-- Stats -->
-  <div class="grid grid-cols-3 gap-6 mb-10">
-    <div class="bg-white rounded-2xl p-6 shadow-sm">
-      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
-        Total Bookings
-      </p>
-      <p class="font-bebas text-5xl text-dark">{{ total }}</p>
-    </div>
-    <div class="bg-white rounded-2xl p-6 shadow-sm">
-      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
-        Confirmed
-      </p>
-      <p class="font-bebas text-5xl text-green-500">{{ confirmed }}</p>
-    </div>
-    <div class="bg-white rounded-2xl p-6 shadow-sm">
-      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
-        Total Revenue
-      </p>
-      <p class="font-bebas text-5xl text-accent">${{ revenue }}</p>
-    </div>
-  </div>
+  <div class="px-16 py-10">
 
-  <!-- Bookings Table -->
-  {% if bookings %}
-    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-      <table class="w-full">
-        <thead>
-          <tr class="border-b border-gray-100">
-            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-              Reference
-            </th>
-            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-              Property
-            </th>
-            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-              Guest
-            </th>
-            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-              Dates
-            </th>
-            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-              Total
-            </th>
-            <th class="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-              Status
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for booking in bookings %}
-            <tr class="border-b border-gray-50 hover:bg-cream transition">
-              <td class="px-6 py-4">
-                <span class="font-mono text-sm font-semibold text-dark">
-                  {{ booking.reference }}
-                </span>
-              </td>
-              <td class="px-6 py-4">
-                <p class="font-semibold text-dark text-sm">
-                  {{ booking.booking_property.name }}
-                </p>
-                <p class="text-xs text-gray-400">
-                  {{ booking.booking_property.city }}
-                </p>
-              </td>
-              <td class="px-6 py-4">
-                <p class="font-semibold text-dark text-sm">
-                  {{ booking.traveller.get_full_name|default:booking.traveller.username }}
-                </p>
-                <p class="text-xs text-gray-400">{{ booking.traveller.email }}</p>
-              </td>
-              <td class="px-6 py-4">
-                <p class="text-sm text-dark">
-                  {{ booking.check_in|date:"M j" }} – {{ booking.check_out|date:"M j, Y" }}
-                </p>
-                <p class="text-xs text-gray-400">
-                  {{ booking.nights }} night{{ booking.nights|pluralize }} ·
-                  {{ booking.guests }} guest{{ booking.guests|pluralize }}
-                </p>
-              </td>
-              <td class="px-6 py-4">
-                <span class="font-bold text-dark">${{ booking.grand_total }}</span>
-              </td>
-              <td class="px-6 py-4">
-                <span class="text-xs font-bold px-3 py-1 rounded-full
-                  {% if booking.status == 'confirmed' %}bg-green-100 text-green-700
-                  {% elif booking.status == 'pending' %}bg-orange-100 text-orange-700
-                  {% elif booking.status == 'cancelled' %}bg-red-100 text-red-500
-                  {% else %}bg-gray-100 text-gray-500{% endif %}">
-                  {{ booking.get_status_display }}
-                </span>
-              </td>
+    {% if bookings %}
+
+      <!-- Filter Row -->
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="font-display text-2xl font-bold text-dark">
+          All <em class="text-primary">Reservations</em>
+        </h2>
+        <div class="flex gap-2">
+          <button onclick="filterBookings('all')"
+                  class="booking-filter-btn active-filter text-xs font-semibold px-4 py-2 rounded-full border-2 border-accent bg-accent text-white transition"
+                  data-filter="all">All</button>
+          <button onclick="filterBookings('confirmed')"
+                  class="booking-filter-btn text-xs font-semibold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-green-400 hover:text-green-600 transition"
+                  data-filter="confirmed">Confirmed</button>
+          <button onclick="filterBookings('pending')"
+                  class="booking-filter-btn text-xs font-semibold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition"
+                  data-filter="pending">Pending</button>
+          <button onclick="filterBookings('cancelled')"
+                  class="booking-filter-btn text-xs font-semibold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-red-400 hover:text-red-400 transition"
+                  data-filter="cancelled">Cancelled</button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <table class="w-full" id="bookings-table">
+          <thead>
+            <tr class="border-b border-gray-100 bg-gray-50/50">
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Reference</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Property</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Guest</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Dates</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Total</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Status</th>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {% for booking in bookings %}
+              <tr class="booking-row border-b border-gray-50 hover:bg-cream transition"
+                  data-status="{{ booking.status }}">
+                <td class="px-6 py-4">
+                  <span class="font-mono text-sm font-semibold text-dark">{{ booking.reference }}</span>
+                  <p class="text-xs text-gray-400 mt-0.5">{{ booking.created_at|date:"M j, Y" }}</p>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-8 rounded-lg overflow-hidden flex-shrink-0">
+                      {% with booking.booking_property.images.first as img %}
+                        {% if img %}
+                          <img src="{{ img.image.url }}" alt="" class="w-full h-full object-cover"/>
+                        {% else %}
+                          <div class="w-full h-full bg-primary/20 flex items-center justify-center">
+                            <span class="text-xs">🏠</span>
+                          </div>
+                        {% endif %}
+                      {% endwith %}
+                    </div>
+                    <div>
+                      <p class="font-semibold text-dark text-sm">{{ booking.booking_property.name }}</p>
+                      <p class="text-xs text-gray-400">{{ booking.booking_property.city }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <p class="font-semibold text-dark text-sm">
+                    {{ booking.traveller.get_full_name|default:booking.traveller.username }}
+                  </p>
+                  <p class="text-xs text-gray-400">{{ booking.traveller.email }}</p>
+                </td>
+                <td class="px-6 py-4">
+                  <p class="text-sm text-dark font-medium">
+                    {{ booking.check_in|date:"M j" }} → {{ booking.check_out|date:"M j, Y" }}
+                  </p>
+                  <p class="text-xs text-gray-400 mt-0.5">
+                    {{ booking.nights }} night{{ booking.nights|pluralize }} ·
+                    {{ booking.guests }} guest{{ booking.guests|pluralize }}
+                  </p>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="font-bold text-dark text-base">${{ booking.grand_total }}</span>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-xs font-bold px-3 py-1.5 rounded-full
+                    {% if booking.status == 'confirmed' %}bg-green-100 text-green-700
+                    {% elif booking.status == 'pending' %}bg-orange-100 text-orange-700
+                    {% elif booking.status == 'cancelled' %}bg-red-100 text-red-500
+                    {% else %}bg-gray-100 text-gray-500{% endif %}">
+                    {{ booking.get_status_display }}
+                  </span>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
-  {% else %}
-    <div class="text-center py-24 text-gray-400">
-      <div class="text-7xl mb-6">📋</div>
-      <h3 class="text-xl font-semibold text-dark mb-2">No bookings yet</h3>
-      <p class="text-sm">Bookings for your properties will appear here.</p>
-    </div>
-  {% endif %}
-
+    {% else %}
+      <div class="text-center py-32 text-gray-400">
+        <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="text-5xl">📋</span>
+        </div>
+        <h3 class="text-xl font-semibold text-dark mb-2">No bookings yet</h3>
+        <p class="text-sm max-w-sm mx-auto">When travellers book your properties, reservations will appear here.</p>
+      </div>
+    {% endif %}
+  </div>
 </div>
+
+<script>
+  function filterBookings(status) {
+    const rows    = document.querySelectorAll('.booking-row')
+    const buttons = document.querySelectorAll('.booking-filter-btn')
+
+    rows.forEach(row => {
+      row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none'
+    })
+
+    buttons.forEach(btn => {
+      const isActive = btn.dataset.filter === status
+      btn.classList.toggle('bg-accent',     isActive)
+      btn.classList.toggle('text-white',    isActive)
+      btn.classList.toggle('border-accent', isActive)
+      btn.classList.toggle('text-gray-500', !isActive)
+      btn.classList.toggle('border-gray-200', !isActive)
+    })
+  }
+</script>
 {% endblock %}

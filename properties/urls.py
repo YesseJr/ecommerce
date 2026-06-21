@@ -19,4 +19,6 @@ urlpatterns = [
     path('dashboard/bookings/', views.owner_bookings, name='owner_bookings'),
     path('dashboard/images/delete/<int:pk>/', views.delete_image, name='delete_image'),
     path('dashboard/images/set-primary/<int:pk>/', views.set_primary_image, name='set_primary_image'),
+    path('dashboard/revenue/', views.owner_revenue, name='owner_revenue'),
+    path('dashboard/traveller/', views.traveller_dashboard, name='traveller_dashboard'),
 ]

@@ -3,112 +3,554 @@
 {% block title %}Manage Extras — {{ property.name }}{% endblock %}
 
 {% block content %}
-<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
-  <div class="max-w-3xl mx-auto">
+<div class="min-h-screen bg-cream">
 
-    <div class="mb-8">
-      <a href="{% url 'properties:owner_dashboard' %}"
-         class="text-sm text-gray-400 hover:text-accent transition">← Back to Dashboard</a>
-      <h1 class="font-display text-4xl font-bold text-dark mt-3">
-        Manage <em class="text-primary">Extras</em>
-      </h1>
-      <p class="text-gray-400 mt-1">{{ property.name }}</p>
-    </div>
-
-    <!-- Add Extra Form -->
-    <div class="bg-white rounded-2xl p-8 shadow-sm mb-8">
-      <h3 class="font-semibold text-dark mb-6">Add New Extra</h3>
-      <form method="POST" class="flex flex-col gap-4">
-        {% csrf_token %}
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Extra Name *</label>
-            {{ form.name }}
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Price ($) *</label>
-            {{ form.price }}
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Charge Type</label>
-            {{ form.charge_type }}
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Description</label>
-            {{ form.description }}
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          {{ form.is_available }}
-          <label class="text-sm font-medium text-dark">Available to guests</label>
-        </div>
-
-        <button type="submit"
-                class="bg-accent text-white py-3 rounded-xl font-semibold text-sm hover:shadow-lg transition-all">
-          + Add Extra
-        </button>
-      </form>
-    </div>
-
-    <!-- Existing Extras -->
-    <div class="bg-white rounded-2xl p-8 shadow-sm">
-      <h3 class="font-semibold text-dark mb-6">
-        Current Extras
-        <span class="text-gray-400 font-normal text-sm ml-2">({{ extras.count }})</span>
-      </h3>
-
-      {% if extras %}
-        <div class="flex flex-col gap-3">
-          {% for extra in extras %}
-            <div class="flex items-center justify-between p-4 bg-cream rounded-xl">
-              <div>
-                <p class="font-semibold text-dark text-sm">{{ extra.name }}</p>
-                <p class="text-gray-400 text-xs mt-0.5">
-                  ${{ extra.price }} · {{ extra.get_charge_type_display }}
-                  {% if not extra.is_available %}
-                    · <span class="text-red-400">Unavailable</span>
-                  {% endif %}
-                </p>
-              </div>
-              <form method="POST" action="{% url 'properties:delete_extra' extra.pk %}"
-                    onsubmit="return confirm('Remove {{ extra.name }}?')">
-                {% csrf_token %}
-                <button type="submit"
-                        class="text-xs text-red-400 hover:text-red-600 font-semibold transition">
-                  Remove
-                </button>
-              </form>
-            </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <p class="text-gray-400 text-sm text-center py-8">
-          No extras added yet. Add your first one above!
+  <!-- ─── HERO HEADER ─── -->
+  <div class="bg-dark px-16 pt-24 pb-10">
+    <div class="flex justify-between items-end">
+      <div>
+        <a href="{% url 'properties:owner_dashboard' %}"
+           class="text-white/40 hover:text-white text-sm transition">← Dashboard</a>
+        <span class="text-xs font-bold tracking-widest uppercase text-accent block mt-4">
+          ✦ {{ property.name }}
+        </span>
+        <h1 class="font-display text-6xl font-bold text-white mt-2 leading-none">
+          Manage <em class="text-accent not-italic">Extras</em>
+        </h1>
+        <p class="text-white/40 text-sm mt-3">
+          Define optional add-on services that guests can select at checkout.
         </p>
-      {% endif %}
+      </div>
+      <a href="{% url 'properties:edit_property' property.slug %}"
+         class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-5 py-2.5 rounded-full text-sm font-semibold transition">
+        ✏️ Edit Property
+      </a>
     </div>
 
+    <!-- Current extras count strip -->
+    <div class="grid grid-cols-3 gap-4 mt-10">
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Total Extras</p>
+        <p class="font-bebas text-5xl text-white">{{ extras.count }}</p>
+      </div>
+      <div class="bg-green-500/10 border border-green-500/20 rounded-2xl p-5">
+        <p class="text-green-400/80 text-xs font-bold uppercase tracking-widest mb-2">Available</p>
+        <p class="font-bebas text-5xl text-white">
+          {% with available=extras.filter %}
+            {{ extras.count }}
+          {% endwith %}
+        </p>
+      </div>
+      <div class="bg-accent/20 border border-accent/30 rounded-2xl p-5">
+        <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Property</p>
+        <p class="font-bebas text-2xl text-white leading-tight mt-1">{{ property.get_property_type_display }}</p>
+        <p class="text-white/30 text-xs mt-1">📍 {{ property.city }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-16 py-10">
+    <div class="max-w-4xl mx-auto flex flex-col gap-8">
+
+      <!-- ─── QUICK ADD FROM PRESETS ─── -->
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-gray-100">
+          <h3 class="font-semibold text-dark text-lg">Quick Add Common Extras</h3>
+          <p class="text-gray-400 text-sm mt-0.5">
+            Click any preset to instantly add it — you can adjust the price after.
+          </p>
+        </div>
+
+        <div class="p-6">
+          <!-- Category tabs -->
+          <div class="flex gap-2 mb-5 flex-wrap" id="preset-tabs">
+            <button onclick="showCategory('all')"
+                    class="preset-tab active-tab text-xs font-bold px-4 py-2 rounded-full bg-accent text-white border-2 border-accent transition"
+                    data-cat="all">All</button>
+            <button onclick="showCategory('meals')"
+                    class="preset-tab text-xs font-bold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition"
+                    data-cat="meals">🍽️ Meals</button>
+            <button onclick="showCategory('wellness')"
+                    class="preset-tab text-xs font-bold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition"
+                    data-cat="wellness">💆 Wellness</button>
+            <button onclick="showCategory('transport')"
+                    class="preset-tab text-xs font-bold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition"
+                    data-cat="transport">🚗 Transport</button>
+            <button onclick="showCategory('activities')"
+                    class="preset-tab text-xs font-bold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition"
+                    data-cat="activities">🏄 Activities</button>
+            <button onclick="showCategory('housekeeping')"
+                    class="preset-tab text-xs font-bold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition"
+                    data-cat="housekeeping">🧹 Housekeeping</button>
+          </div>
+
+          <!-- Preset cards grid -->
+          <div class="grid grid-cols-2 gap-3" id="presets-grid">
+
+            <!-- MEALS -->
+            <div class="preset-item" data-cat="meals">
+              <button type="button" onclick="fillForm('Breakfast', 15, 'per_person', 'Daily breakfast included per guest')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">☕</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Breakfast</p>
+                  <p class="text-xs text-gray-400">~$15 · per person</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="meals">
+              <button type="button" onclick="fillForm('Dinner', 25, 'per_person', 'Evening dinner included per guest')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🍽️</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Dinner</p>
+                  <p class="text-xs text-gray-400">~$25 · per person</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="meals">
+              <button type="button" onclick="fillForm('Full Board (3 Meals)', 50, 'per_person', 'Breakfast, lunch and dinner per guest')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🥘</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Full Board (3 Meals)</p>
+                  <p class="text-xs text-gray-400">~$50 · per person</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="meals">
+              <button type="button" onclick="fillForm('Welcome Drink', 10, 'once', 'Complimentary welcome drink on arrival')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🥂</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Welcome Drink</p>
+                  <p class="text-xs text-gray-400">~$10 · one-time</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <!-- WELLNESS -->
+            <div class="preset-item" data-cat="wellness">
+              <button type="button" onclick="fillForm('Swimming Pool Access', 10, 'per_night', 'Daily access to the swimming pool')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🏊</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Swimming Pool Access</p>
+                  <p class="text-xs text-gray-400">~$10 · per night</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="wellness">
+              <button type="button" onclick="fillForm('Gym Access', 8, 'per_night', 'Daily access to the gym facilities')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">💪</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Gym Access</p>
+                  <p class="text-xs text-gray-400">~$8 · per night</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="wellness">
+              <button type="button" onclick="fillForm('Spa Treatment', 60, 'once', '60-minute spa and massage session')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">💆</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Spa Treatment</p>
+                  <p class="text-xs text-gray-400">~$60 · one-time</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="wellness">
+              <button type="button" onclick="fillForm('Sauna Access', 15, 'per_night', 'Evening access to the sauna')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🧖</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Sauna Access</p>
+                  <p class="text-xs text-gray-400">~$15 · per night</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <!-- TRANSPORT -->
+            <div class="preset-item" data-cat="transport">
+              <button type="button" onclick="fillForm('Airport Pickup', 40, 'once', 'One-way airport pickup transfer')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">✈️</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Airport Pickup</p>
+                  <p class="text-xs text-gray-400">~$40 · one-time</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="transport">
+              <button type="button" onclick="fillForm('Airport Drop-off', 40, 'once', 'One-way transfer to the airport')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🚗</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Airport Drop-off</p>
+                  <p class="text-xs text-gray-400">~$40 · one-time</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="transport">
+              <button type="button" onclick="fillForm('Car Rental', 80, 'per_night', 'Daily car rental with driver')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🚙</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Car Rental</p>
+                  <p class="text-xs text-gray-400">~$80 · per night</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="transport">
+              <button type="button" onclick="fillForm('Boat Transfer', 55, 'once', 'Scenic boat transfer to/from island')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">⛵</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Boat Transfer</p>
+                  <p class="text-xs text-gray-400">~$55 · one-time</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <!-- ACTIVITIES -->
+            <div class="preset-item" data-cat="activities">
+              <button type="button" onclick="fillForm('City Tour', 35, 'once', 'Guided city or town tour')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🗺️</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">City Tour</p>
+                  <p class="text-xs text-gray-400">~$35 · one-time</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="activities">
+              <button type="button" onclick="fillForm('Safari Day Trip', 150, 'once', 'Full-day safari with guide and transport')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🦁</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Safari Day Trip</p>
+                  <p class="text-xs text-gray-400">~$150 · one-time</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="activities">
+              <button type="button" onclick="fillForm('Snorkeling Trip', 45, 'once', 'Snorkeling excursion with equipment')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🤿</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Snorkeling Trip</p>
+                  <p class="text-xs text-gray-400">~$45 · one-time</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="activities">
+              <button type="button" onclick="fillForm('Cooking Class', 30, 'once', 'Local Swahili cooking experience')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">👨‍🍳</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Cooking Class</p>
+                  <p class="text-xs text-gray-400">~$30 · one-time</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <!-- HOUSEKEEPING -->
+            <div class="preset-item" data-cat="housekeeping">
+              <button type="button" onclick="fillForm('Daily Housekeeping', 10, 'per_night', 'Daily room cleaning and turndown service')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🧹</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Daily Housekeeping</p>
+                  <p class="text-xs text-gray-400">~$10 · per night</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="housekeeping">
+              <button type="button" onclick="fillForm('Laundry Service', 12, 'once', 'Full laundry and ironing service')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">👔</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Laundry Service</p>
+                  <p class="text-xs text-gray-400">~$12 · one-time</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="housekeeping">
+              <button type="button" onclick="fillForm('Baby Cot', 8, 'per_night', 'Baby cot and bedding provided')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">👶</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Baby Cot</p>
+                  <p class="text-xs text-gray-400">~$8 · per night</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+            <div class="preset-item" data-cat="housekeeping">
+              <button type="button" onclick="fillForm('Extra Towels & Linens', 5, 'per_night', 'Extra set of towels and bed linen')"
+                      class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
+                <span class="text-2xl">🛏️</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Extra Towels & Linens</p>
+                  <p class="text-xs text-gray-400">~$5 · per night</p>
+                </div>
+                <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── MANUAL ADD FORM ─── -->
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden" id="add-extra-form-section">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+          <div>
+            <h3 class="font-semibold text-dark text-lg">Add Custom Extra</h3>
+            <p class="text-gray-400 text-sm mt-0.5" id="form-subtitle">
+              Or create a completely custom extra below.
+            </p>
+          </div>
+          <!-- Clear form button -->
+          <button type="button" onclick="clearForm()"
+                  id="clear-btn"
+                  class="hidden text-xs text-gray-400 hover:text-accent font-semibold transition px-3 py-1.5 border border-gray-200 rounded-xl">
+            ✕ Clear
+          </button>
+        </div>
+
+        <div class="p-6">
+          <form method="POST" class="flex flex-col gap-4">
+            {% csrf_token %}
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                  Extra Name *
+                </label>
+                <input type="text" name="name" id="field-name"
+                       placeholder="e.g. Pool Access, Breakfast..."
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm font-medium text-dark outline-none focus:border-accent transition bg-white"/>
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                  Price ($) *
+                </label>
+                <input type="number" name="price" id="field-price"
+                       placeholder="0.00" min="0" step="0.01"
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm font-medium text-dark outline-none focus:border-accent transition bg-white"/>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                  Charge Type
+                </label>
+                <select name="charge_type" id="field-charge_type"
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm font-medium text-dark outline-none focus:border-accent transition bg-white cursor-pointer">
+                  <option value="per_night">Per Night — charged × number of nights</option>
+                  <option value="once">One Time — charged once per booking</option>
+                  <option value="per_person">Per Person — charged × number of guests</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                  Description (optional)
+                </label>
+                <input type="text" name="description" id="field-description"
+                       placeholder="Brief description for guests..."
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm font-medium text-dark outline-none focus:border-accent transition bg-white"/>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="is_available" id="field-is_available" checked
+                     class="w-4 h-4 rounded accent-orange-500"/>
+              <label for="field-is_available" class="text-sm font-medium text-dark cursor-pointer">
+                Available to guests immediately
+              </label>
+            </div>
+
+            <div class="flex gap-3">
+              <button type="submit"
+                      class="flex-1 bg-accent text-white py-3.5 rounded-xl font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                + Add Extra
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ─── EXISTING EXTRAS ─── -->
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-gray-100">
+          <h3 class="font-semibold text-dark text-lg">
+            Current Extras
+            <span class="text-gray-400 font-normal text-sm ml-2">({{ extras.count }})</span>
+          </h3>
+        </div>
+
+        {% if extras %}
+          <div class="divide-y divide-gray-50">
+            {% for extra in extras %}
+              <div class="flex items-center gap-4 px-6 py-4 hover:bg-cream transition">
+
+                <!-- Icon based on name -->
+                <div class="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg">
+                  {% with name=extra.name|lower %}
+                    {% if 'breakfast' in name or 'meal' in name or 'food' in name or 'dinner' in name or 'lunch' in name %}🍽️
+                    {% elif 'pool' in name or 'swim' in name %}🏊
+                    {% elif 'gym' in name or 'fitness' in name %}💪
+                    {% elif 'spa' in name or 'massage' in name %}💆
+                    {% elif 'airport' in name or 'transfer' in name or 'transport' in name %}✈️
+                    {% elif 'car' in name or 'vehicle' in name %}🚗
+                    {% elif 'safari' in name %}🦁
+                    {% elif 'tour' in name %}🗺️
+                    {% elif 'laundry' in name %}👔
+                    {% elif 'cleaning' in name or 'housekeeping' in name %}🧹
+                    {% elif 'snorkel' in name or 'dive' in name or 'boat' in name %}⛵
+                    {% elif 'cook' in name %}👨‍🍳
+                    {% elif 'baby' in name or 'cot' in name %}👶
+                    {% else %}✨{% endif %}
+                  {% endwith %}
+                </div>
+
+                <!-- Info -->
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <p class="font-semibold text-dark text-sm">{{ extra.name }}</p>
+                    {% if not extra.is_available %}
+                      <span class="text-xs bg-red-100 text-red-500 font-semibold px-2 py-0.5 rounded-full">
+                        Hidden
+                      </span>
+                    {% endif %}
+                  </div>
+                  <p class="text-gray-400 text-xs mt-0.5">
+                    <span class="font-semibold text-accent">${{ extra.price }}</span>
+                    &nbsp;·&nbsp;
+                    {{ extra.get_charge_type_display }}
+                    {% if extra.description %}
+                      &nbsp;·&nbsp; {{ extra.description }}
+                    {% endif %}
+                  </p>
+                </div>
+
+                <!-- Remove -->
+                <form method="POST" action="{% url 'properties:delete_extra' extra.pk %}"
+                      onsubmit="return confirm('Remove \'{{ extra.name }}\' from this property?')">
+                  {% csrf_token %}
+                  <button type="submit"
+                          class="text-xs text-gray-400 hover:text-red-500 font-semibold transition px-3 py-1.5 border-2 border-gray-200 hover:border-red-300 rounded-xl hover:bg-red-50">
+                    Remove
+                  </button>
+                </form>
+              </div>
+            {% endfor %}
+          </div>
+
+        {% else %}
+          <div class="text-center py-16 text-gray-400">
+            <div class="text-5xl mb-4">✨</div>
+            <p class="font-medium text-dark">No extras yet</p>
+            <p class="text-sm mt-1">Add your first extra above to offer guests more options.</p>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
   </div>
 </div>
 
-<style>
-  input[type="text"], input[type="number"],
-  select, textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid #E5E7EB;
-    border-radius: 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    outline: none;
-    transition: border-color 0.2s;
-    background: white;
+<script>
+  // ── Category filter tabs ──
+  function showCategory(cat) {
+    const items   = document.querySelectorAll('.preset-item')
+    const tabs    = document.querySelectorAll('.preset-tab')
+
+    items.forEach(item => {
+      item.style.display = (cat === 'all' || item.dataset.cat === cat) ? 'block' : 'none'
+    })
+
+    tabs.forEach(tab => {
+      const isActive = tab.dataset.cat === cat
+      tab.classList.toggle('bg-accent',      isActive)
+      tab.classList.toggle('text-white',     isActive)
+      tab.classList.toggle('border-accent',  isActive)
+      tab.classList.toggle('text-gray-500',  !isActive)
+      tab.classList.toggle('border-gray-200', !isActive)
+    })
   }
-  input:focus, select:focus, textarea:focus { border-color: #F97316; }
-</style>
+
+  // ── Fill form from preset ──
+  function fillForm(name, price, chargeType, description) {
+    document.getElementById('field-name').value        = name
+    document.getElementById('field-price').value       = price
+    document.getElementById('field-description').value = description
+    document.getElementById('field-is_available').checked = true
+
+    const select = document.getElementById('field-charge_type')
+    for (let opt of select.options) {
+      if (opt.value === chargeType) { opt.selected = true; break }
+    }
+
+    // Update subtitle to show what was selected
+    document.getElementById('form-subtitle').textContent =
+      `✅ "${name}" loaded from preset — adjust price if needed, then click Add Extra.`
+    document.getElementById('clear-btn').classList.remove('hidden')
+
+    // Scroll to form smoothly
+    document.getElementById('add-extra-form-section').scrollIntoView({
+      behavior: 'smooth', block: 'center'
+    })
+
+    // Highlight the name field
+    document.getElementById('field-name').focus()
+  }
+
+  // ── Clear form ──
+  function clearForm() {
+    document.getElementById('field-name').value        = ''
+    document.getElementById('field-price').value       = ''
+    document.getElementById('field-description').value = ''
+    document.getElementById('field-charge_type').selectedIndex = 0
+    document.getElementById('form-subtitle').textContent =
+      'Or create a completely custom extra below.'
+    document.getElementById('clear-btn').classList.add('hidden')
+  }
+</script>
 {% endblock %}

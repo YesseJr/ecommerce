@@ -2,12 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.text import slugify
-from django.db.models import Q
+from django.db.models import Q, Sum
 from .models import Property, PropertyImage, PropertyExtra, Amenity
 from .forms import PropertyForm, PropertyExtraForm
 from datetime import date
 from django.http import Http404
-
+import json
+import calendar
+from django.utils import timezone
 
 # ─── PUBLIC VIEWS ───────────────────────────────────────
 
@@ -357,3 +359,112 @@ def owner_bookings(request):
         'confirmed': confirmed,
         'revenue':   revenue,
     })
+
+@login_required
+def owner_revenue(request):
+    if not request.user.is_owner:
+        messages.error(request, "Access denied.")
+        return redirect('properties:home')
+
+    from bookings.models import Booking
+
+    properties = Property.objects.filter(owner=request.user)
+
+    # Only CONFIRMED bookings count as real revenue
+    confirmed_bookings = Booking.objects.filter(
+        booking_property__owner=request.user,
+        status='confirmed'
+    )
+
+    # ── Per-property breakdown ──────────────────────────
+    property_stats = []
+    for prop in properties:
+        prop_bookings  = confirmed_bookings.filter(booking_property=prop)
+        revenue        = prop_bookings.aggregate(total=Sum('grand_total'))['total'] or 0
+        bookings_count = prop_bookings.count()
+        nights_sold    = prop_bookings.aggregate(total=Sum('nights'))['total'] or 0
+
+        property_stats.append({
+            'property':        prop,
+            'revenue':         revenue,
+            'bookings_count':  bookings_count,
+            'nights_sold':     nights_sold,
+            'avg_per_booking': (revenue / bookings_count) if bookings_count else 0,
+        })
+
+    # Sort by revenue, highest first — so "top performer" is obvious
+    property_stats.sort(key=lambda x: x['revenue'], reverse=True)
+
+    # ── Overall totals across ALL of the owner's properties ──
+    total_revenue      = confirmed_bookings.aggregate(total=Sum('grand_total'))['total'] or 0
+    total_bookings     = confirmed_bookings.count()
+    total_nights       = confirmed_bookings.aggregate(total=Sum('nights'))['total'] or 0
+    avg_booking_value  = (total_revenue / total_bookings) if total_bookings else 0
+
+    # ── Data for charts (Chart.js needs JSON arrays) ──────────
+    chart_labels   = [stat['property'].name for stat in property_stats]
+    chart_revenue  = [float(stat['revenue']) for stat in property_stats]
+    chart_bookings = [stat['bookings_count'] for stat in property_stats]
+
+    # ── Monthly revenue trend for the last 6 months ───────────
+    # Pure Python month-stepping, no external date libraries needed.
+    today = date.today()
+    monthly_labels  = []
+    monthly_revenue = []
+
+    # Build a list of the 6 most recent (year, month) pairs, oldest first
+    months = []
+    y, m = today.year, today.month
+    for _ in range(6):
+        months.append((y, m))
+        m -= 1
+        if m == 0:
+            m = 12
+            y -= 1
+    months.reverse()
+
+    for (year, month) in months:
+        month_start = date(year, month, 1)
+        if month == 12:
+            next_month = date(year + 1, 1, 1)
+        else:
+            next_month = date(year, month + 1, 1)
+
+        month_total = confirmed_bookings.filter(
+            created_at__date__gte=month_start,
+            created_at__date__lt=next_month
+        ).aggregate(total=Sum('grand_total'))['total'] or 0
+
+        monthly_labels.append(calendar.month_abbr[month])
+        monthly_revenue.append(float(month_total))
+
+    return render(request, 'properties/owner_revenue.html', {
+        'property_stats':       property_stats,
+        'total_revenue':        total_revenue,
+        'total_bookings':       total_bookings,
+        'total_nights':         total_nights,
+        'avg_booking_value':    avg_booking_value,
+        'top_property':         property_stats[0] if property_stats else None,
+        'chart_labels_json':    json.dumps(chart_labels),
+        'chart_revenue_json':   json.dumps(chart_revenue),
+        'chart_bookings_json':  json.dumps(chart_bookings),
+        'monthly_labels_json':  json.dumps(monthly_labels),
+        'monthly_revenue_json': json.dumps(monthly_revenue),
+    })
+
+@login_required
+def traveller_dashboard(request):
+    bookings = request.user.bookings.all().order_by('-created_at')  # adjust related_name if different
+    upcoming = bookings.filter(check_in__gte=timezone.now(), status='confirmed').order_by('check_in')
+    cart_count = request.user.cart.items.count() if hasattr(request.user, 'cart') else 0
+    total_spent = bookings.filter(status='confirmed').aggregate(Sum('grand_total'))['grand_total__sum'] or 0
+
+    context = {
+        'total_bookings': bookings.count(),
+        'upcoming_count': upcoming.count(),
+        'cart_count': cart_count,
+        'total_spent': total_spent,
+        'upcoming_bookings': upcoming[:5],
+        'recent_activity': bookings[:6],
+    }
+    return render(request, 'properties/traveller_dashboard.html', context)

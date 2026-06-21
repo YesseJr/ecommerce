@@ -41,15 +41,28 @@
 
     <div class="flex items-center gap-8">
 
-      <!-- Always visible -->
-      <a href="{% url 'properties:home' %}"
-         class="text-white/80 hover:text-accent text-sm font-medium transition">
-        Home
-      </a>
-      <a href="{% url 'properties:list' %}"
-         class="text-white/80 hover:text-accent text-sm font-medium transition">
-        Properties
-      </a>
+{% if not user.is_authenticated %}
+  <a href="{% url 'properties:home' %}"
+     class="text-white/80 hover:text-accent text-sm font-medium transition">
+    Home
+  </a>
+{% endif %}
+
+<!-- Traveller Dashboard goes first, before Properties -->
+{% if user.is_traveller %}
+  <a href="{% url 'properties:traveller_dashboard' %}"
+     class="text-white/80 hover:text-accent text-sm font-medium transition">
+    Dashboard
+  </a>
+{% endif %}
+
+<!-- Hide Properties for owners only -->
+{% if not user.is_owner %}
+  <a href="{% url 'properties:list' %}"
+     class="text-white/80 hover:text-accent text-sm font-medium transition">
+    Properties
+  </a>
+{% endif %}
 
       {% if user.is_authenticated %}
 
@@ -64,32 +77,36 @@
           </span>
 
         <!-- ── PROPERTY OWNER ── -->
-        {% elif user.is_owner %}
-          <a href="{% url 'properties:owner_dashboard' %}"
-             class="text-white/80 hover:text-accent text-sm font-medium transition">
-            Dashboard
-          </a>
-          <a href="{% url 'properties:add_property' %}"
-             class="text-white/80 hover:text-accent text-sm font-medium transition">
-            + List Property
-          </a>
-          <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
-            Owner
-          </span>
+       {% elif user.is_owner %}
+  <a href="{% url 'properties:owner_dashboard' %}"
+     class="text-white/80 hover:text-accent text-sm font-medium transition">
+    Dashboard
+  </a>
+  <a href="{% url 'properties:owner_revenue' %}"
+     class="text-white/80 hover:text-accent text-sm font-medium transition">
+    📊 Revenue
+  </a>
+  <a href="{% url 'properties:add_property' %}"
+     class="text-white/80 hover:text-accent text-sm font-medium transition">
+    + List Property
+  </a>
+  <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
+    Owner
+  </span>
 
         <!-- ── TRAVELLER ── -->
         {% elif user.is_traveller %}
-          <a href="{% url 'bookings:cart' %}"
-             class="text-white/80 hover:text-accent text-sm font-medium transition">
-            🛒 Cart
-          </a>
           <a href="{% url 'payments:my_bookings' %}"
              class="text-white/80 hover:text-accent text-sm font-medium transition">
             My Bookings
           </a>
-          <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
+          <a href="{% url 'bookings:cart' %}"
+             class="text-white/80 hover:text-accent text-sm font-medium transition">
+            🛒 Cart
+          </a>
+          <!-- <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
             Traveller
-          </span>
+          </span> -->
 
         {% endif %}
 
@@ -195,7 +212,7 @@
     </div>
 
     <div class="border-t border-white/10 mt-10 pt-6 flex justify-between items-center">
-      <p class="text-white/30 text-xs">© 2026 BookMyStay. Built with ❤️ by Group 3.</p>
+      <p class="text-white/30 text-xs">© 2026 BookMyStay. Built with ❤️ by Group 3 Technologies.</p>
       <p class="text-white/20 text-xs">Tanzania's Accommodation Marketplace</p>
     </div>
   </footer>

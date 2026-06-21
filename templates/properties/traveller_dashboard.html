@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}My Dashboard — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-cream">
+
+  <!-- ─── HERO HEADER ─── -->
+  <div class="bg-dark px-16 pt-24 pb-10">
+    <div class="flex justify-between items-end">
+      <div>
+        <span class="text-xs font-bold tracking-widest uppercase text-accent">
+          ✦ Traveller Panel
+        </span>
+        <h1 class="font-display text-6xl font-bold text-white mt-2 leading-none">
+          Welcome back,<br/>
+          <em class="text-accent not-italic">{{ user.first_name }}.</em>
+        </h1>
+        <p class="text-white/40 text-sm mt-3">
+          Here's a look at your trips and bookings.
+        </p>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="flex flex-col gap-3 items-end">
+        <a href="{% url 'properties:list' %}"
+           class="bg-accent text-white px-6 py-3 rounded-full font-semibold text-sm hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
+          <span class="text-lg">+</span> Browse Properties
+        </a>
+        <div class="flex gap-2">
+          <a href="{% url 'bookings:cart' %}"
+             class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-4 py-2 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+            🛒 My Cart
+          </a>
+          <a href="{% url 'payments:my_bookings' %}"
+             class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-4 py-2 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+            📋 All Bookings
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Stats Strip inside header ─── -->
+    <div class="grid grid-cols-4 gap-4 mt-10">
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Total Bookings</p>
+        <p class="font-bebas text-5xl text-white">{{ total_bookings }}</p>
+        <p class="text-white/30 text-xs mt-1">all time</p>
+      </div>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Upcoming Stays</p>
+        <p class="font-bebas text-5xl text-green-400">{{ upcoming_count }}</p>
+        <p class="text-white/30 text-xs mt-1">confirmed trips</p>
+      </div>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Cart Items</p>
+        <p class="font-bebas text-5xl text-accent">{{ cart_count }}</p>
+        <p class="text-white/30 text-xs mt-1">awaiting checkout</p>
+      </div>
+      <div class="bg-accent/20 border border-accent/30 rounded-2xl p-5">
+        <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Total Spent</p>
+        <p class="font-bebas text-5xl text-white">${{ total_spent|floatformat:2 }}</p>
+        <p class="text-white/30 text-xs mt-1">on confirmed stays</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MAIN CONTENT ─── -->
+  <div class="px-16 py-10">
+
+    <!-- ─── UPCOMING STAYS ─── -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h2 class="font-display text-3xl font-bold text-dark">
+          Upcoming <em class="text-primary">Stays</em>
+        </h2>
+        <p class="text-gray-400 text-sm mt-0.5">Trips on the horizon</p>
+      </div>
+      <a href="{% url 'payments:my_bookings' %}"
+         class="text-accent font-semibold text-sm flex items-center gap-2 hover:gap-4 transition-all">
+        View all bookings →
+      </a>
+    </div>
+
+    {% if upcoming_bookings %}
+      <div class="flex flex-col gap-4 mb-14">
+        {% for booking in upcoming_bookings %}
+          <div class="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
+            <div class="flex gap-0 items-stretch">
+
+              <!-- Thumbnail -->
+              <div class="w-52 flex-shrink-0 relative">
+                {% with booking.property.images.first as img %}
+                  {% if img %}
+                    <img src="{{ img.image.url }}" alt="{{ booking.property.name }}"
+                         class="w-full h-full object-cover"/>
+                  {% else %}
+                    <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center min-h-[140px]">
+                      <span class="text-white/20 text-5xl">🏠</span>
+                    </div>
+                  {% endif %}
+                {% endwith %}
+                <div class="absolute top-3 left-3">
+                  <span class="text-xs font-bold px-3 py-1 rounded-full shadow-sm bg-green-500 text-white">
+                    {{ booking.get_status_display }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Content -->
+              <div class="flex-1 p-6 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-start justify-between mb-2">
+                    <div>
+                      <span class="text-xs font-bold uppercase tracking-widest text-accent mb-1 block">
+                        {{ booking.property.get_property_type_display }}
+                      </span>
+                      <h3 class="font-display text-2xl font-bold text-dark leading-tight">
+                        {{ booking.property.name }}
+                      </h3>
+                    </div>
+                    <div class="text-right flex-shrink-0 ml-4">
+                      <span class="font-bebas text-3xl text-dark">${{ booking.total_price }}</span>
+                      <p class="text-gray-400 text-xs -mt-1">total</p>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-wrap gap-4 mt-3">
+                    <span class="flex items-center gap-1.5 text-xs text-gray-500">
+                      <span>📍</span> {{ booking.property.city }}, {{ booking.property.country }}
+                    </span>
+                    <span class="flex items-center gap-1.5 text-xs text-gray-500">
+                      <span>📅</span> {{ booking.check_in|date:"M d" }} – {{ booking.check_out|date:"M d, Y" }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-end mt-5 pt-5 border-t border-gray-100">
+                  {% if booking.booking_property.slug %}
+  <a href="{% url 'properties:detail' booking.booking_property.slug %}"
+     class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 text-gray-500 hover:border-primary hover:text-primary transition">
+    👁 View Property
+  </a>
+{% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-16 bg-white rounded-2xl mb-14 text-gray-400">
+        <div class="text-5xl mb-4">🧳</div>
+        <p class="font-semibold text-dark">No upcoming stays yet</p>
+        <p class="text-sm mt-1 mb-6">Time to plan your next trip.</p>
+        <a href="{% url 'properties:list' %}"
+           class="inline-block bg-accent text-white px-8 py-3 rounded-full font-semibold text-sm hover:shadow-xl hover:-translate-y-0.5 transition-all">
+          Browse Properties
+        </a>
+      </div>
+    {% endif %}
+
+    <!-- ─── RECENT ACTIVITY ─── -->
+    <div class="mb-6">
+      <h2 class="font-display text-3xl font-bold text-dark">
+        Recent <em class="text-primary">Activity</em>
+      </h2>
+      <p class="text-gray-400 text-sm mt-0.5">Your latest bookings, at a glance</p>
+    </div>
+
+    {% if recent_activity %}
+      <div class="bg-white rounded-2xl shadow-sm divide-y divide-gray-100">
+        {% for booking in recent_activity %}
+          <div class="flex items-center justify-between px-6 py-4">
+            <div class="flex items-center gap-4">
+              <div class="w-2 h-2 rounded-full
+                {% if booking.status == 'confirmed' %}bg-green-400
+                {% elif booking.status == 'pending' %}bg-orange-400
+                {% else %}bg-gray-300{% endif %}">
+              </div>
+              <div>
+                <p class="font-semibold text-dark text-sm">{{ booking.property.name }}</p>
+                <p class="text-gray-400 text-xs">{{ booking.check_in|date:"M d" }} – {{ booking.check_out|date:"M d, Y" }}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold px-3 py-1 rounded-full
+                {% if booking.status == 'confirmed' %}bg-green-50 text-green-600
+                {% elif booking.status == 'pending' %}bg-orange-50 text-orange-600
+                {% else %}bg-gray-100 text-gray-500{% endif %}">
+                {{ booking.get_status_display }}
+              </span>
+              <span class="font-bebas text-xl text-dark">${{ booking.total_price }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-16 bg-white rounded-2xl text-gray-400">
+        <div class="text-5xl mb-4">📋</div>
+        <p class="font-semibold text-dark">No activity yet</p>
+        <p class="text-sm mt-1">Your bookings will show up here.</p>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

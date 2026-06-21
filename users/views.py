@@ -50,6 +50,8 @@ def login_view(request):
                     return redirect(next_url)
                 if user.is_owner:
                     return redirect('properties:owner_dashboard')
+                elif user.is_traveller:
+                    return redirect('properties:traveller_dashboard')
                 return redirect('properties:home')
             else:
                 messages.error(request, "Invalid username or password.")

@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+
+{% block title %}Revenue Analytics — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-cream">
+
+  <!-- ─── HERO HEADER ─── -->
+  <div class="bg-dark px-16 pt-24 pb-10">
+    <div class="flex justify-between items-end">
+      <div>
+        <a href="{% url 'properties:owner_dashboard' %}"
+           class="text-white/40 hover:text-white text-sm transition flex items-center gap-1">
+          ← Dashboard
+        </a>
+        <span class="text-xs font-bold tracking-widest uppercase text-accent block mt-4">
+          ✦ Revenue Analytics
+        </span>
+        <h1 class="font-display text-6xl font-bold text-white mt-2 leading-none">
+          Your <em class="text-accent not-italic">Earnings</em>
+        </h1>
+        <p class="text-white/40 text-sm mt-3">
+          All figures based on confirmed bookings only.
+        </p>
+      </div>
+      <a href="{% url 'properties:owner_bookings' %}"
+         class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-5 py-2.5 rounded-full text-sm font-semibold transition flex items-center gap-2">
+        📋 All Bookings
+      </a>
+    </div>
+
+    <!-- Stats Strip -->
+    {% if property_stats %}
+    <div class="grid grid-cols-4 gap-4 mt-10">
+      <div class="bg-accent/20 border border-accent/30 rounded-2xl p-5">
+        <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Total Revenue</p>
+        <p class="font-bebas text-5xl text-white">${{ total_revenue|floatformat:0 }}</p>
+        <p class="text-white/30 text-xs mt-1">all confirmed bookings</p>
+      </div>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Confirmed Bookings</p>
+        <p class="font-bebas text-5xl text-white">{{ total_bookings }}</p>
+        <p class="text-white/30 text-xs mt-1">paid reservations</p>
+      </div>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Nights Sold</p>
+        <p class="font-bebas text-5xl text-white">{{ total_nights }}</p>
+        <p class="text-white/30 text-xs mt-1">total room-nights</p>
+      </div>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Avg Booking Value</p>
+        <p class="font-bebas text-5xl text-white">${{ avg_booking_value|floatformat:0 }}</p>
+        <p class="text-white/30 text-xs mt-1">per confirmed booking</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="px-16 py-10">
+
+    {% if property_stats %}
+
+      <!-- Top Performer Banner -->
+      {% if top_property and top_property.revenue > 0 %}
+        <div class="bg-gradient-to-r from-primary to-blue-900 rounded-2xl p-6 mb-10 flex items-center gap-5">
+          <div class="w-14 h-14 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
+            <span class="text-3xl">🏆</span>
+          </div>
+          <div class="flex-1">
+            <p class="text-white/60 text-xs font-bold uppercase tracking-widest">Top Performing Property</p>
+            <p class="font-display text-2xl font-bold text-white mt-0.5">{{ top_property.property.name }}</p>
+            <p class="text-white/50 text-sm mt-0.5">
+              {{ top_property.bookings_count }} booking{{ top_property.bookings_count|pluralize }} ·
+              {{ top_property.nights_sold }} night{{ top_property.nights_sold|pluralize }} sold ·
+              📍 {{ top_property.property.city }}
+            </p>
+          </div>
+          <div class="text-right flex-shrink-0">
+            <p class="font-bebas text-5xl text-accent">${{ top_property.revenue|floatformat:0 }}</p>
+            <p class="text-white/40 text-xs mt-0.5">total earned</p>
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Charts Row -->
+      <div class="grid grid-cols-3 gap-6 mb-8">
+
+        <!-- Bar Chart: Revenue by Property -->
+        <div class="col-span-2 bg-white rounded-2xl p-6 shadow-sm">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="font-semibold text-dark text-lg">Revenue by Property</h3>
+              <p class="text-gray-400 text-xs mt-0.5">Which listings are earning the most</p>
+            </div>
+            <span class="text-xs font-bold text-accent bg-accent/10 px-3 py-1 rounded-full">Bar</span>
+          </div>
+          <div style="height: 280px;">
+            <canvas id="revenueByPropertyChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Donut Chart: Revenue Share -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <div class="mb-4">
+            <h3 class="font-semibold text-dark text-lg">Revenue Share</h3>
+            <p class="text-gray-400 text-xs mt-0.5">Contribution per property</p>
+          </div>
+          <div style="height: 280px;">
+            <canvas id="revenueShareChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Trend -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm mb-8">
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <h3 class="font-semibold text-dark text-lg">Revenue Trend — Last 6 Months</h3>
+            <p class="text-gray-400 text-xs mt-0.5">Track how your earnings are growing over time</p>
+          </div>
+          <span class="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">Line</span>
+        </div>
+        <div style="height: 260px;">
+          <canvas id="monthlyTrendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Bookings per Property Bar -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm mb-8">
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <h3 class="font-semibold text-dark text-lg">Bookings per Property</h3>
+            <p class="text-gray-400 text-xs mt-0.5">Number of confirmed reservations per listing</p>
+          </div>
+          <span class="text-xs font-bold text-gold bg-gold/10 px-3 py-1 rounded-full">Bar</span>
+        </div>
+        <div style="height: 220px;">
+          <canvas id="bookingsPerPropertyChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Per-Property Breakdown Table -->
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div class="p-6 pb-0 flex justify-between items-center">
+          <div>
+            <h3 class="font-semibold text-dark text-lg">Property Breakdown</h3>
+            <p class="text-gray-400 text-xs mt-0.5 mb-4">Full earnings detail, ranked by revenue</p>
+          </div>
+        </div>
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-100 bg-gray-50/50">
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">#</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Property</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Bookings</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Nights Sold</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Avg / Booking</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Revenue</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Share</th>
+              <th class="text-left px-6 py-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for stat in property_stats %}
+              <tr class="border-b border-gray-50 hover:bg-cream transition">
+                <td class="px-6 py-4 text-sm text-gray-400 font-medium">{{ forloop.counter }}</td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-12 h-9 rounded-lg overflow-hidden flex-shrink-0">
+                      {% with stat.property.images.first as img %}
+                        {% if img %}
+                          <img src="{{ img.image.url }}" alt="" class="w-full h-full object-cover"/>
+                        {% else %}
+                          <div class="w-full h-full bg-primary flex items-center justify-center">
+                            <span class="text-white/40 text-sm">🏠</span>
+                          </div>
+                        {% endif %}
+                      {% endwith %}
+                    </div>
+                    <div>
+                      <p class="font-semibold text-dark text-sm">{{ stat.property.name }}</p>
+                      <p class="text-xs text-gray-400">{{ stat.property.city }} · {{ stat.property.get_property_type_display }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-dark font-medium">{{ stat.bookings_count }}</td>
+                <td class="px-6 py-4 text-sm text-dark font-medium">{{ stat.nights_sold }}</td>
+                <td class="px-6 py-4 text-sm text-dark">${{ stat.avg_per_booking|floatformat:0 }}</td>
+                <td class="px-6 py-4">
+                  <span class="font-bold text-accent text-base">${{ stat.revenue|floatformat:0 }}</span>
+                </td>
+                <td class="px-6 py-4">
+                  {% if total_revenue > 0 %}
+                    <div class="flex items-center gap-2">
+                      <div class="flex-1 bg-gray-100 rounded-full h-1.5 w-20">
+                        <div class="bg-accent h-1.5 rounded-full"
+                             style="width: {% widthratio stat.revenue total_revenue 100 %}%">
+                        </div>
+                      </div>
+                      <span class="text-xs text-gray-500">
+                        {% widthratio stat.revenue total_revenue 100 %}%
+                      </span>
+                    </div>
+                  {% else %}
+                    <span class="text-xs text-gray-400">—</span>
+                  {% endif %}
+                </td>
+                <td class="px-6 py-4">
+                  {% if forloop.first and stat.revenue > 0 %}
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-green-100 text-green-700">
+                      🏆 Top
+                    </span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    {% else %}
+      <div class="text-center py-24 text-gray-400">
+        <div class="w-24 h-24 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="text-5xl">📊</span>
+        </div>
+        <h3 class="text-xl font-semibold text-dark mb-2">No earnings data yet</h3>
+        <p class="text-sm mb-6 max-w-sm mx-auto">
+          Add a property, get it approved, and start receiving bookings to see your analytics here.
+        </p>
+        <a href="{% url 'properties:add_property' %}"
+           class="inline-block bg-accent text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition">
+          + Add Your First Property
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if property_stats %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+  const chartLabels    = {{ chart_labels_json|safe }}
+  const chartRevenue   = {{ chart_revenue_json|safe }}
+  const chartBookings  = {{ chart_bookings_json|safe }}
+  const monthlyLabels  = {{ monthly_labels_json|safe }}
+  const monthlyRevenue = {{ monthly_revenue_json|safe }}
+  const palette = ['#F97316','#1B3A6B','#D97706','#15803D','#7C3AED','#DB2777','#0891B2']
+
+  Chart.defaults.font.family = "'DM Sans', sans-serif"
+
+  // Bar: Revenue by Property
+  new Chart(document.getElementById('revenueByPropertyChart'), {
+    type: 'bar',
+    data: {
+      labels: chartLabels,
+      datasets: [{
+        label: 'Revenue ($)',
+        data: chartRevenue,
+        backgroundColor: palette,
+        borderRadius: 10,
+        maxBarThickness: 60,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { callback: v => '$' + v.toLocaleString() } },
+        x: { grid: { display: false } }
+      }
+    }
+  })
+
+  // Donut: Revenue Share
+  new Chart(document.getElementById('revenueShareChart'), {
+    type: 'doughnut',
+    data: {
+      labels: chartLabels,
+      datasets: [{ data: chartRevenue, backgroundColor: palette, borderWidth: 0 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 }, padding: 12 } }
+      },
+      cutout: '68%',
+    }
+  })
+
+  // Line: Monthly Trend
+  new Chart(document.getElementById('monthlyTrendChart'), {
+    type: 'line',
+    data: {
+      labels: monthlyLabels,
+      datasets: [{
+        label: 'Revenue ($)',
+        data: monthlyRevenue,
+        borderColor: '#1B3A6B',
+        backgroundColor: 'rgba(27,58,107,0.07)',
+        fill: true, tension: 0.4,
+        pointBackgroundColor: '#F97316',
+        pointRadius: 6, pointHoverRadius: 8,
+        borderWidth: 3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { callback: v => '$' + v.toLocaleString() } },
+        x: { grid: { display: false } }
+      }
+    }
+  })
+
+  // Bar: Bookings per Property
+  new Chart(document.getElementById('bookingsPerPropertyChart'), {
+    type: 'bar',
+    data: {
+      labels: chartLabels,
+      datasets: [{
+        label: 'Bookings',
+        data: chartBookings,
+        backgroundColor: '#1B3A6B',
+        borderRadius: 10,
+        maxBarThickness: 60,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { stepSize: 1 } },
+        x: { grid: { display: false } }
+      }
+    }
+  })
+</script>
+{% endif %}
+{% endblock %}
