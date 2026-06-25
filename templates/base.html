@@ -41,8 +41,8 @@
 
     <div class="flex items-center gap-8">
 
-      <!-- ── Currency Selector (travellers only) ── -->
-      {% if user.is_traveller %}
+      <!-- ── Currency Selector (travellers AND owners) ── -->
+      {% if user.is_traveller or user.is_owner %}
         <div class="flex items-center gap-1 bg-white/10 rounded-full px-1 py-1">
           <button id="nav-usd" onclick="navSetCurrency('USD')"
                   class="nav-curr-btn text-xs font-bold px-3 py-1.5 rounded-full transition-all text-white/60 hover:text-white">
@@ -55,28 +55,28 @@
         </div>
       {% endif %}
 
-{% if not user.is_authenticated %}
-  <a href="{% url 'properties:home' %}"
-     class="text-white/80 hover:text-accent text-sm font-medium transition">
-    Home
-  </a>
-{% endif %}
+      {% if not user.is_authenticated %}
+        <a href="{% url 'properties:home' %}"
+           class="text-white/80 hover:text-accent text-sm font-medium transition">
+          Home
+        </a>
+      {% endif %}
 
-<!-- Traveller Dashboard goes first, before Properties -->
-{% if user.is_traveller %}
-  <a href="{% url 'properties:traveller_dashboard' %}"
-     class="text-white/80 hover:text-accent text-sm font-medium transition">
-    Dashboard
-  </a>
-{% endif %}
+      <!-- Traveller Dashboard goes first, before Properties -->
+      {% if user.is_traveller %}
+        <a href="{% url 'properties:traveller_dashboard' %}"
+           class="text-white/80 hover:text-accent text-sm font-medium transition">
+          Dashboard
+        </a>
+      {% endif %}
 
-<!-- Hide Properties for owners only -->
-{% if not user.is_owner %}
-  <a href="{% url 'properties:list' %}"
-     class="text-white/80 hover:text-accent text-sm font-medium transition">
-    Properties
-  </a>
-{% endif %}
+      <!-- Hide Properties for owners only -->
+      {% if not user.is_owner %}
+        <a href="{% url 'properties:list' %}"
+           class="text-white/80 hover:text-accent text-sm font-medium transition">
+          Properties
+        </a>
+      {% endif %}
 
       {% if user.is_authenticated %}
 
@@ -91,22 +91,22 @@
           </span>
 
         <!-- ── PROPERTY OWNER ── -->
-       {% elif user.is_owner %}
-  <a href="{% url 'properties:owner_dashboard' %}"
-     class="text-white/80 hover:text-accent text-sm font-medium transition">
-    Dashboard
-  </a>
-  <a href="{% url 'properties:owner_revenue' %}"
-     class="text-white/80 hover:text-accent text-sm font-medium transition">
-    📊 Revenue
-  </a>
-  <a href="{% url 'properties:add_property' %}"
-     class="text-white/80 hover:text-accent text-sm font-medium transition">
-    + List Property
-  </a>
-  <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
-    Owner
-  </span>
+        {% elif user.is_owner %}
+          <a href="{% url 'properties:owner_dashboard' %}"
+             class="text-white/80 hover:text-accent text-sm font-medium transition">
+            Dashboard
+          </a>
+          <a href="{% url 'properties:owner_revenue' %}"
+             class="text-white/80 hover:text-accent text-sm font-medium transition">
+            📊 Revenue
+          </a>
+          <a href="{% url 'properties:add_property' %}"
+             class="text-white/80 hover:text-accent text-sm font-medium transition">
+            + List Property
+          </a>
+          <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
+            Owner
+          </span>
 
         <!-- ── TRAVELLER ── -->
         {% elif user.is_traveller %}
@@ -118,9 +118,6 @@
              class="text-white/80 hover:text-accent text-sm font-medium transition">
             🛒 Cart
           </a>
-          <!-- <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
-            Traveller
-          </span> -->
 
         {% endif %}
 
@@ -202,7 +199,7 @@
         </div>
 
         <div>
-          <h5 class="text-white/60 text-xs font-bold uppercase tracking-widest mb-3">Account</h5>
+          <h5 class="text-white/60 text-xs font-bold uppercase tracking-widests mb-3">Account</h5>
           <ul class="flex flex-col gap-2">
             {% if user.is_authenticated %}
               <li><a href="{% url 'users:profile' %}" class="text-white/40 text-sm hover:text-accent transition">My Profile</a></li>
@@ -243,27 +240,22 @@
     }, 4000)
   </script>
 
-  <!-- ─── CURRENCY NAV INIT ─── -->
-  {% if user.is_traveller %}
+  <!-- ─── CURRENCY NAV INIT (travellers AND owners) ─── -->
+  {% if user.is_traveller or user.is_owner %}
   <script>
     (function() {
       const SET_URL = "{% url 'payments:set_currency' %}";
       const CSRF    = "{{ csrf_token }}";
 
-      function getStoredCurrency() {
-        return document.cookie.split('; ')
-          .find(r => r.startsWith('sessionid=')) ? null : null;
-      }
-
       function updateNavButtons(c) {
         const usdBtn = document.getElementById('nav-usd');
         const tzsBtn = document.getElementById('nav-tzs');
         if (!usdBtn || !tzsBtn) return;
-        [usdBtn, tzsBtn].forEach(b => {
+        [usdBtn, tzsBtn].forEach(function(b) {
           b.style.background = '';
           b.style.color = 'rgba(255,255,255,0.6)';
         });
-        const active = c === 'TZS' ? tzsBtn : usdBtn;
+        var active = c === 'TZS' ? tzsBtn : usdBtn;
         active.style.background = 'rgba(255,255,255,0.2)';
         active.style.color = 'white';
       }
@@ -274,12 +266,12 @@
           method: 'POST',
           headers: {'Content-Type':'application/json','X-CSRFToken':CSRF},
           body: JSON.stringify({currency: c})
-        }).then(() => {
+        }).then(function() {
           if (window.location.pathname.startsWith('/payments/checkout')) {
             // Checkout page handles its own DOM updates — delegate to it
-            if (typeof setCurrency === 'function') setCurrency(c);
+            if (typeof window.setCurrency === 'function') window.setCurrency(c);
           } else {
-            // All other pages: reload so Django re-renders prices in the new currency
+            // All other pages: reload so Django re-renders server-side prices
             window.location.reload();
           }
         });
@@ -288,11 +280,16 @@
       // Expose globally
       window.navSetCurrency = navSetCurrency;
 
-      // Init from server-side session currency
+      // Init active button state AND apply currency to all bms-price elements on load
       fetch("{% url 'payments:currency_info' %}")
-        .then(r => r.json())
-        .then(d => updateNavButtons(d.currency))
-        .catch(() => updateNavButtons('USD'));
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          updateNavButtons(d.currency);
+          if (typeof window.setCurrency === 'function') {
+            window.setCurrency(d.currency);
+          }
+        })
+        .catch(function() { updateNavButtons('USD'); });
     })();
   </script>
   {% endif %}

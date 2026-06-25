@@ -58,9 +58,9 @@
         <p class="text-white/30 text-xs mt-1">awaiting approval</p>
       </div>
       <div class="bg-accent/20 border border-accent/30 rounded-2xl p-5">
-      <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Inactive</p>
-      <p class="font-bebas text-5xl text-white">{{ inactive }}</p>
-      <p class="text-white/30 text-xs mt-1">paused listings</p>
+        <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Inactive</p>
+        <p class="font-bebas text-5xl text-white">{{ inactive }}</p>
+        <p class="text-white/30 text-xs mt-1">paused listings</p>
       </div>
     </div>
   </div>
@@ -158,7 +158,10 @@
                       </h3>
                     </div>
                     <div class="text-right flex-shrink-0 ml-4">
-                      <span class="font-bebas text-3xl text-dark">${{ prop.price_per_night }}</span>
+                      <!-- Currency-aware price display -->
+                      <span class="font-bebas text-3xl text-dark bms-price" data-usd="{{ prop.price_per_night }}">
+                        {% if currency == 'TZS' %}TSh {{ prop.price_per_night|floatformat:0 }}{% else %}${{ prop.price_per_night }}{% endif %}
+                      </span>
                       <p class="text-gray-400 text-xs -mt-1">per night</p>
                     </div>
                   </div>
@@ -259,31 +262,55 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
 <script>
+  // ── Filter pills ──────────────────────────────────────────────────
   function filterProps(status) {
-    const cards   = document.querySelectorAll('.property-card')
-    const buttons = document.querySelectorAll('.filter-btn')
-    const noResults = document.getElementById('no-filter-results')
-    let visible = 0
+    var cards     = document.querySelectorAll('.property-card');
+    var buttons   = document.querySelectorAll('.filter-btn');
+    var noResults = document.getElementById('no-filter-results');
+    var visible   = 0;
 
-    cards.forEach(card => {
-      const match = status === 'all' || card.dataset.status === status
-      card.style.display = match ? 'block' : 'none'
-      if (match) visible++
-    })
+    cards.forEach(function(card) {
+      var match = status === 'all' || card.dataset.status === status;
+      card.style.display = match ? 'block' : 'none';
+      if (match) visible++;
+    });
 
-    buttons.forEach(btn => {
-      const isActive = btn.dataset.filter === status
-      btn.classList.toggle('bg-accent',    isActive)
-      btn.classList.toggle('text-white',   isActive)
-      btn.classList.toggle('border-accent', isActive)
-      btn.classList.toggle('text-gray-500', !isActive)
-      btn.classList.toggle('border-gray-200', !isActive)
-    })
+    buttons.forEach(function(btn) {
+      var isActive = btn.dataset.filter === status;
+      btn.classList.toggle('bg-accent',       isActive);
+      btn.classList.toggle('text-white',      isActive);
+      btn.classList.toggle('border-accent',   isActive);
+      btn.classList.toggle('text-gray-500',   !isActive);
+      btn.classList.toggle('border-gray-200', !isActive);
+    });
 
     if (noResults) {
-      noResults.classList.toggle('hidden', visible > 0)
+      noResults.classList.toggle('hidden', visible > 0);
     }
   }
+
+  // ── Currency formatting ───────────────────────────────────────────
+  (function() {
+    var RATE = {{ rate|default:2500 }};
+
+    function fmtPrice(usd, c) {
+      if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+      return '$' + parseFloat(usd).toFixed(2);
+    }
+
+    // setCurrency is called by navSetCurrency in base.html on toggle
+    window.setCurrency = function(c) {
+      document.querySelectorAll('.bms-price[data-usd]').forEach(function(el) {
+        el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+      });
+    };
+
+    // Auto-apply current session currency on page load
+    window.setCurrency('{{ currency|default:"USD" }}');
+  })();
 </script>
 {% endblock %}
