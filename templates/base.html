@@ -41,6 +41,20 @@
 
     <div class="flex items-center gap-8">
 
+      <!-- ── Currency Selector (travellers only) ── -->
+      {% if user.is_traveller %}
+        <div class="flex items-center gap-1 bg-white/10 rounded-full px-1 py-1">
+          <button id="nav-usd" onclick="navSetCurrency('USD')"
+                  class="nav-curr-btn text-xs font-bold px-3 py-1.5 rounded-full transition-all text-white/60 hover:text-white">
+            $ USD
+          </button>
+          <button id="nav-tzs" onclick="navSetCurrency('TZS')"
+                  class="nav-curr-btn text-xs font-bold px-3 py-1.5 rounded-full transition-all text-white/60 hover:text-white">
+            TSh
+          </button>
+        </div>
+      {% endif %}
+
 {% if not user.is_authenticated %}
   <a href="{% url 'properties:home' %}"
      class="text-white/80 hover:text-accent text-sm font-medium transition">
@@ -228,6 +242,60 @@
       }
     }, 4000)
   </script>
+
+  <!-- ─── CURRENCY NAV INIT ─── -->
+  {% if user.is_traveller %}
+  <script>
+    (function() {
+      const SET_URL = "{% url 'payments:set_currency' %}";
+      const CSRF    = "{{ csrf_token }}";
+
+      function getStoredCurrency() {
+        return document.cookie.split('; ')
+          .find(r => r.startsWith('sessionid=')) ? null : null;
+      }
+
+      function updateNavButtons(c) {
+        const usdBtn = document.getElementById('nav-usd');
+        const tzsBtn = document.getElementById('nav-tzs');
+        if (!usdBtn || !tzsBtn) return;
+        [usdBtn, tzsBtn].forEach(b => {
+          b.style.background = '';
+          b.style.color = 'rgba(255,255,255,0.6)';
+        });
+        const active = c === 'TZS' ? tzsBtn : usdBtn;
+        active.style.background = 'rgba(255,255,255,0.2)';
+        active.style.color = 'white';
+      }
+
+      function navSetCurrency(c) {
+        updateNavButtons(c);
+        fetch(SET_URL, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json','X-CSRFToken':CSRF},
+          body: JSON.stringify({currency: c})
+        }).then(() => {
+          if (window.location.pathname.startsWith('/payments/checkout')) {
+            // Checkout page handles its own DOM updates — delegate to it
+            if (typeof setCurrency === 'function') setCurrency(c);
+          } else {
+            // All other pages: reload so Django re-renders prices in the new currency
+            window.location.reload();
+          }
+        });
+      }
+
+      // Expose globally
+      window.navSetCurrency = navSetCurrency;
+
+      // Init from server-side session currency
+      fetch("{% url 'payments:currency_info' %}")
+        .then(r => r.json())
+        .then(d => updateNavButtons(d.currency))
+        .catch(() => updateNavButtons('USD'));
+    })();
+  </script>
+  {% endif %}
 
   {% block extra_js %}{% endblock %}
 </body>

@@ -91,7 +91,7 @@
                       <div>
                         <p class="font-semibold text-dark text-sm">{{ extra.name }}</p>
                         <p class="text-xs text-gray-400 mt-0.5">
-                          ${{ extra.price }} · {{ extra.get_charge_type_display }}
+                          <span class="bms-price" data-usd="{{ extra.price }}">{% if currency == 'TZS' %}TSh {{ extra.price|floatformat:0 }}{% else %}${{ extra.price }}{% endif %}</span> · {{ extra.get_charge_type_display }}
                           {% if extra.description %} · {{ extra.description }}{% endif %}
                         </p>
                       </div>
@@ -154,12 +154,13 @@
           <div class="flex flex-col gap-3 mb-4">
             <div class="flex justify-between text-sm">
               <span class="text-gray-500">
-                ${{ cart.booking_property.price_per_night }} × {{ cart.nights }} night{{ cart.nights|pluralize }}
+                <span class="bms-price" data-usd="{{ cart.booking_property.price_per_night }}">{% if currency == 'TZS' %}TSh {{ cart.booking_property.price_per_night|floatformat:0 }}{% else %}${{ cart.booking_property.price_per_night }}{% endif %}</span>
+                × {{ cart.nights }} night{{ cart.nights|pluralize }}
               </span>
-              <span class="font-semibold text-dark">${{ cart.room_total }}</span>
+              <span class="font-semibold text-dark bms-price" data-usd="{{ cart.room_total }}">{% if currency == 'TZS' %}TSh {{ cart.room_total|floatformat:0 }}{% else %}${{ cart.room_total }}{% endif %}</span>
             </div>
 
-            <!-- Extras Breakdown -->
+            <!-- FIX 1 & 2: Extras Breakdown — use item.line_total instead of item.extra.price -->
             {% for item in cart.items.all %}
               <div class="flex justify-between text-sm">
                 <span class="text-gray-500">
@@ -170,14 +171,8 @@
                     × {{ cart.guests }}p
                   {% endif %}
                 </span>
-                <span class="font-semibold text-dark">
-                  ${% if item.extra.charge_type == 'per_night' %}
-                    {{ item.extra.price|floatformat:2 }}
-                  {% elif item.extra.charge_type == 'per_person' %}
-                    {{ item.extra.price|floatformat:2 }}
-                  {% else %}
-                    {{ item.extra.price|floatformat:2 }}
-                  {% endif %}
+                <span class="font-semibold text-dark bms-price" data-usd="{{ item.line_total }}">
+                  {% if currency == 'TZS' %}TSh {{ item.line_total|floatformat:0 }}{% else %}${{ item.line_total|floatformat:2 }}{% endif %}
                 </span>
               </div>
             {% endfor %}
@@ -186,17 +181,17 @@
           <div class="border-t border-gray-100 pt-4 mb-6">
             <div class="flex justify-between">
               <span class="font-bold text-dark">Total</span>
-              <span class="font-bebas text-3xl text-accent">${{ cart.grand_total }}</span>
+              <span class="font-bebas text-3xl text-accent bms-price" data-usd="{{ cart.grand_total }}">{% if currency == 'TZS' %}TSh {{ cart.grand_total|floatformat:0 }}{% else %}${{ cart.grand_total }}{% endif %}</span>
             </div>
             <p class="text-xs text-gray-400 mt-1 text-right">
               Taxes and fees included
             </p>
           </div>
 
-         <a href="{% url 'payments:checkout' %}"
-   class="block w-full bg-accent text-white py-4 rounded-xl font-semibold text-center hover:shadow-xl hover:-translate-y-0.5 transition-all">
-  Proceed to Checkout →
-</a>
+          <a href="{% url 'payments:checkout' %}"
+             class="block w-full bg-accent text-white py-4 rounded-xl font-semibold text-center hover:shadow-xl hover:-translate-y-0.5 transition-all">
+            Proceed to Checkout →
+          </a>
 
           <p class="text-center text-xs text-gray-400 mt-3">
             🔒 Secure payment · Cancel anytime
@@ -219,4 +214,29 @@
   {% endif %}
 
 </div>
+
+{% block extra_js %}
+<script>
+  (function() {
+    const RATE = {{ rate|default:2500 }};
+
+    function fmtPrice(usd, c) {
+      if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+      return '$' + parseFloat(usd).toFixed(2);
+    }
+
+    window.setCurrency = function(c) {
+      document.querySelectorAll('.bms-price[data-usd]').forEach(function(el) {
+        el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+      });
+    };
+
+    // FIX 3: Auto-invoke on page load so prices reflect the current session currency
+    document.addEventListener('DOMContentLoaded', function() {
+      window.setCurrency('{{ currency|default:"USD" }}');
+    });
+  })();
+</script>
+{% endblock %}
+
 {% endblock %}

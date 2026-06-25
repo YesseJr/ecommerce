@@ -112,7 +112,10 @@
             <p class="text-gray-400 text-xs mb-3 line-clamp-2">{{ prop.description }}</p>
             <div class="flex justify-between items-center pt-3 border-t border-gray-100">
               <div>
-                <span class="font-bold text-dark text-lg">${{ prop.price_per_night }}</span>
+                <!-- FIX 1: class renamed from prop-price → bms-price to match site-wide convention -->
+                <span class="font-bold text-dark text-lg bms-price" data-usd="{{ prop.price_per_night }}">
+                  {% if currency == 'TZS' %}TSh {{ prop.price_per_night|floatformat:0 }}{% else %}${{ prop.price_per_night }}{% endif %}
+                </span>
                 <span class="text-gray-400 text-sm"> / night</span>
               </div>
               <div class="flex gap-3 text-xs text-gray-400">
@@ -139,4 +142,30 @@
   {% endif %}
 
 </div>
+
+{% block extra_js %}
+<script>
+  (function() {
+    const RATE = {{ rate|default:2500 }};
+
+    function fmtPrice(usd, c) {
+      if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+      return '$' + parseFloat(usd).toFixed(2);
+    }
+
+    // FIX 2: selector updated from .prop-price to .bms-price to match renamed class
+    window.setCurrency = function(c) {
+      document.querySelectorAll('.bms-price[data-usd]').forEach(function(el) {
+        el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+      });
+    };
+
+    // FIX 3: auto-invoke on page load so prices reflect current session currency
+    document.addEventListener('DOMContentLoaded', function() {
+      window.setCurrency('{{ currency|default:"USD" }}');
+    });
+  })();
+</script>
+{% endblock %}
+
 {% endblock %}

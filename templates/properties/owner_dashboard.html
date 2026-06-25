@@ -58,13 +58,9 @@
         <p class="text-white/30 text-xs mt-1">awaiting approval</p>
       </div>
       <div class="bg-accent/20 border border-accent/30 rounded-2xl p-5">
-        <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Inactive</p>
-        <p class="font-bebas text-5xl text-white">{{ total|add:"-1"|add:"-1" }}</p>
-        <p class="text-white/30 text-xs mt-1">
-          {% with inactive=total|add:active|add:pending %}
-            paused listings
-          {% endwith %}
-        </p>
+      <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Inactive</p>
+      <p class="font-bebas text-5xl text-white">{{ inactive }}</p>
+      <p class="text-white/30 text-xs mt-1">paused listings</p>
       </div>
     </div>
   </div>

@@ -130,7 +130,9 @@
             <h3 class="font-display text-xl font-bold text-dark mb-3 leading-tight">{{ prop.name }}</h3>
             <div class="flex justify-between items-center pt-3 border-t border-gray-100">
               <div>
-                <span class="font-bold text-dark text-lg">${{ prop.price_per_night }}</span>
+                <span class="font-bold text-dark text-lg prop-price" data-usd="{{ prop.price_per_night }}">
+                  {% if currency == 'TZS' %}TSh {{ prop.price_per_night|floatformat:0 }}{% else %}${{ prop.price_per_night }}{% endif %}
+                </span>
                 <span class="text-gray-400 text-sm"> / night</span>
               </div>
               <span class="text-xs text-gray-400">👥 Up to {{ prop.max_guests }}</span>
@@ -255,5 +257,23 @@
     </div>
   </div>
 </section>
+
+{% block extra_js %}
+<script>
+  // Live currency update without reload — called by navSetCurrency in base.html
+  (function() {
+    const RATE = {{ rate|default:2500 }};
+    function fmtPrice(usd, c) {
+      if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+      return '$' + parseFloat(usd).toFixed(2);
+    }
+    window.setCurrency = function(c) {
+      document.querySelectorAll('.prop-price[data-usd]').forEach(function(el) {
+        el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+      });
+    };
+  })();
+</script>
+{% endblock %}
 
 {% endblock %}

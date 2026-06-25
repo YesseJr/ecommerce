@@ -7,42 +7,32 @@
 
   <!-- Success Banner -->
   <div class="max-w-2xl mx-auto text-center mb-12">
-    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
-      <span class="text-4xl">✅</span>
+    <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5 animate-bounce">
+      <span class="text-5xl">🎉</span>
     </div>
     <h1 class="font-display text-5xl font-bold text-dark mb-2">
       You're <em class="text-green-500">Booked!</em>
     </h1>
-    <p class="text-gray-400 text-lg">
-      Your reservation is confirmed. Have an amazing stay!
-    </p>
+    <p class="text-gray-400 text-lg">Your reservation is confirmed. Have an amazing stay!</p>
   </div>
 
   <div class="max-w-2xl mx-auto flex flex-col gap-6">
 
-    <!-- Reference Card -->
+    <!-- ── Reference Card ─────────────────────────────────────────────────── -->
     <div class="bg-white rounded-2xl p-8 shadow-sm text-center">
-      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
-        Booking Reference
-      </p>
-      <div class="font-bebas text-5xl text-accent tracking-widest mb-2">
-        {{ booking.reference }}
-      </div>
-      <p class="text-gray-400 text-sm">
-        Save this reference number for your records.
-      </p>
+      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Booking Reference</p>
+      <div class="font-bebas text-5xl text-accent tracking-widest mb-2">{{ booking.reference }}</div>
+      <p class="text-gray-400 text-sm">Save this reference number for your records.</p>
     </div>
 
-    <!-- Booking Details -->
+    <!-- ── Booking Details ────────────────────────────────────────────────── -->
     <div class="bg-white rounded-2xl p-8 shadow-sm">
       <h3 class="font-semibold text-dark mb-5 text-lg">Booking Details</h3>
-
       <div class="flex gap-5 mb-6">
         <div class="w-28 h-20 rounded-xl overflow-hidden flex-shrink-0">
           {% with booking.booking_property.images.first as img %}
             {% if img %}
-              <img src="{{ img.image.url }}" alt=""
-                   class="w-full h-full object-cover"/>
+              <img src="{{ img.image.url }}" alt="" class="w-full h-full object-cover"/>
             {% else %}
               <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
                 <span class="text-white/30 text-2xl">🏠</span>
@@ -51,12 +41,8 @@
           {% endwith %}
         </div>
         <div>
-          <h4 class="font-display text-xl font-bold text-dark">
-            {{ booking.booking_property.name }}
-          </h4>
-          <p class="text-gray-400 text-sm mt-1">
-            📍 {{ booking.booking_property.city }}, {{ booking.booking_property.country }}
-          </p>
+          <h4 class="font-display text-xl font-bold text-dark">{{ booking.booking_property.name }}</h4>
+          <p class="text-gray-400 text-sm mt-1">📍 {{ booking.booking_property.city }}, {{ booking.booking_property.country }}</p>
         </div>
       </div>
 
@@ -80,7 +66,7 @@
       </div>
     </div>
 
-    <!-- Extras -->
+    <!-- ── Extras ─────────────────────────────────────────────────────────── -->
     {% if booking.extras.all %}
       <div class="bg-white rounded-2xl p-8 shadow-sm">
         <h3 class="font-semibold text-dark mb-4 text-lg">Add-ons Included</h3>
@@ -98,44 +84,118 @@
       </div>
     {% endif %}
 
-    <!-- Payment Summary -->
+    <!-- ── Payment Receipt ────────────────────────────────────────────────── -->
     <div class="bg-white rounded-2xl p-8 shadow-sm">
-      <h3 class="font-semibold text-dark mb-4 text-lg">Payment Summary</h3>
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-semibold text-dark text-lg">Payment Receipt</h3>
+        <span class="text-xs font-bold px-3 py-1 rounded-full
+          {% if payment.status == 'success' %}bg-green-100 text-green-700
+          {% elif payment.status == 'failed' %}bg-red-100 text-red-500
+          {% elif payment.status == 'processing' %}bg-blue-100 text-blue-600
+          {% else %}bg-gray-100 text-gray-500{% endif %}">
+          {% if payment.status == 'success' %}✅ Successful{% else %}{{ payment.get_status_display }}{% endif %}
+        </span>
+      </div>
+
       <div class="flex flex-col gap-3">
+        <!-- Currency & Amount -->
         <div class="flex justify-between text-sm">
-          <span class="text-gray-500">Room total</span>
-          <span class="font-medium">${{ booking.room_total }}</span>
+          <span class="text-gray-500">Currency Used</span>
+          <span class="font-medium">
+            {% if payment.currency == 'TZS' %}🇹🇿 Tanzanian Shilling (TZS){% else %}🇺🇸 US Dollar (USD){% endif %}
+          </span>
         </div>
+
+        {% if payment.currency == 'TZS' %}
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Original Amount (USD)</span>
+            <span class="font-medium">${{ payment.amount_usd }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Exchange Rate Applied</span>
+            <span class="font-medium">1 USD = TSh {{ payment.exchange_rate|floatformat:0 }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Converted Amount (TZS)</span>
+            <span class="font-semibold text-dark">TSh {{ payment.amount|floatformat:0 }}</span>
+          </div>
+        {% else %}
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Room total</span>
+            <span class="font-medium">${{ booking.room_total }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Extras total</span>
+            <span class="font-medium">${{ booking.extras_total }}</span>
+          </div>
+        {% endif %}
+
         <div class="flex justify-between text-sm">
-          <span class="text-gray-500">Extras total</span>
-          <span class="font-medium">${{ booking.extras_total }}</span>
+          <span class="text-gray-500">Payment Method</span>
+          <span class="font-medium flex items-center gap-1.5">
+            {% if payment.is_card %}<span>💳</span>{% else %}<span>📱</span>{% endif %}
+            {{ payment.get_method_display }}
+            {% if payment.provider %}<span class="text-gray-400">({{ payment.provider }})</span>{% endif %}
+          </span>
         </div>
-        <div class="flex justify-between text-sm">
-          <span class="text-gray-500">Payment method</span>
-          <span class="font-medium">{{ payment.get_method_display }}</span>
-        </div>
-        <div class="flex justify-between text-sm">
+
+        <!-- Transaction ID -->
+        <div class="flex justify-between text-sm items-start">
           <span class="text-gray-500">Transaction ID</span>
-          <span class="font-medium text-xs text-gray-400">{{ payment.transaction_id }}</span>
+          <span class="font-mono text-xs text-gray-400 text-right max-w-xs break-all">{{ payment.transaction_id }}</span>
         </div>
+
+        <!-- Auth Code (card only) -->
+        {% if payment.authorization_code %}
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Authorization Code</span>
+            <span class="font-mono text-xs font-semibold text-indigo-600">{{ payment.authorization_code }}</span>
+          </div>
+        {% endif %}
+
+        <!-- Receipt Number (mobile money only) -->
+        {% if payment.receipt_number %}
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Receipt Number</span>
+            <span class="font-mono text-xs font-semibold text-green-600">{{ payment.receipt_number }}</span>
+          </div>
+        {% endif %}
+
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500">Payment Date</span>
+          <span class="font-medium">{{ payment.payment_date|date:"D, M j, Y · H:i" }}</span>
+        </div>
+
+        <!-- Grand Total -->
         <div class="flex justify-between pt-3 border-t border-gray-100">
           <span class="font-bold text-dark">Total Paid</span>
-          <span class="font-bebas text-3xl text-accent">${{ booking.grand_total }}</span>
+          <div class="text-right">
+            <span class="font-bebas text-3xl text-accent">
+              {% if payment.currency == 'TZS' %}TSh {{ payment.amount|floatformat:0 }}{% else %}${{ payment.amount }}{% endif %}
+            </span>
+            {% if payment.currency == 'TZS' %}
+              <p class="text-xs text-gray-400">= ${{ payment.amount_usd }} USD</p>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Actions -->
+    <!-- ── Actions ────────────────────────────────────────────────────────── -->
     <div class="flex gap-4">
       <a href="{% url 'payments:my_bookings' %}"
          class="flex-1 bg-primary text-white py-4 rounded-2xl font-semibold text-center hover:shadow-lg transition-all">
-        View My Bookings
+        📋 View My Bookings
       </a>
-      <a href="{% url 'properties:list' %}"
+      <a href="{% url 'payments:payment_history' %}"
          class="flex-1 border-2 border-gray-200 text-gray-600 py-4 rounded-2xl font-semibold text-center hover:border-accent hover:text-accent transition-all">
-        Browse More Properties
+        💳 Payment History
       </a>
     </div>
+    <a href="{% url 'properties:list' %}"
+       class="block text-center text-sm text-gray-400 hover:text-accent transition">
+      Browse More Properties →
+    </a>
   </div>
 </div>
 {% endblock %}

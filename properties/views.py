@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.text import slugify
 from django.db.models import Q, Sum
+
+import properties
 from .models import Property, PropertyImage, PropertyExtra, Amenity
 from .forms import PropertyForm, PropertyExtraForm
 from datetime import date
@@ -10,6 +12,20 @@ from django.http import Http404
 import json
 import calendar
 from django.utils import timezone
+
+# Currency helpers — imported lazily to avoid circular import
+def _get_currency_context(request):
+    """Return currency and rate for template context."""
+    try:
+        from payments.models import CurrencyConfig
+        from payments.views import get_session_currency
+        config   = CurrencyConfig.get_config()
+        currency = get_session_currency(request)
+        rate     = float(config.usd_to_tzs)
+    except Exception:
+        currency = 'USD'
+        rate     = 2500.0
+    return currency, rate
 
 # ─── PUBLIC VIEWS ───────────────────────────────────────
 
@@ -24,10 +40,13 @@ def home(request):
         status='active'
     ).values_list('city', flat=True).distinct()
 
+    currency, rate = _get_currency_context(request)
     return render(request, 'properties/home.html', {
-        'featured': featured,
-        'cities': cities,
-        'property_types': Property.PROPERTY_TYPES,  # 👈 add this
+        'featured':       featured,
+        'cities':         cities,
+        'property_types': Property.PROPERTY_TYPES,
+        'currency':       currency,
+        'rate':           rate,
     })
 
 def property_list(request):
@@ -65,10 +84,13 @@ def property_list(request):
         status='active'
     ).values_list('city', flat=True).distinct()
 
+    currency, rate = _get_currency_context(request)
     return render(request, 'properties/list.html', {
-        'properties': properties,
-        'cities': cities,
+        'properties':     properties,
+        'cities':         cities,
         'property_types': Property.PROPERTY_TYPES,
+        'currency':       currency,
+        'rate':           rate,
         'filters': {
             'q': query, 'city': city,
             'type': prop_type, 'min_price': min_price,
@@ -120,6 +142,7 @@ def property_detail(request, slug):
     images_qs = prop.images.all()
     images_count = images_qs.count()
 
+    currency, rate = _get_currency_context(request)
     return render(request, 'properties/detail.html', {
         'property':               prop,
         'extras':                 extras,
@@ -130,6 +153,8 @@ def property_detail(request, slug):
         'unavailable_dates_json': json.dumps(unavailable_dates),
         'guest_range':            range(1, prop.max_guests + 1),
         'rating_range':           range(1, 6),
+        'currency':               currency,
+        'rate':                   rate,
     })
 # ─── OWNER VIEWS ────────────────────────────────────────
 
@@ -148,12 +173,14 @@ def owner_dashboard(request):
     total      = properties.count()
     active     = properties.filter(status='active').count()
     pending    = properties.filter(status='pending').count()
+    inactive = properties.filter(status='inactive').count()
 
     return render(request, 'properties/owner_dashboard.html', {
         'properties': properties,
         'total': total,
         'active': active,
         'pending': pending,
+        'inactive': inactive,
     })
 
 
@@ -457,14 +484,23 @@ def traveller_dashboard(request):
     bookings = request.user.bookings.all().order_by('-created_at')  # adjust related_name if different
     upcoming = bookings.filter(check_in__gte=timezone.now(), status='confirmed').order_by('check_in')
     cart_count = request.user.cart.items.count() if hasattr(request.user, 'cart') else 0
-    total_spent = bookings.filter(status='confirmed').aggregate(Sum('grand_total'))['grand_total__sum'] or 0
+    total_spent_usd = bookings.filter(status='confirmed').aggregate(Sum('grand_total'))['grand_total__sum'] or 0
+
+    currency, rate = _get_currency_context(request)
+    if currency == 'TZS':
+        total_spent_display = 'TSh {:,.0f}'.format(float(total_spent_usd) * rate)
+    else:
+        total_spent_display = '${:.2f}'.format(float(total_spent_usd))
 
     context = {
-        'total_bookings': bookings.count(),
-        'upcoming_count': upcoming.count(),
-        'cart_count': cart_count,
-        'total_spent': total_spent,
+        'total_bookings':    bookings.count(),
+        'upcoming_count':    upcoming.count(),
+        'cart_count':        cart_count,
+        'total_spent_usd':   float(total_spent_usd),
+        'total_spent_display': total_spent_display,
         'upcoming_bookings': upcoming[:5],
-        'recent_activity': bookings[:6],
+        'recent_activity':   bookings[:6],
+        'currency':          currency,
+        'rate':              rate,
     }
     return render(request, 'properties/traveller_dashboard.html', context)

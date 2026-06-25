@@ -59,7 +59,8 @@
       </div>
       <div class="bg-accent/20 border border-accent/30 rounded-2xl p-5">
         <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Total Spent</p>
-        <p class="font-bebas text-5xl text-white">${{ total_spent|floatformat:2 }}</p>
+        <!-- FIX 1: data-usd holds the raw USD value for JS conversion -->
+        <p class="font-bebas text-5xl text-white bms-price" data-usd="{{ total_spent_usd }}">{{ total_spent_display }}</p>
         <p class="text-white/30 text-xs mt-1">on confirmed stays</p>
       </div>
     </div>
@@ -90,9 +91,9 @@
 
               <!-- Thumbnail -->
               <div class="w-52 flex-shrink-0 relative">
-                {% with booking.property.images.first as img %}
+                {% with booking.booking_property.images.first as img %}
                   {% if img %}
-                    <img src="{{ img.image.url }}" alt="{{ booking.property.name }}"
+                    <img src="{{ img.image.url }}" alt="{{ booking.booking_property.name }}"
                          class="w-full h-full object-cover"/>
                   {% else %}
                     <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center min-h-[140px]">
@@ -113,21 +114,24 @@
                   <div class="flex items-start justify-between mb-2">
                     <div>
                       <span class="text-xs font-bold uppercase tracking-widest text-accent mb-1 block">
-                        {{ booking.property.get_property_type_display }}
+                        {{ booking.booking_property.get_property_type_display }}
                       </span>
                       <h3 class="font-display text-2xl font-bold text-dark leading-tight">
-                        {{ booking.property.name }}
+                        {{ booking.booking_property.name }}
                       </h3>
                     </div>
                     <div class="text-right flex-shrink-0 ml-4">
-                      <span class="font-bebas text-3xl text-dark">${{ booking.total_price }}</span>
+                      <!-- FIX 2: unified bms-price class, correct server-side render -->
+                      <span class="font-bebas text-3xl text-dark bms-price" data-usd="{{ booking.grand_total }}">
+                        {% if currency == 'TZS' %}TSh {{ booking.grand_total|floatformat:0 }}{% else %}${{ booking.grand_total }}{% endif %}
+                      </span>
                       <p class="text-gray-400 text-xs -mt-1">total</p>
                     </div>
                   </div>
 
                   <div class="flex flex-wrap gap-4 mt-3">
                     <span class="flex items-center gap-1.5 text-xs text-gray-500">
-                      <span>📍</span> {{ booking.property.city }}, {{ booking.property.country }}
+                      <span>📍</span> {{ booking.booking_property.city }}, {{ booking.booking_property.country }}
                     </span>
                     <span class="flex items-center gap-1.5 text-xs text-gray-500">
                       <span>📅</span> {{ booking.check_in|date:"M d" }} – {{ booking.check_out|date:"M d, Y" }}
@@ -137,11 +141,11 @@
 
                 <div class="flex items-center justify-end mt-5 pt-5 border-t border-gray-100">
                   {% if booking.booking_property.slug %}
-  <a href="{% url 'properties:detail' booking.booking_property.slug %}"
-     class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 text-gray-500 hover:border-primary hover:text-primary transition">
-    👁 View Property
-  </a>
-{% endif %}
+                    <a href="{% url 'properties:detail' booking.booking_property.slug %}"
+                       class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 text-gray-500 hover:border-primary hover:text-primary transition">
+                      👁 View Property
+                    </a>
+                  {% endif %}
                 </div>
               </div>
             </div>
@@ -179,7 +183,8 @@
                 {% else %}bg-gray-300{% endif %}">
               </div>
               <div>
-                <p class="font-semibold text-dark text-sm">{{ booking.property.name }}</p>
+                <!-- FIX 3: booking.property → booking.booking_property throughout -->
+                <p class="font-semibold text-dark text-sm">{{ booking.booking_property.name }}</p>
                 <p class="text-gray-400 text-xs">{{ booking.check_in|date:"M d" }} – {{ booking.check_out|date:"M d, Y" }}</p>
               </div>
             </div>
@@ -190,7 +195,10 @@
                 {% else %}bg-gray-100 text-gray-500{% endif %}">
                 {{ booking.get_status_display }}
               </span>
-              <span class="font-bebas text-xl text-dark">${{ booking.total_price }}</span>
+              <!-- FIX 4: correct server-side render, consistent with other bms-price elements -->
+              <span class="font-bebas text-xl text-dark bms-price" data-usd="{{ booking.grand_total }}">
+                {% if currency == 'TZS' %}TSh {{ booking.grand_total|floatformat:0 }}{% else %}${{ booking.grand_total }}{% endif %}
+              </span>
             </div>
           </div>
         {% endfor %}
@@ -205,4 +213,30 @@
 
   </div>
 </div>
+
+{% block extra_js %}
+<script>
+  (function() {
+    const RATE = {{ rate|default:2500 }};
+
+    function fmtPrice(usd, c) {
+      if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+      return '$' + parseFloat(usd).toFixed(2);
+    }
+
+    // FIX 5: unified — bms-total-spent removed, everything uses bms-price[data-usd]
+    window.setCurrency = function(c) {
+      document.querySelectorAll('.bms-price[data-usd]').forEach(function(el) {
+        el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+      });
+    };
+
+    // FIX 6: auto-invoke on page load so prices reflect current session currency
+    document.addEventListener('DOMContentLoaded', function() {
+      window.setCurrency('{{ currency|default:"USD" }}');
+    });
+  })();
+</script>
+{% endblock %}
+
 {% endblock %}

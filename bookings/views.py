@@ -19,7 +19,21 @@ def cart_view(request):
     except Cart.DoesNotExist:
         cart = None
 
-    return render(request, 'bookings/cart.html', {'cart': cart})
+    try:
+        from payments.models import CurrencyConfig
+        from payments.views import get_session_currency
+        config   = CurrencyConfig.get_config()
+        currency = get_session_currency(request)
+        rate     = float(config.usd_to_tzs)
+    except Exception:
+        currency = 'USD'
+        rate     = 2500.0
+
+    return render(request, 'bookings/cart.html', {
+        'cart':     cart,
+        'currency': currency,
+        'rate':     rate,
+    })
 
 
 @login_required

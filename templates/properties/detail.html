@@ -55,7 +55,7 @@
           <p class="text-white/70 mt-2">📍 {{ property.address }}, {{ property.city }}, {{ property.country }}</p>
         </div>
         <div class="text-right">
-          <div class="font-bebas text-5xl text-accent">${{ property.price_per_night }}</div>
+          <div class="font-bebas text-5xl text-accent prop-price" data-usd="{{ property.price_per_night }}">{% if currency == 'TZS' %}TSh {{ property.price_per_night|floatformat:0 }}{% else %}${{ property.price_per_night }}{% endif %}</div>
           <div class="text-white/60 text-sm">per night</div>
           {% if property.average_rating %}
             <div class="text-white mt-1">⭐ {{ property.average_rating }} · {{ property.total_reviews }} reviews</div>
@@ -130,13 +130,13 @@
                 <div>
                   <p class="font-semibold text-dark text-sm">{{ extra.name }}</p>
                   <p class="text-xs text-gray-400 mt-0.5">
-                    ${{ extra.price }} · {{ extra.get_charge_type_display }}
+                    <span class="prop-price" data-usd="{{ extra.price }}">{% if currency == 'TZS' %}TSh {{ extra.price|floatformat:0 }}{% else %}${{ extra.price }}{% endif %}</span> · {{ extra.get_charge_type_display }}
                   </p>
                   {% if extra.description %}
                     <p class="text-xs text-gray-400 mt-1">{{ extra.description }}</p>
                   {% endif %}
                 </div>
-                <span class="text-accent font-bold text-sm">${{ extra.price }}</span>
+                <span class="text-accent font-bold text-sm prop-price" data-usd="{{ extra.price }}">{% if currency == 'TZS' %}TSh {{ extra.price|floatformat:0 }}{% else %}${{ extra.price }}{% endif %}</span>
               </div>
             {% endfor %}
           </div>
@@ -214,7 +214,7 @@
       <div class="bg-white rounded-2xl p-6 shadow-lg sticky top-24">
 
         <div class="mb-5">
-          <span class="font-bebas text-4xl text-dark">${{ property.price_per_night }}</span>
+          <span class="font-bebas text-4xl text-dark prop-price" data-usd="{{ property.price_per_night }}">{% if currency == 'TZS' %}TSh {{ property.price_per_night|floatformat:0 }}{% else %}${{ property.price_per_night }}{% endif %}</span>
           <span class="text-gray-400 text-sm"> / night</span>
         </div>
 
@@ -449,5 +449,19 @@
     });
 
   }); // end DOMContentLoaded
+
+  // Live currency update — called by navSetCurrency in base.html
+  (function() {
+    const RATE = {{ rate|default:2500 }};
+    function fmtPrice(usd, c) {
+      if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+      return '$' + parseFloat(usd).toFixed(2);
+    }
+    window.setCurrency = function(c) {
+      document.querySelectorAll('.prop-price[data-usd]').forEach(function(el) {
+        el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+      });
+    };
+  })();
 </script>
 {% endblock %}

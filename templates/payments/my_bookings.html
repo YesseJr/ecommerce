@@ -5,24 +5,29 @@
 {% block content %}
 <div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
 
-  <div class="mb-10">
-    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Travel History</span>
-    <h1 class="font-display text-5xl font-bold text-dark mt-1">
-      My <em class="text-primary">Bookings</em>
-    </h1>
+  <div class="flex items-end justify-between mb-10">
+    <div>
+      <span class="text-xs font-bold tracking-widests uppercase text-accent">✦ Travel History</span>
+      <h1 class="font-display text-5xl font-bold text-dark mt-1">
+        My <em class="text-primary">Bookings</em>
+      </h1>
+    </div>
+    <a href="{% url 'payments:payment_history' %}"
+       class="text-sm font-semibold text-primary border-2 border-primary px-5 py-2.5 rounded-xl hover:bg-primary hover:text-white transition-all">
+      💳 Payment History
+    </a>
   </div>
 
   {% if bookings %}
     <div class="flex flex-col gap-5">
       {% for booking in bookings %}
-        <div class="bg-white rounded-2xl p-6 shadow-sm flex gap-6 items-center">
+        <div class="bg-white rounded-2xl p-6 shadow-sm flex gap-6 items-center hover:shadow-md transition-all">
 
           <!-- Thumbnail -->
           <div class="w-32 h-24 rounded-xl overflow-hidden flex-shrink-0">
             {% with booking.booking_property.images.first as img %}
               {% if img %}
-                <img src="{{ img.image.url }}" alt=""
-                     class="w-full h-full object-cover"/>
+                <img src="{{ img.image.url }}" alt="" class="w-full h-full object-cover"/>
               {% else %}
                 <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
                   <span class="text-white/30 text-3xl">🏠</span>
@@ -34,9 +39,7 @@
           <!-- Info -->
           <div class="flex-1">
             <div class="flex items-center gap-3 mb-1">
-              <h3 class="font-display text-xl font-bold text-dark">
-                {{ booking.booking_property.name }}
-              </h3>
+              <h3 class="font-display text-xl font-bold text-dark">{{ booking.booking_property.name }}</h3>
               <span class="text-xs font-bold px-3 py-1 rounded-full
                 {% if booking.status == 'confirmed' %}bg-green-100 text-green-700
                 {% elif booking.status == 'pending' %}bg-orange-100 text-orange-700
@@ -55,27 +58,45 @@
               Ref: <span class="font-mono font-semibold text-dark">{{ booking.reference }}</span>
               &nbsp;·&nbsp; Booked {{ booking.created_at|date:"M j, Y" }}
             </p>
+
+            <!-- Payment method badge -->
+            {% if booking.payment %}
+              <div class="flex items-center gap-2 mt-2">
+                <span class="text-xs px-2.5 py-1 rounded-full font-semibold
+                  {% if booking.payment.is_card %}bg-blue-50 text-blue-600
+                  {% else %}bg-green-50 text-green-600{% endif %}">
+                  {% if booking.payment.is_card %}💳{% else %}📱{% endif %}
+                  {{ booking.payment.get_method_display }}
+                </span>
+                <span class="text-xs px-2.5 py-1 rounded-full font-semibold
+                  {% if booking.payment.currency == 'TZS' %}bg-emerald-50 text-emerald-600
+                  {% else %}bg-indigo-50 text-indigo-600{% endif %}">
+                  {{ booking.payment.currency }}
+                </span>
+              </div>
+            {% endif %}
           </div>
 
           <!-- Total + Actions -->
           <div class="flex flex-col items-end gap-3 flex-shrink-0">
 
-            <!-- Total Paid -->
+            <!-- Amount display -->
             <div class="text-right">
-              <span class="font-bebas text-2xl text-dark">${{ booking.grand_total }}</span>
-              <p class="text-xs text-gray-400">total paid</p>
+              <span class="font-bebas text-2xl text-dark bms-price" data-usd="{{ booking.grand_total }}">
+                {% if currency == 'TZS' %}TSh {{ booking.grand_total|floatformat:0 }}{% else %}${{ booking.grand_total }}{% endif %}
+              </span>
+              <p class="text-xs text-gray-400">
+                {% if booking.payment %}{{ booking.payment.currency }} paid{% else %}total{% endif %}
+              </p>
             </div>
 
             <!-- Action Buttons -->
             <div class="flex gap-2">
-
-              <!-- View Details -->
               <a href="{% url 'payments:confirmation' booking.reference %}"
                  class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 hover:border-accent hover:text-accent transition">
-                View Details
+                View Receipt
               </a>
 
-              <!-- Review Button -->
               {% if booking.status == 'confirmed' %}
                 {% if booking.review %}
                   <span class="text-xs font-semibold px-4 py-2 rounded-xl bg-green-50 text-green-600 border-2 border-green-100">
@@ -88,7 +109,6 @@
                   </a>
                 {% endif %}
               {% endif %}
-
             </div>
           </div>
         </div>
@@ -108,4 +128,28 @@
   {% endif %}
 
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function() {
+    const RATE = {{ rate|default:2500 }};
+
+    function fmtPrice(usd, c) {
+      if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+      return '$' + parseFloat(usd).toFixed(2);
+    }
+
+    window.setCurrency = function(c) {
+      document.querySelectorAll('.bms-price[data-usd]').forEach(function(el) {
+        el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+      });
+    };
+
+    // FIX: auto-invoke on page load so prices reflect current session currency
+    document.addEventListener('DOMContentLoaded', function() {
+      window.setCurrency('{{ currency|default:"USD" }}');
+    });
+  })();
+</script>
 {% endblock %}
