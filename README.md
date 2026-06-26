@@ -164,7 +164,7 @@ git clone https://github.com/Yessejr/ecommerce.git
 ### Navigate into the project
 
 ```bash
-cd bookmystay
+cd ecommerce
 ```
 
 ### Create a virtual environment
@@ -222,7 +222,7 @@ git clone https://github.com/YesseJr/ecommerce.git
 ### Navigate into the project
 
 ```bash
-cd bookmystay
+cd ecommerce
 ```
 
 ### Create a virtual environment
