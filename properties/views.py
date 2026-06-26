@@ -31,10 +31,24 @@ def _get_currency_context(request):
 
 
 def home(request):
+    from django.db.models import Avg
+    from reviews.models import Review
+    from bookings.models import Booking
+    from users.models import User
+
     featured = Property.objects.filter(
         status='active',
         is_available=True
     ).order_by('-created_at')[:6]
+
+    # ── Real DB stats for the homepage strip ──────────────────────────────────
+    total_properties = Property.objects.filter(status='active').count()
+    total_cities     = Property.objects.filter(status='active').values('city').distinct().count()
+    total_guests     = Booking.objects.filter(status='confirmed').count()
+
+    # Average rating across all reviews (round to 1dp)
+    avg_rating_result = Review.objects.aggregate(avg=Avg('rating'))['avg']
+    avg_rating        = round(avg_rating_result, 1) if avg_rating_result else None
 
     cities = Property.objects.filter(
         status='active'
@@ -42,11 +56,16 @@ def home(request):
 
     currency, rate = _get_currency_context(request)
     return render(request, 'properties/home.html', {
-        'featured':       featured,
-        'cities':         cities,
-        'property_types': Property.PROPERTY_TYPES,
-        'currency':       currency,
-        'rate':           rate,
+        'featured':          featured,
+        'cities':            cities,
+        'property_types':    Property.PROPERTY_TYPES,
+        'currency':          currency,
+        'rate':              rate,
+        # Real stats
+        'total_properties':  total_properties,
+        'total_cities':      total_cities,
+        'total_guests':      total_guests,
+        'avg_rating':        avg_rating,
     })
 
 def property_list(request):
@@ -175,12 +194,15 @@ def owner_dashboard(request):
     pending    = properties.filter(status='pending').count()
     inactive = properties.filter(status='inactive').count()
 
+    currency, rate = _get_currency_context(request)
     return render(request, 'properties/owner_dashboard.html', {
         'properties': properties,
-        'total': total,
-        'active': active,
-        'pending': pending,
-        'inactive': inactive,
+        'total':      total,
+        'active':     active,
+        'pending':    pending,
+        'inactive':   inactive,
+        'currency':   currency,
+        'rate':       rate,
     })
 
 
@@ -294,10 +316,13 @@ def manage_extras(request, slug):
     else:
         form = PropertyExtraForm()
 
+    currency, rate = _get_currency_context(request)
     return render(request, 'properties/manage_extras.html', {
         'property': prop,
-        'extras': extras,
-        'form': form,
+        'extras':   extras,
+        'form':     form,
+        'currency': currency,
+        'rate':     rate,
     })
 
 
@@ -465,6 +490,7 @@ def owner_revenue(request):
         monthly_labels.append(calendar.month_abbr[month])
         monthly_revenue.append(float(month_total))
 
+    currency, rate = _get_currency_context(request)
     return render(request, 'properties/owner_revenue.html', {
         'property_stats':       property_stats,
         'total_revenue':        total_revenue,
@@ -477,13 +503,21 @@ def owner_revenue(request):
         'chart_bookings_json':  json.dumps(chart_bookings),
         'monthly_labels_json':  json.dumps(monthly_labels),
         'monthly_revenue_json': json.dumps(monthly_revenue),
+        'currency':             currency,
+        'rate':                 rate,
     })
 
 @login_required
 def traveller_dashboard(request):
-    bookings = request.user.bookings.all().order_by('-created_at')  # adjust related_name if different
-    upcoming = bookings.filter(check_in__gte=timezone.now(), status='confirmed').order_by('check_in')
-    cart_count = request.user.cart.items.count() if hasattr(request.user, 'cart') else 0
+    bookings = request.user.bookings.all().order_by('-created_at')
+    # Use date.today() — check_in is a DateField, not DateTimeField
+    upcoming = bookings.filter(check_in__gte=date.today(), status='confirmed').order_by('check_in')
+    # cart_count = 1 if cart has a property selected (i.e. is active), else 0
+    try:
+        cart = request.user.cart
+        cart_count = 1 if (cart.booking_property_id is not None) else 0
+    except Exception:
+        cart_count = 0
     total_spent_usd = bookings.filter(status='confirmed').aggregate(Sum('grand_total'))['grand_total__sum'] or 0
 
     currency, rate = _get_currency_context(request)

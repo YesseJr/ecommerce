@@ -67,19 +67,23 @@
 <div class="bg-dark py-8">
   <div class="flex justify-center gap-20 px-16 flex-wrap">
     <div class="text-center">
-      <div class="font-bebas text-4xl text-accent">500+</div>
+      <div class="font-bebas text-4xl text-accent">{{ total_properties }}</div>
       <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Properties</div>
     </div>
     <div class="text-center">
-      <div class="font-bebas text-4xl text-accent">20+</div>
+      <div class="font-bebas text-4xl text-accent">{{ total_cities }}</div>
       <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Cities</div>
     </div>
     <div class="text-center">
-      <div class="font-bebas text-4xl text-accent">10K+</div>
+      <div class="font-bebas text-4xl text-accent">{{ total_guests }}</div>
       <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Happy Guests</div>
     </div>
     <div class="text-center">
-      <div class="font-bebas text-4xl text-accent">4.9★</div>
+      {% if avg_rating %}
+        <div class="font-bebas text-4xl text-accent">{{ avg_rating }}★</div>
+      {% else %}
+        <div class="font-bebas text-4xl text-accent">—</div>
+      {% endif %}
       <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Avg Rating</div>
     </div>
   </div>
@@ -130,7 +134,7 @@
             <h3 class="font-display text-xl font-bold text-dark mb-3 leading-tight">{{ prop.name }}</h3>
             <div class="flex justify-between items-center pt-3 border-t border-gray-100">
               <div>
-                <span class="font-bold text-dark text-lg prop-price" data-usd="{{ prop.price_per_night }}">
+                <span class="font-bold text-dark text-lg bms-price" data-usd="{{ prop.price_per_night }}">
                   {% if currency == 'TZS' %}TSh {{ prop.price_per_night|floatformat:0 }}{% else %}${{ prop.price_per_night }}{% endif %}
                 </span>
                 <span class="text-gray-400 text-sm"> / night</span>

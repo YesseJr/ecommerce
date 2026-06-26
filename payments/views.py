@@ -80,9 +80,8 @@ def set_currency(request):
     return JsonResponse({'success': False}, status=400)
 
 
-@login_required
 def currency_info(request):
-    """AJAX endpoint: return current exchange rate config."""
+    """AJAX endpoint: return current exchange rate config. Works for all users including guests."""
     config   = CurrencyConfig.get_config()
     currency = get_session_currency(request)
     return JsonResponse({

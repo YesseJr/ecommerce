@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('usd_to_tzs', models.DecimalField(
-                    decimal_places=2, default=2600.0, max_digits=10,
+                    decimal_places=2, default=2500.0, max_digits=10,
                     help_text='Exchange rate: 1 USD = this many TZS'
                 )),
                 ('usd_enabled', models.BooleanField(default=True, help_text='Allow payments in USD')),

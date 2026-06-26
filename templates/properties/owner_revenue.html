@@ -34,7 +34,9 @@
     <div class="grid grid-cols-4 gap-4 mt-10">
       <div class="bg-accent/20 border border-accent/30 rounded-2xl p-5">
         <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Total Revenue</p>
-        <p class="font-bebas text-5xl text-white">${{ total_revenue|floatformat:0 }}</p>
+        <p class="font-bebas text-5xl text-white bms-price" data-usd="{{ total_revenue }}">
+          {% if currency == 'TZS' %}TSh {{ total_revenue|floatformat:0 }}{% else %}${{ total_revenue|floatformat:0 }}{% endif %}
+        </p>
         <p class="text-white/30 text-xs mt-1">all confirmed bookings</p>
       </div>
       <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
@@ -49,7 +51,9 @@
       </div>
       <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
         <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Avg Booking Value</p>
-        <p class="font-bebas text-5xl text-white">${{ avg_booking_value|floatformat:0 }}</p>
+        <p class="font-bebas text-5xl text-white bms-price" data-usd="{{ avg_booking_value }}">
+          {% if currency == 'TZS' %}TSh {{ avg_booking_value|floatformat:0 }}{% else %}${{ avg_booking_value|floatformat:0 }}{% endif %}
+        </p>
         <p class="text-white/30 text-xs mt-1">per confirmed booking</p>
       </div>
     </div>
@@ -76,7 +80,9 @@
             </p>
           </div>
           <div class="text-right flex-shrink-0">
-            <p class="font-bebas text-5xl text-accent">${{ top_property.revenue|floatformat:0 }}</p>
+            <p class="font-bebas text-5xl text-accent bms-price" data-usd="{{ top_property.revenue }}">
+              {% if currency == 'TZS' %}TSh {{ top_property.revenue|floatformat:0 }}{% else %}${{ top_property.revenue|floatformat:0 }}{% endif %}
+            </p>
             <p class="text-white/40 text-xs mt-0.5">total earned</p>
           </div>
         </div>
@@ -185,9 +191,15 @@
                 </td>
                 <td class="px-6 py-4 text-sm text-dark font-medium">{{ stat.bookings_count }}</td>
                 <td class="px-6 py-4 text-sm text-dark font-medium">{{ stat.nights_sold }}</td>
-                <td class="px-6 py-4 text-sm text-dark">${{ stat.avg_per_booking|floatformat:0 }}</td>
+                <td class="px-6 py-4 text-sm text-dark">
+                  <span class="bms-price" data-usd="{{ stat.avg_per_booking }}">
+                    {% if currency == 'TZS' %}TSh {{ stat.avg_per_booking|floatformat:0 }}{% else %}${{ stat.avg_per_booking|floatformat:0 }}{% endif %}
+                  </span>
+                </td>
                 <td class="px-6 py-4">
-                  <span class="font-bold text-accent text-base">${{ stat.revenue|floatformat:0 }}</span>
+                  <span class="font-bold text-accent text-base bms-price" data-usd="{{ stat.revenue }}">
+                    {% if currency == 'TZS' %}TSh {{ stat.revenue|floatformat:0 }}{% else %}${{ stat.revenue|floatformat:0 }}{% endif %}
+                  </span>
                 </td>
                 <td class="px-6 py-4">
                   {% if total_revenue > 0 %}
@@ -241,23 +253,43 @@
 {% if property_stats %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-  const chartLabels    = {{ chart_labels_json|safe }}
-  const chartRevenue   = {{ chart_revenue_json|safe }}
-  const chartBookings  = {{ chart_bookings_json|safe }}
-  const monthlyLabels  = {{ monthly_labels_json|safe }}
-  const monthlyRevenue = {{ monthly_revenue_json|safe }}
-  const palette = ['#F97316','#1B3A6B','#D97706','#15803D','#7C3AED','#DB2777','#0891B2']
+  var RATE             = {{ rate|default:2500 }};
+  var CURRENCY         = '{{ currency|default:"USD" }}';
+  var chartLabels      = {{ chart_labels_json|safe }};
+  var chartRevenueUSD  = {{ chart_revenue_json|safe }};   // always USD from Django
+  var chartBookings    = {{ chart_bookings_json|safe }};
+  var monthlyLabels    = {{ monthly_labels_json|safe }};
+  var monthlyRevenueUSD = {{ monthly_revenue_json|safe }}; // always USD from Django
+  var palette = ['#F97316','#1B3A6B','#D97706','#15803D','#7C3AED','#DB2777','#0891B2'];
 
-  Chart.defaults.font.family = "'DM Sans', sans-serif"
+  Chart.defaults.font.family = "'DM Sans', sans-serif";
 
-  // Bar: Revenue by Property
-  new Chart(document.getElementById('revenueByPropertyChart'), {
+  // ── Helpers ──────────────────────────────────────────────────────
+  function fmtPrice(usd, c) {
+    if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+    return '$' + parseFloat(usd).toFixed(2);
+  }
+
+  function convertData(usdArray, c) {
+    return usdArray.map(function(v) {
+      return c === 'TZS' ? Math.round(v * RATE) : v;
+    });
+  }
+
+  function chartTickFmt(c) {
+    return function(v) {
+      return c === 'TZS' ? 'TSh ' + Math.round(v).toLocaleString() : '$' + v.toLocaleString();
+    };
+  }
+
+  // ── Charts ───────────────────────────────────────────────────────
+  var revenueByPropertyChart = new Chart(document.getElementById('revenueByPropertyChart'), {
     type: 'bar',
     data: {
       labels: chartLabels,
       datasets: [{
-        label: 'Revenue ($)',
-        data: chartRevenue,
+        label: CURRENCY === 'TZS' ? 'Revenue (TSh)' : 'Revenue ($)',
+        data: convertData(chartRevenueUSD, CURRENCY),
         backgroundColor: palette,
         borderRadius: 10,
         maxBarThickness: 60,
@@ -267,18 +299,17 @@
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { callback: v => '$' + v.toLocaleString() } },
+        y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { callback: chartTickFmt(CURRENCY) } },
         x: { grid: { display: false } }
       }
     }
-  })
+  });
 
-  // Donut: Revenue Share
-  new Chart(document.getElementById('revenueShareChart'), {
+  var revenueShareChart = new Chart(document.getElementById('revenueShareChart'), {
     type: 'doughnut',
     data: {
       labels: chartLabels,
-      datasets: [{ data: chartRevenue, backgroundColor: palette, borderWidth: 0 }]
+      datasets: [{ data: convertData(chartRevenueUSD, CURRENCY), backgroundColor: palette, borderWidth: 0 }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
@@ -287,16 +318,15 @@
       },
       cutout: '68%',
     }
-  })
+  });
 
-  // Line: Monthly Trend
-  new Chart(document.getElementById('monthlyTrendChart'), {
+  var monthlyTrendChart = new Chart(document.getElementById('monthlyTrendChart'), {
     type: 'line',
     data: {
       labels: monthlyLabels,
       datasets: [{
-        label: 'Revenue ($)',
-        data: monthlyRevenue,
+        label: CURRENCY === 'TZS' ? 'Revenue (TSh)' : 'Revenue ($)',
+        data: convertData(monthlyRevenueUSD, CURRENCY),
         borderColor: '#1B3A6B',
         backgroundColor: 'rgba(27,58,107,0.07)',
         fill: true, tension: 0.4,
@@ -309,14 +339,13 @@
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { callback: v => '$' + v.toLocaleString() } },
+        y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { callback: chartTickFmt(CURRENCY) } },
         x: { grid: { display: false } }
       }
     }
-  })
+  });
 
-  // Bar: Bookings per Property
-  new Chart(document.getElementById('bookingsPerPropertyChart'), {
+  var bookingsPerPropertyChart = new Chart(document.getElementById('bookingsPerPropertyChart'), {
     type: 'bar',
     data: {
       labels: chartLabels,
@@ -336,7 +365,41 @@
         x: { grid: { display: false } }
       }
     }
-  })
+  });
+
+  // ── Currency toggle handler ───────────────────────────────────────
+  // Updates bms-price elements AND re-draws all revenue charts
+  window.setCurrency = function(c) {
+    CURRENCY = c;
+
+    // 1. Update all tagged price elements
+    document.querySelectorAll('.bms-price[data-usd]').forEach(function(el) {
+      el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+    });
+
+    // 2. Update revenue bar chart
+    var convertedRevenue = convertData(chartRevenueUSD, c);
+    revenueByPropertyChart.data.datasets[0].data  = convertedRevenue;
+    revenueByPropertyChart.data.datasets[0].label = c === 'TZS' ? 'Revenue (TSh)' : 'Revenue ($)';
+    revenueByPropertyChart.options.scales.y.ticks.callback = chartTickFmt(c);
+    revenueByPropertyChart.update();
+
+    // 3. Update donut chart
+    revenueShareChart.data.datasets[0].data = convertedRevenue;
+    revenueShareChart.update();
+
+    // 4. Update monthly trend chart
+    monthlyTrendChart.data.datasets[0].data  = convertData(monthlyRevenueUSD, c);
+    monthlyTrendChart.data.datasets[0].label = c === 'TZS' ? 'Revenue (TSh)' : 'Revenue ($)';
+    monthlyTrendChart.options.scales.y.ticks.callback = chartTickFmt(c);
+    monthlyTrendChart.update();
+
+    // 5. Bookings chart has no currency — no update needed
+  };
+
+  // Auto-apply current session currency on page load
+  window.setCurrency(CURRENCY);
+
 </script>
 {% endif %}
 {% endblock %}
