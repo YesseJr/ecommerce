@@ -14,7 +14,7 @@
 
   <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
     <div class="inline-flex items-center gap-2 bg-dark/80 border border-accent/40 text-accent px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6">
-      🏠 Tanzania's Trusted Accommodation Platform
+      <i data-lucide="home" class="w-4 h-4"></i> Tanzania's Trusted Accommodation Platform
     </div>
 
     <h1 class="font-display font-bold text-white leading-none mb-6"
@@ -78,7 +78,7 @@
       <div class="font-bebas text-4xl text-accent">{{ total_guests }}</div>
       <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Happy Guests</div>
     </div>
-    <div class="text-center">
+     <div class="text-center">
       {% if avg_rating %}
         <div class="font-bebas text-4xl text-accent">{{ avg_rating }}★</div>
       {% else %}
@@ -117,7 +117,7 @@
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
               {% else %}
                 <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
-                  <span class="text-white/20 text-6xl">🏠</span>
+                  <span class="text-white/20 text-6xl"><i data-lucide="home" class="w-4 h-4"></i></span>
                 </div>
               {% endif %}
             {% endwith %}
@@ -126,11 +126,11 @@
               {{ prop.get_property_type_display }}
             </span>
             <span class="absolute top-3 right-3 bg-white/95 text-dark text-xs font-bold px-3 py-1 rounded-full shadow-sm">
-              {% if prop.average_rating %}⭐ {{ prop.average_rating }}{% else %}✨ New{% endif %}
+              {% if prop.average_rating %}<i data-lucide="star" class="w-4 h-4 text-yellow-400"></i> {{ prop.average_rating }}{% else %}<i data-lucide="sparkles" class="w-4 h-4"></i> New{% endif %}
             </span>
           </div>
           <div class="p-5">
-            <p class="text-xs text-gray-400 mb-1">📍 {{ prop.city }}, {{ prop.country }}</p>
+            <p class="text-xs text-gray-400 mb-1"><i data-lucide="map-pin" class="w-4 h-4"></i> {{ prop.city }}, {{ prop.country }}</p>
             <h3 class="font-display text-xl font-bold text-dark mb-3 leading-tight">{{ prop.name }}</h3>
             <div class="flex justify-between items-center pt-3 border-t border-gray-100">
               <div>
@@ -139,7 +139,7 @@
                 </span>
                 <span class="text-gray-400 text-sm"> / night</span>
               </div>
-              <span class="text-xs text-gray-400">👥 Up to {{ prop.max_guests }}</span>
+              <span class="text-xs text-gray-400"><i data-lucide="users" class="w-4 h-4"></i> Up to {{ prop.max_guests }}</span>
             </div>
           </div>
         </a>
@@ -147,7 +147,7 @@
     </div>
   {% else %}
     <div class="text-center py-20 text-gray-400">
-      <div class="text-6xl mb-4">🏠</div>
+      <div class="text-6xl mb-4"><i data-lucide="home" class="w-4 h-4"></i></div>
       <p class="text-lg font-medium">No properties yet.</p>
       <p class="text-sm mt-1">Check back soon!</p>
     </div>
@@ -167,12 +167,12 @@
       <a href="{% url 'properties:list' %}?type={{ value }}"
          class="flex items-center gap-3 px-6 py-4 bg-cream border-2 border-transparent rounded-2xl hover:border-accent hover:bg-orange-50 hover:-translate-y-1 transition-all">
         <span class="text-2xl">
-          {% if value == 'hotel' %}🏨
-          {% elif value == 'apartment' %}🏢
-          {% elif value == 'guesthouse' %}🏡
-          {% elif value == 'villa' %}🏰
-          {% elif value == 'hostel' %}🛏️
-          {% elif value == 'resort' %}🌴
+          {% if value == 'hotel' %}<i data-lucide="building-2" class="w-4 h-4"></i>
+          {% elif value == 'apartment' %}<i data-lucide="building" class="w-4 h-4"></i>
+          {% elif value == 'guesthouse' %}<i data-lucide="house" class="w-4 h-4"></i>
+          {% elif value == 'villa' %}<i data-lucide="castle" class="w-4 h-4"></i>
+          {% elif value == 'hostel' %}<i data-lucide="bed-double" class="w-4 h-4"></i>
+          {% elif value == 'resort' %}<i data-lucide="palmtree" class="w-4 h-4"></i>
           {% endif %}
         </span>
         <span class="font-semibold text-dark">{{ label }}</span>
@@ -203,10 +203,10 @@
         <div class="text-center p-6 group">
           <div class="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-accent/20 transition">
             <span class="text-3xl">
-              {% if forloop.counter == 1 %}✅
-              {% elif forloop.counter == 2 %}🔒
-              {% elif forloop.counter == 3 %}🛒
-              {% elif forloop.counter == 4 %}⭐{% endif %}
+              {% if forloop.counter == 1 %}<i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
+              {% elif forloop.counter == 2 %}<i data-lucide="lock" class="w-4 h-4"></i>
+              {% elif forloop.counter == 3 %}<i data-lucide="shopping-cart" class="w-4 h-4"></i>
+              {% elif forloop.counter == 4 %}<i data-lucide="star" class="w-4 h-4 text-yellow-400"></i>{% endif %}
             </span>
           </div>
           <h4 class="text-white font-semibold mb-2">
@@ -272,10 +272,12 @@
       return '$' + parseFloat(usd).toFixed(2);
     }
     window.setCurrency = function(c) {
-      document.querySelectorAll('.prop-price[data-usd]').forEach(function(el) {
+      document.querySelectorAll('.bms-price[data-usd]').forEach(function(el) {
         el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
       });
     };
+    // Auto-apply on load
+    window.setCurrency('{{ currency|default:"USD" }}');
   })();
 </script>
 {% endblock %}

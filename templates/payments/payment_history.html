@@ -33,7 +33,7 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Method</label>
+      <label class="text-xs font-bold uppercase tracking-widests text-gray-400">Method</label>
       <select name="method"
               class="border-2 border-gray-200 rounded-xl px-3 py-2 text-sm text-dark focus:outline-none focus:border-accent transition">
         <option value="">All Methods</option>
@@ -88,7 +88,9 @@
 
               <!-- Amount + Currency -->
               <td class="px-6 py-4">
-                <p class="font-bebas text-xl text-dark">
+                {# data-usd always holds the USD equivalent so JS can convert either way #}
+                <p class="bms-price font-bebas text-xl text-dark"
+                   data-usd="{% if payment.currency == 'TZS' %}{{ payment.amount_usd }}{% else %}{{ payment.amount }}{% endif %}">
                   {% if payment.currency == 'TZS' %}
                     TSh {{ payment.amount|floatformat:0 }}
                   {% else %}
@@ -96,12 +98,18 @@
                   {% endif %}
                 </p>
                 <div class="flex items-center gap-1.5 mt-0.5">
+                  {# Badge shows what currency the payment was STORED IN — metadata, not toggled #}
                   <span class="text-xs font-bold px-2 py-0.5 rounded-full
                     {% if payment.currency == 'TZS' %}bg-emerald-100 text-emerald-700{% else %}bg-blue-100 text-blue-700{% endif %}">
                     {{ payment.currency }}
                   </span>
+                  {# Secondary hint: when stored as TZS, show the USD equivalent; flipped when viewing in USD #}
                   {% if payment.currency == 'TZS' %}
-                    <span class="text-xs text-gray-400">= ${{ payment.amount_usd }}</span>
+                    <span class="bms-hint text-xs text-gray-400"
+                          data-usd="{{ payment.amount_usd }}"
+                          data-tzs="{{ payment.amount|floatformat:0 }}">
+                      = ${{ payment.amount_usd }}
+                    </span>
                   {% endif %}
                 </div>
               </td>
@@ -203,4 +211,41 @@
   {% endif %}
 
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  var RATE     = {{ rate|default:2500 }};
+  var CURRENCY = '{{ currency|default:"USD" }}';
+
+  function fmtPrice(usd, c) {
+    if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+    return '$' + parseFloat(usd).toFixed(2);
+  }
+
+  window.setCurrency = function(c) {
+    CURRENCY = c;
+
+    // 1. Update all main amount cells
+    document.querySelectorAll('.bms-price[data-usd]').forEach(function(el) {
+      el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+    });
+
+    // 2. Update secondary hint labels (only present on rows originally stored as TZS)
+    //    When viewing in USD  → show "= TSh X"
+    //    When viewing in TZS  → show "= $X"   (the USD equivalent)
+    document.querySelectorAll('.bms-hint[data-usd]').forEach(function(el) {
+      var usd = parseFloat(el.dataset.usd);
+      var tzs = el.dataset.tzs;
+      if (c === 'TZS') {
+        el.textContent = '= $' + usd.toFixed(2);
+      } else {
+        el.textContent = '= TSh ' + parseInt(tzs).toLocaleString();
+      }
+    });
+  };
+
+  // Apply the session currency immediately on page load
+  window.setCurrency(CURRENCY);
+</script>
 {% endblock %}
