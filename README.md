@@ -158,7 +158,7 @@ pip install django
 ### Clone the repository
 
 ```bash
-git clone https://github.com/Yessejr/ecommerce.git
+git clone https://github.com/YesseJr/ecommerce.git
 ```
 
 ### Navigate into the project
