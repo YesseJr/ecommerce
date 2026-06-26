@@ -1,4 +1,4 @@
-# 🛒 BookMyStay – E-Commerce & Hotel Booking System
+# 🛒 BookMyStay – E-Commerce System
 
 > **Third Year, Second Semester Group Project**
 > **Diploma in Information Technology (DIT)**
