@@ -346,4 +346,5 @@ This project was developed **strictly for academic purposes** in partial fulfill
 ---
 
 *"Connecting Hosts with Travelers through a Secure Digital Marketplace."*
+
 *From DIT with ❤️*
