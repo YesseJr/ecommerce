@@ -133,14 +133,19 @@
             <span class="font-bold text-dark">TSh {{ payment.amount|floatformat:0 }}</span>
           </div>
         {% else %}
-          <div class="flex justify-between items-center text-sm">
+                    <div class="flex justify-between items-center text-sm">
             <span class="text-gray-400 font-medium">Room Total</span>
-            <span class="font-semibold text-dark">${{ booking.room_total }}</span>
+            <span class="font-semibold text-dark font-mono">
+              {% if payment.currency == 'TZS' %}TSh {{ booking.room_total|floatformat:0 }}{% else %}${{ booking.room_total }}{% endif %}
+            </span>
           </div>
           <div class="flex justify-between items-center text-sm">
             <span class="text-gray-400 font-medium">Extras Total</span>
-            <span class="font-semibold text-dark">${{ booking.extras_total }}</span>
+            <span class="font-semibold text-dark font-mono">
+              {% if payment.currency == 'TZS' %}TSh {{ booking.extras_total|floatformat:0 }}{% else %}${{ booking.extras_total }}{% endif %}
+            </span>
           </div>
+
         {% endif %}
 
         <!-- Njia ya Malipo -->
@@ -211,14 +216,14 @@
   <!-- Kitufe cha My Bookings -->
   <a href="{% url 'payments:my_bookings' %}"
      class="flex-1 inline-flex items-center justify-center gap-2.5 bg-primary text-white px-6 py-4 rounded-xl font-bold text-sm tracking-wide shadow-md hover:bg-opacity-90 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-    <i data-lucide="clipboard-list" class="w-4.5 h-4.5 text-accent"></i>
+    <i data-lucide="clipboard-list" class="w-5 h-5 text-accent"></i>
     <span>View My Bookings</span>
   </a>
 
   <!-- Kitufe cha Payment History -->
   <a href="{% url 'payments:payment_history' %}"
-     class="flex-1 inline-flex items-center justify-center gap-2.5 bg-white border border-gray-100 text-gray-700 px-6 py-4 rounded-xl font-bold text-sm tracking-wide shadow-sm hover:bg-gray-50 hover:border-accent/30 hover:text-accent hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-    <i data-lucide="credit-card" class="w-4.5 h-4.5 text-gray-400 group-hover:text-accent"></i>
+     class="group flex-1 inline-flex items-center justify-center gap-2.5 bg-white border border-gray-100 text-gray-700 px-6 py-4 rounded-xl font-bold text-sm tracking-wide shadow-sm hover:bg-gray-50 hover:border-accent/30 hover:text-accent hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+    <i data-lucide="credit-card" class="w-5 h-5 text-gray-400 group-hover:text-accent"></i>
     <span>Payment History</span>
   </a>
 </div>

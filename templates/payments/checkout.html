@@ -57,18 +57,18 @@
                 <img src="{{ img.image.url }}" alt="" class="w-full h-full object-cover"/>
               {% else %}
                 <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
-                  <span class="text-white/30 text-3xl"><i data-lucide="home" class="w-4 h-4"></i></span>
+                  <span class="text-white/30 text-3xl">🏠</span>
                 </div>
               {% endif %}
             {% endwith %}
           </div>
           <div>
             <h4 class="font-display text-xl font-bold text-dark">{{ cart.booking_property.name }}</h4>
-            <p class="text-gray-400 text-sm mt-1"><i data-lucide="map-pin" class="w-4 h-4"></i> {{ cart.booking_property.city }}, {{ cart.booking_property.country }}</p>
+            <p class="text-gray-400 text-sm mt-1">📍 {{ cart.booking_property.city }}, {{ cart.booking_property.country }}</p>
             <div class="flex gap-4 mt-2 text-sm text-gray-500">
-              <span><i data-lucide="calendar" class="w-4 h-4"></i> {{ cart.check_in|date:"M j" }} → {{ cart.check_out|date:"M j, Y" }}</span>
-              <span><i data-lucide="moon" class="w-4 h-4"></i> {{ cart.nights }} night{{ cart.nights|pluralize }}</span>
-              <span><i data-lucide="users" class="w-4 h-4"></i> {{ cart.guests }} guest{{ cart.guests|pluralize }}</span>
+              <span>📅 {{ cart.check_in|date:"M j" }} → {{ cart.check_out|date:"M j, Y" }}</span>
+              <span>🌙 {{ cart.nights }} night{{ cart.nights|pluralize }}</span>
+              <span>👥 {{ cart.guests }} guest{{ cart.guests|pluralize }}</span>
             </div>
           </div>
         </div>
@@ -79,7 +79,7 @@
             <div class="flex flex-col gap-2">
               {% for item in cart.items.all %}
                 <div class="flex justify-between text-sm">
-                  <span class="text-gray-600"><i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i> {{ item.extra.name }}
+                  <span class="text-gray-600">✅ {{ item.extra.name }}
                     <span class="text-gray-400">({{ item.extra.get_charge_type_display }})</span>
                   </span>
                   <span class="font-medium text-dark price-item"
@@ -103,7 +103,7 @@
           <label class="payment-option flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-accent transition-all"
                  data-type="card">
             <input type="radio" name="payment_method_radio" value="credit_card" class="hidden"/>
-            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-xl"><i data-lucide="credit-card" class="w-4 h-4"></i></div>
+            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-xl">💳</div>
             <div class="flex-1">
               <p class="font-semibold text-dark text-sm">Credit Card</p>
               <p class="text-gray-400 text-xs">Visa, Mastercard — secure checkout</p>
@@ -117,7 +117,7 @@
           <label class="payment-option flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-accent transition-all"
                  data-type="card">
             <input type="radio" name="payment_method_radio" value="debit_card" class="hidden"/>
-            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-xl"><i data-lucide="gem" class="w-4 h-4"></i></div>
+            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-xl">💎</div>
             <div class="flex-1">
               <p class="font-semibold text-dark text-sm">Debit Card</p>
               <p class="text-gray-400 text-xs">Direct bank payment</p>
@@ -131,7 +131,7 @@
           <label class="payment-option flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-accent transition-all"
                  data-type="mobile">
             <input type="radio" name="payment_method_radio" value="mpesa" class="hidden"/>
-            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-xl"><i data-lucide="smartphone" class="w-4 h-4"></i></div>
+            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-xl">📱</div>
             <div class="flex-1">
               <p class="font-semibold text-dark text-sm">Mobile Money</p>
               <p class="text-gray-400 text-xs">M-Pesa, Airtel Money, Tigo Pesa, HaloPesa</p>
@@ -188,7 +188,7 @@
                      class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 font-mono text-dark focus:outline-none focus:border-accent transition"/>
             </div>
           </div>
-          <p class="text-xs text-gray-400"><i data-lucide="lock" class="w-4 h-4"></i> Your card details are encrypted. This is a simulation — no real charge occurs.</p>
+          <p class="text-xs text-gray-400">🔒 Your card details are encrypted. This is a simulation — no real charge occurs.</p>
         </div>
 
         <!-- ── MOBILE MONEY FORM ──────────────────────────────────────────── -->
@@ -199,7 +199,7 @@
               {% for val, label in providers %}
                 <label class="provider-option flex flex-col items-center gap-1.5 p-3 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-accent transition-all text-center">
                   <input type="radio" name="provider_radio" value="{{ val }}" class="hidden"/>
-                  <span class="text-xl">{% if val == 'mpesa' %}<i data-lucide="book" class="w-4 h-4"></i>{% elif val == 'airtel' %}<i data-lucide="book" class="w-4 h-4"></i>{% elif val == 'tigo' %}<i data-lucide="book" class="w-4 h-4"></i>{% else %}<i data-lucide="book-open" class="w-4 h-4"></i>{% endif %}</span>
+                  <span class="text-xl">{% if val == 'mpesa' %}📗{% elif val == 'airtel' %}📕{% elif val == 'tigo' %}📘{% else %}📙{% endif %}</span>
                   <span class="text-xs font-bold text-dark">{{ label }}</span>
                 </label>
               {% endfor %}
@@ -218,17 +218,17 @@
             <input type="password" id="mobile-pin" placeholder="••••" maxlength="6"
                    class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 font-mono text-dark focus:outline-none focus:border-accent transition"/>
           </div>
-          <p class="text-xs text-gray-400"><i data-lucide="smartphone" class="w-4 h-4"></i> A payment request will be sent to your mobile. This is a simulation — no real request is made.</p>
+          <p class="text-xs text-gray-400">📱 A payment request will be sent to your mobile. This is a simulation — no real request is made.</p>
         </div>
 
         <!-- Security & Pay Button -->
         <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-5">
-          <p class="text-blue-700 text-sm font-medium"><i data-lucide="lock" class="w-4 h-4"></i> All transactions are encrypted. BookMyStay uses bank-level security simulation.</p>
+          <p class="text-blue-700 text-sm font-medium">🔐 All transactions are encrypted. BookMyStay uses bank-level security simulation.</p>
         </div>
 
         <button id="pay-btn" onclick="startPayment()"
                 class="w-full bg-accent text-white py-4 rounded-xl font-bold text-base hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
-          <span><i data-lucide="lock" class="w-4 h-4"></i> Pay Now</span>
+          <span>🔒 Pay Now</span>
           <span id="pay-amount-btn" class="font-bebas text-xl tracking-wide">
             {% if currency == 'TZS' %}TSh {{ grand_local|floatformat:0 }}{% else %}${{ grand_usd }}{% endif %}
           </span>
@@ -293,15 +293,15 @@
 
         <div class="mt-6 pt-4 border-t border-gray-100 flex flex-col gap-2">
           <div class="flex items-center gap-2 text-xs text-gray-400">
-            <span><i data-lucide="calendar" class="w-4 h-4"></i></span>
+            <span>📅</span>
             <span>Check-in: <strong class="text-dark">{{ cart.check_in|date:"D, M j, Y" }}</strong></span>
           </div>
           <div class="flex items-center gap-2 text-xs text-gray-400">
-            <span><i data-lucide="calendar" class="w-4 h-4"></i></span>
+            <span>📅</span>
             <span>Check-out: <strong class="text-dark">{{ cart.check_out|date:"D, M j, Y" }}</strong></span>
           </div>
           <div class="flex items-center gap-2 text-xs text-gray-400 mt-2">
-            <span><i data-lucide="lock" class="w-4 h-4"></i></span>
+            <span>🔒</span>
             <span>Secured by <strong class="text-dark">BookMyStay Payments</strong></span>
           </div>
         </div>
@@ -322,7 +322,7 @@
     <!-- Animated icon area -->
     <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 transition-all duration-500"
          id="modal-icon-wrap" style="background:#eff6ff;">
-      <span id="modal-icon" class="text-4xl"><i data-lucide="zap" class="w-4 h-4"></i></span>
+      <span id="modal-icon" class="text-4xl">⚡</span>
     </div>
 
     <h2 class="font-display text-2xl font-bold text-dark mb-2" id="modal-title">Processing Payment</h2>
@@ -347,7 +347,7 @@
 
     <!-- Success state (hidden until done) -->
     <div id="success-state" class="hidden mt-6">
-      <p class="text-green-600 font-semibold text-sm"><i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i> Redirecting you to your receipt…</p>
+      <p class="text-green-600 font-semibold text-sm">✅ Redirecting you to your receipt…</p>
     </div>
 
     <!-- Error state (hidden unless error) -->
@@ -558,19 +558,19 @@
 
   // ── Payment animation + AJAX submission ───────────────────────────────────
   const CARD_STEPS = [
-    { icon:'<i data-lucide="globe" class="w-4 h-4"></i>', bg:'#eff6ff', text:'Connecting to Payment Gateway…',    progress: 20 },
-    { icon:'<i data-lucide="search" class="w-4 h-4"></i>', bg:'#fef3c7', text:'Verifying Card Details…',           progress: 40 },
-    { icon:'<i data-lucide="lock" class="w-4 h-4"></i>', bg:'#fdf4ff', text:'Authorizing Transaction…',          progress: 60 },
-    { icon:'<i data-lucide="settings" class="w-4 h-4"></i>', bg:'#f0fdf4', text:'Processing Payment…',               progress: 80 },
-    { icon:'<i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>', bg:'#f0fdf4', text:'Payment Successful!',               progress: 100},
+    { icon:'🌐', bg:'#eff6ff', text:'Connecting to Payment Gateway…',    progress: 20 },
+    { icon:'🔍', bg:'#fef3c7', text:'Verifying Card Details…',           progress: 40 },
+    { icon:'🔐', bg:'#fdf4ff', text:'Authorizing Transaction…',          progress: 60 },
+    { icon:'⚙️', bg:'#f0fdf4', text:'Processing Payment…',               progress: 80 },
+    { icon:'✅', bg:'#f0fdf4', text:'Payment Successful!',               progress: 100},
   ];
 
   const MOBILE_STEPS = [
-    { icon:'<i data-lucide="wifi" class="w-4 h-4"></i>', bg:'#f0fdf4', text:'Sending Payment Request…',             progress: 20 },
+    { icon:'📡', bg:'#f0fdf4', text:'Sending Payment Request…',             progress: 20 },
     { icon:'⏳', bg:'#fefce8', text:'Waiting for Customer Approval…',       progress: 40 },
-    { icon:'<i data-lucide="key" class="w-4 h-4"></i>', bg:'#fdf4ff', text:'Verifying PIN…',                       progress: 60 },
-    { icon:'<i data-lucide="settings" class="w-4 h-4"></i>', bg:'#eff6ff', text:'Processing Mobile Money Transaction…', progress: 80 },
-    { icon:'<i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>', bg:'#f0fdf4', text:'Payment Successful!',                  progress: 100},
+    { icon:'🔑', bg:'#fdf4ff', text:'Verifying PIN…',                       progress: 60 },
+    { icon:'⚙️', bg:'#eff6ff', text:'Processing Mobile Money Transaction…', progress: 80 },
+    { icon:'✅', bg:'#f0fdf4', text:'Payment Successful!',                  progress: 100},
   ];
 
   function startPayment() {
@@ -641,7 +641,7 @@
     .then(data => {
       if (data.success) {
         document.getElementById('modal-icon-wrap').style.background = '#f0fdf4';
-        document.getElementById('modal-icon').textContent = '<i data-lucide="party-popper" class="w-12 h-12 text-green-500"></i>';
+        document.getElementById('modal-icon').textContent = '🎉';
         document.getElementById('modal-title').textContent = 'Payment Successful!';
         document.getElementById('modal-subtitle').textContent = 'Booking confirmed. Ref: ' + data.reference;
         document.getElementById('success-state').classList.remove('hidden');
@@ -656,7 +656,7 @@
 
   function showError(msg) {
     document.getElementById('modal-icon-wrap').style.background = '#fef2f2';
-    document.getElementById('modal-icon').textContent = '<i data-lucide="x-circle" class="w-4 h-4 text-red-500"></i>';
+    document.getElementById('modal-icon').textContent = '❌';
     document.getElementById('modal-title').textContent = 'Payment Failed';
     document.getElementById('modal-subtitle').textContent = '';
     document.getElementById('error-text').textContent = msg;
