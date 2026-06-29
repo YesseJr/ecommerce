@@ -127,14 +127,21 @@
 
   {% else %}
     <div class="text-center py-32 text-gray-400">
-      <div class="text-8xl mb-6"><i data-lucide="luggage" class="w-8 h-8"></i></div>
-      <h3 class="text-2xl font-semibold text-dark mb-2">No bookings yet</h3>
-      <p class="text-sm mb-8">Your travel history will appear here after your first booking.</p>
+      <div class="text-center py-20 px-6 bg-white border border-gray-100 rounded-2xl shadow-sm">
+      <!-- Duara la Aikoni (Icon Wrapper) -->
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cream mb-5 border border-gray-50/50">
+        <i data-lucide="luggage" class="w-7 h-7 text-accent/80"></i>
+      </div>
+      <h3 class="font-display font-bold text-dark text-xl mb-1.5">No bookings yet</h3>
+      <p class="text-gray-400 text-sm mb-8 max-w-xs mx-auto leading-relaxed">
+        Your travel history will appear here after your first booking.
+      </p>
       <a href="{% url 'properties:list' %}"
-         class="inline-block bg-accent text-white px-8 py-3.5 rounded-full font-semibold hover:shadow-lg transition">
+         class="inline-block bg-accent text-white px-8 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
         Find a Place to Stay
       </a>
     </div>
+
   {% endif %}
 
 </div>

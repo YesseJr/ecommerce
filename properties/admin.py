@@ -128,14 +128,16 @@ class PropertyAdmin(admin.ModelAdmin):
     status_badge.short_description = 'Status'
 
     def average_rating_display(self, obj):
-        rating = obj.average_rating()
+        # Support both @property and regular method on the model
+        rating = obj.average_rating() if callable(obj.average_rating) else obj.average_rating
+        total  = obj.total_reviews()  if callable(obj.total_reviews)  else obj.total_reviews
+
         if rating:
             return format_html(
                 '<strong>⭐ {}</strong> ({} reviews)',
-                rating,
-                obj.total_reviews()
+                round(rating, 1),
+                total or 0,
             )
-        # ✅ Fixed: plain string, no HTML needed, no format_html call needed
         return "No reviews yet"
     average_rating_display.short_description = 'Rating'
 
