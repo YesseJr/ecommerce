@@ -38,7 +38,10 @@
       </div>
       <div class="bg-accent/20 border border-accent/30 rounded-2xl p-5">
         <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Total Revenue</p>
-        <p class="font-bebas text-5xl text-white">${{ revenue|floatformat:0 }}</p>
+        {# data-usd holds the raw USD value; JS rewrites the text on currency toggle #}
+        <p class="bms-price font-bebas text-5xl text-white" data-usd="{{ revenue }}">
+          {% if currency == 'TZS' %}TSh {{ revenue_tzs|floatformat:0 }}{% else %}${{ revenue|floatformat:0 }}{% endif %}
+        </p>
         <p class="text-white/30 text-xs mt-1">from confirmed only</p>
       </div>
     </div>
@@ -124,7 +127,10 @@
                   </p>
                 </td>
                 <td class="px-6 py-4">
-                  <span class="font-bold text-dark text-base">${{ booking.grand_total }}</span>
+                  {# grand_total is always stored in USD — JS handles display conversion #}
+                  <span class="bms-price font-bold text-dark text-base" data-usd="{{ booking.grand_total }}">
+                    {% if currency == 'TZS' %}TSh {{ booking.grand_total_tzs|floatformat:0 }}{% else %}${{ booking.grand_total }}{% endif %}
+                  </span>
                 </td>
                 <td class="px-6 py-4">
                   <span class="text-xs font-bold px-3 py-1.5 rounded-full
@@ -152,24 +158,44 @@
     {% endif %}
   </div>
 </div>
+{% endblock %}
 
+{% block extra_js %}
 <script>
+  var RATE     = {{ rate|default:2500 }};
+  var CURRENCY = '{{ currency|default:"USD" }}';
+
+  function fmtPrice(usd, c) {
+    if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+    return '$' + parseFloat(usd).toFixed(2);
+  }
+
+  window.setCurrency = function(c) {
+    CURRENCY = c;
+    document.querySelectorAll('.bms-price[data-usd]').forEach(function(el) {
+      el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+    });
+  };
+
+  // Apply session currency immediately on page load
+  window.setCurrency(CURRENCY);
+
   function filterBookings(status) {
-    const rows    = document.querySelectorAll('.booking-row')
-    const buttons = document.querySelectorAll('.booking-filter-btn')
+    var rows    = document.querySelectorAll('.booking-row');
+    var buttons = document.querySelectorAll('.booking-filter-btn');
 
-    rows.forEach(row => {
-      row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none'
-    })
+    rows.forEach(function(row) {
+      row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+    });
 
-    buttons.forEach(btn => {
-      const isActive = btn.dataset.filter === status
-      btn.classList.toggle('bg-accent',     isActive)
-      btn.classList.toggle('text-white',    isActive)
-      btn.classList.toggle('border-accent', isActive)
-      btn.classList.toggle('text-gray-500', !isActive)
-      btn.classList.toggle('border-gray-200', !isActive)
-    })
+    buttons.forEach(function(btn) {
+      var isActive = btn.dataset.filter === status;
+      btn.classList.toggle('bg-accent',       isActive);
+      btn.classList.toggle('text-white',      isActive);
+      btn.classList.toggle('border-accent',   isActive);
+      btn.classList.toggle('text-gray-500',   !isActive);
+      btn.classList.toggle('border-gray-200', !isActive);
+    });
   }
 </script>
 {% endblock %}

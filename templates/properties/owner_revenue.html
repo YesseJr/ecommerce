@@ -279,11 +279,9 @@
   </div>
 </div>
 
-    {% else %}
+{% else %}
+      <!-- Empty state -->
       <div class="text-center py-24 text-gray-400">
-        <div class="w-24 h-24 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <span class="text-5xl"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></span>
-        </div>
         <h3 class="text-xl font-semibold text-dark mb-2">No earnings data yet</h3>
         <p class="text-sm mb-6 max-w-sm mx-auto">
           Add a property, get it approved, and start receiving bookings to see your analytics here.
@@ -294,8 +292,6 @@
         </a>
       </div>
     {% endif %}
-  </div>
-</div>
 {% endblock %}
 
 {% block extra_js %}

@@ -78,7 +78,11 @@
       <div class="font-bebas text-4xl text-accent">{{ total_guests }}</div>
       <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Happy Guests</div>
     </div>
+<<<<<<< HEAD
     <div class="text-center">
+=======
+     <div class="text-center">
+>>>>>>> ab3aec188a2eb9e75ead73276e70002042eb29a6
       {% if avg_rating %}
         <div class="font-bebas text-4xl text-accent">{{ avg_rating }}★</div>
       {% else %}
@@ -167,12 +171,21 @@
       <a href="{% url 'properties:list' %}?type={{ value }}"
          class="flex items-center gap-3 px-6 py-4 bg-cream border-2 border-transparent rounded-2xl hover:border-accent hover:bg-orange-50 hover:-translate-y-1 transition-all">
         <span class="text-2xl">
+<<<<<<< HEAD
           {% if value == 'hotel' %}<i data-lucide="building-2" class="w-8 h-8 text-amber-600"></i>
           {% elif value == 'apartment' %}<i data-lucide="building" class="w-8 h-8 text-sky-600"></i>
           {% elif value == 'guesthouse' %}<i data-lucide="house" class="w-8 h-8 text-orange-500"></i>
           {% elif value == 'villa' %}<i data-lucide="castle" class="w-8 h-8 text-purple-600"></i>
           {% elif value == 'hostel' %}<i data-lucide="bed-double" class="w-8 h-8 text-blue-500"></i>
           {% elif value == 'resort' %}<i data-lucide="palmtree" class="w-8 h-8 text-green-500"></i>
+=======
+          {% if value == 'hotel' %}<i data-lucide="building-2" class="w-4 h-4"></i>
+          {% elif value == 'apartment' %}<i data-lucide="building" class="w-4 h-4"></i>
+          {% elif value == 'guesthouse' %}<i data-lucide="house" class="w-4 h-4"></i>
+          {% elif value == 'villa' %}<i data-lucide="castle" class="w-4 h-4"></i>
+          {% elif value == 'hostel' %}<i data-lucide="bed-double" class="w-4 h-4"></i>
+          {% elif value == 'resort' %}<i data-lucide="palmtree" class="w-4 h-4"></i>
+>>>>>>> ab3aec188a2eb9e75ead73276e70002042eb29a6
           {% endif %}
         </span>
         <span class="font-semibold text-dark">{{ label }}</span>
@@ -203,10 +216,17 @@
         <div class="text-center p-6 group">
           <div class="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-accent/20 transition">
             <span class="text-3xl">
+<<<<<<< HEAD
               {% if forloop.counter == 1 %}<i data-lucide="check-circle" class="w-10 h-10 text-green-600"></i>
               {% elif forloop.counter == 2 %}<i data-lucide="lock" class="w-10 h-10 text-violet-400"></i>
               {% elif forloop.counter == 3 %}<i data-lucide="shopping-cart" class="w-10 h-10 transform -scale-x-100 text-orange-500"></i>
               {% elif forloop.counter == 4 %}<i data-lucide="star" class="w-10 h-10 text-yellow-400"></i>{% endif %}
+=======
+              {% if forloop.counter == 1 %}<i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
+              {% elif forloop.counter == 2 %}<i data-lucide="lock" class="w-4 h-4"></i>
+              {% elif forloop.counter == 3 %}<i data-lucide="shopping-cart" class="w-4 h-4"></i>
+              {% elif forloop.counter == 4 %}<i data-lucide="star" class="w-4 h-4 text-yellow-400"></i>{% endif %}
+>>>>>>> ab3aec188a2eb9e75ead73276e70002042eb29a6
             </span>
           </div>
           <h4 class="text-white font-semibold mb-2">
