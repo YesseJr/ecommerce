@@ -56,10 +56,21 @@
                 {{ form.property_type }}
               </div>
               <div>
+                <!-- Label updates to show current currency unit -->
                 <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
-                  Price Per Night ($) *
+                  Price Per Night
+                  <span id="price-currency-label">
+                    {% if currency == 'TZS' %}(TSh){% else %}($){% endif %}
+                  </span> *
                 </label>
                 {{ form.price_per_night }}
+                <p class="text-xs text-gray-400 mt-1" id="price-note">
+                  {% if currency == 'TZS' %}
+                    Enter amount in Tanzanian Shillings. Stored as USD internally.
+                  {% else %}
+                    Enter amount in USD.
+                  {% endif %}
+                </p>
               </div>
             </div>
 
@@ -87,7 +98,7 @@
               </div>
             </div>
             <div>
-              <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Full Address</label>
+              <label class="block text-xs font-bold uppercase tracking-widests text-gray-400 mb-2">Full Address</label>
               {{ form.address }}
             </div>
           </div>
@@ -125,9 +136,10 @@
         </div>
 
         <button type="submit"
-                class="bg-accent text-white py-4 rounded-2xl font-semibold text-base hover:shadow-xl hover:-translate-y-0.5 transition-all">
-          Submit Property for Review 🚀
-        </button>
+        class="group inline-flex items-center justify-center gap-2 bg-accent text-white px-8 py-3 rounded-xl font-bold text-sm tracking-wide shadow-md shadow-accent/10 hover:shadow-xl hover:shadow-accent/20 hover:-translate-y-0.5 transition-all duration-300">
+  <span>Submit Property for Review</span>
+  <i data-lucide="rocket" class="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300"></i>
+</button>
       </form>
     </div>
   </div>
@@ -150,4 +162,22 @@
     border-color: #F97316;
   }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // No prices to convert on this page — only update the label and hint
+  // when the currency toggle is used, so the owner knows what unit to enter.
+  window.setCurrency = function(c) {
+    var label = document.getElementById('price-currency-label');
+    var note  = document.getElementById('price-note');
+    if (label) label.textContent = c === 'TZS' ? '(TSh)' : '($)';
+    if (note)  note.textContent  = c === 'TZS'
+      ? 'Enter amount in Tanzanian Shillings. Stored as USD internally.'
+      : 'Enter amount in USD.';
+  };
+
+  // Apply on load
+  window.setCurrency('{{ currency|default:"USD" }}');
+</script>
 {% endblock %}

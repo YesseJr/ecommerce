@@ -30,11 +30,11 @@
         <div class="flex gap-2">
           <a href="{% url 'properties:owner_revenue' %}"
              class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-4 py-2 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
-            📊 Revenue Analytics
+            <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Revenue Analytics
           </a>
           <a href="{% url 'properties:owner_bookings' %}"
              class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-4 py-2 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
-            📋 All Bookings
+            <i data-lucide="clipboard-list" class="w-4 h-4"></i> All Bookings
           </a>
         </div>
       </div>
@@ -119,7 +119,7 @@
                          class="w-full h-full object-cover"/>
                   {% else %}
                     <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center min-h-[140px]">
-                      <span class="text-white/20 text-5xl">🏠</span>
+                      <span class="text-white/20 text-5xl"><i data-lucide="home" class="w-4 h-4"></i></span>
                     </div>
                   {% endif %}
                 {% endwith %}
@@ -138,7 +138,7 @@
                 {% with prop.images.count as img_count %}
                   {% if img_count > 1 %}
                     <div class="absolute bottom-3 right-3 bg-black/60 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
-                      📷 {{ img_count }}
+                      <i data-lucide="camera" class="w-4 h-4"></i> {{ img_count }}
                     </div>
                   {% endif %}
                 {% endwith %}
@@ -169,23 +169,23 @@
                   <!-- Meta row -->
                   <div class="flex flex-wrap gap-4 mt-3">
                     <span class="flex items-center gap-1.5 text-xs text-gray-500">
-                      <span>📍</span> {{ prop.city }}, {{ prop.country }}
+                      <span><i data-lucide="map-pin" class="w-4 h-4"></i></span> {{ prop.city }}, {{ prop.country }}
                     </span>
                     <span class="flex items-center gap-1.5 text-xs text-gray-500">
-                      <span>🛏</span> {{ prop.bedrooms }} bed{{ prop.bedrooms|pluralize }}
+                      <span><i data-lucide="bed" class="w-4 h-4"></i></span> {{ prop.bedrooms }} bed{{ prop.bedrooms|pluralize }}
                     </span>
                     <span class="flex items-center gap-1.5 text-xs text-gray-500">
-                      <span>🚿</span> {{ prop.bathrooms }} bath{{ prop.bathrooms|pluralize }}
+                      <span><i data-lucide="droplets" class="w-4 h-4"></i></span> {{ prop.bathrooms }} bath{{ prop.bathrooms|pluralize }}
                     </span>
                     <span class="flex items-center gap-1.5 text-xs text-gray-500">
-                      <span>👥</span> Up to {{ prop.max_guests }} guests
+                      <span><i data-lucide="users" class="w-4 h-4"></i></span> Up to {{ prop.max_guests }} guests
                     </span>
                     <span class="flex items-center gap-1.5 text-xs text-gray-500">
-                      <span>✨</span> {{ prop.extras.count }} extra{{ prop.extras.count|pluralize }}
+                      <span><i data-lucide="sparkles" class="w-4 h-4"></i></span> {{ prop.extras.count }} extra{{ prop.extras.count|pluralize }}
                     </span>
                     {% if prop.average_rating %}
                       <span class="flex items-center gap-1.5 text-xs text-gold font-semibold">
-                        ⭐ {{ prop.average_rating }} ({{ prop.total_reviews }} review{{ prop.total_reviews|pluralize }})
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400"></i> {{ prop.average_rating }} ({{ prop.total_reviews }} review{{ prop.total_reviews|pluralize }})
                       </span>
                     {% endif %}
                   </div>
@@ -203,28 +203,37 @@
                   </div>
 
                   <!-- Action buttons -->
-                  <div class="flex gap-2">
-                    <a href="{% url 'properties:detail' prop.slug %}"
-                       class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 text-gray-500 hover:border-primary hover:text-primary transition">
-                      👁 Preview
-                    </a>
-                    <a href="{% url 'properties:manage_extras' prop.slug %}"
-                       class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 text-gray-500 hover:border-gold hover:text-gold transition">
-                      ✨ Extras
-                    </a>
-                    <a href="{% url 'properties:edit_property' prop.slug %}"
-                       class="text-xs font-semibold px-4 py-2 rounded-xl bg-primary text-white hover:bg-blue-900 transition">
-                      ✏️ Edit
-                    </a>
-                    <form method="POST" action="{% url 'properties:delete_property' prop.slug %}"
-                          onsubmit="return confirm('Permanently delete {{ prop.name }}? This cannot be undone.')">
-                      {% csrf_token %}
-                      <button type="submit"
-                              class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 text-gray-400 hover:border-red-400 hover:text-red-400 hover:bg-red-50 transition">
-                        🗑
-                      </button>
-                    </form>
-                  </div>
+                  <div class="flex items-center gap-2">
+  <!-- Preview Button -->
+  <a href="{% url 'properties:detail' prop.slug %}"
+     class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-2 rounded-lg border border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all">
+    <i data-lucide="eye" class="w-3.5 h-3.5"></i> Preview
+  </a>
+
+  <!-- Extras Button -->
+  <a href="{% url 'properties:manage_extras' prop.slug %}"
+     class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-2 rounded-lg border border-gray-200 text-gray-600 hover:border-gold hover:text-gold hover:bg-amber-50/30 transition-all">
+    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-gray-400 group-hover:text-gold"></i> Extras
+  </a>
+
+  <!-- Edit Button -->
+  <a href="{% url 'properties:edit_property' prop.slug %}"
+     class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-2 rounded-lg bg-primary text-white hover:bg-opacity-90 hover:shadow-sm transition-all">
+    <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Edit
+  </a>
+
+  <!-- Delete Button (Form) -->
+  <form method="POST" action="{% url 'properties:delete_property' prop.slug %}"
+        onsubmit="return confirm('Permanently delete {{ prop.name }}? This cannot be undone.')"
+        class="inline-block">
+    {% csrf_token %}
+    <button type="submit"
+            class="inline-flex items-center justify-center text-xs font-bold p-2 rounded-lg border border-gray-200 text-gray-400 hover:border-red-200 hover:text-red-500 hover:bg-red-50 transition-all">
+      <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+    </button>
+  </form>
+</div>
+
                 </div>
               </div>
             </div>
@@ -234,7 +243,7 @@
 
       <!-- Empty filter state -->
       <div id="no-filter-results" class="hidden text-center py-16 text-gray-400">
-        <div class="text-5xl mb-4">🔍</div>
+        <div class="text-5xl mb-4"><i data-lucide="search" class="w-4 h-4"></i></div>
         <p class="font-semibold text-dark">No properties match that filter.</p>
         <button onclick="filterProps('all')" class="mt-4 text-accent text-sm font-semibold hover:underline">
           Show all
@@ -246,7 +255,7 @@
       <!-- Empty State -->
       <div class="text-center py-32 text-gray-400">
         <div class="w-24 h-24 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <span class="text-5xl">🏠</span>
+          <span class="text-5xl"><i data-lucide="home" class="w-4 h-4"></i></span>
         </div>
         <h3 class="text-2xl font-semibold text-dark mb-2">No properties yet</h3>
         <p class="text-sm mb-8 max-w-sm mx-auto leading-relaxed">

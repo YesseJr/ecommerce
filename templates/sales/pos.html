@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% block title %}Point of Sale{% endblock %}
+{% block topbar_title %}Point of Sale{% endblock %}
+{% block topbar_actions %}
+  <button type="button" class="btn btn-secondary" id="pos-clear-btn">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+    Clear cart
+  </button>
+{% endblock %}
+
+{% block content %}
+<div class="pos-shell">
+
+  {# ────── LEFT: Product grid ────── #}
+  <div class="pos-left">
+    <div class="pos-search-wrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="pos-search" placeholder="Search by name or brand…" autocomplete="off">
+      <kbd class="pos-search-kbd">ESC to clear</kbd>
+    </div>
+
+    <div id="pos-grid" class="pos-grid">
+      {% for f in fragrances %}
+      <div class="pos-card {% if f.is_low_stock %}pos-card-low{% endif %}"
+           data-name="{{ f.display_name|lower }}"
+           data-brand="{{ f.brand|lower }}"
+           data-id="{{ f.pk }}"
+           data-price="{{ f.price }}"
+           data-label="{{ f.display_name|escapejs }}"
+           data-stock="{{ f.stock_quantity }}"
+           onclick="POS.addToCart({{ f.pk }}, '{{ f.display_name|escapejs }}', {{ f.price }}, {{ f.stock_quantity }})">
+        <div class="pos-card-name">{{ f.name }}</div>
+        <div class="pos-card-brand">{{ f.brand }} · {{ f.bottle_size }}{{ f.concentration|upper }}</div>
+        <div class="pos-card-price">TZS {{ f.price|floatformat:0 }}</div>
+        <div class="pos-card-stock {% if f.is_low_stock %}low{% endif %}">
+          {% if f.is_low_stock %}
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+          {% endif %}
+          {{ f.stock_quantity }} in stock
+        </div>
+        <div class="pos-card-ripple"></div>
+      </div>
+      {% empty %}
+      <div class="pos-empty-grid">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        <p>No fragrances in stock. <a href="{% url 'fragrance_create' %}">Add inventory →</a></p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# ────── RIGHT: Cart panel ────── #}
+  <div class="pos-cart-panel">
+
+    {# Cart header #}
+    <div class="pos-cart-header">
+      <span class="pos-cart-title">Cart</span>
+      <span class="pos-cart-badge" id="cart-count">0</span>
+    </div>
+
+    {# Cart items #}
+    <div class="pos-cart-items" id="cart-items">
+      <div class="pos-cart-empty" id="cart-empty-msg">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <p>Tap a product to add it</p>
+      </div>
+    </div>
+
+    <div class="pos-divider"></div>
+
+    {# Discount #}
+    <div class="pos-discount-row">
+      <label class="pos-field-label">Discount (TZS)</label>
+      <input type="text" id="discount-input" class="pos-input" placeholder="0" inputmode="numeric">
+    </div>
+
+    {# Totals #}
+    <div class="pos-totals">
+      <div class="pos-total-row">
+        <span>Subtotal</span>
+        <span id="display-subtotal">TZS 0</span>
+      </div>
+      <div class="pos-total-row" id="discount-row" style="display:none;color:var(--red)">
+        <span>Discount</span>
+        <span id="display-discount">−TZS 0</span>
+      </div>
+      <div class="pos-total-row pos-total-grand">
+        <span>Total</span>
+        <span id="cart-total">TZS 0</span>
+      </div>
+    </div>
+
+    <div class="pos-divider"></div>
+
+    {# Payment method tabs #}
+    <label class="pos-field-label">Payment method</label>
+    <div class="pos-pay-tabs" id="pay-tabs">
+      <button type="button" class="pos-pay-tab active" data-method="cash">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Cash
+      </button>
+      <button type="button" class="pos-pay-tab" data-method="mpesa">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        M-Pesa
+      </button>
+      <button type="button" class="pos-pay-tab" data-method="card">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg>
+        Card
+      </button>
+    </div>
+
+    {# Cash: tendered + change #}
+    <div id="cash-extras" class="pos-pay-extras">
+      <div class="pos-field-row">
+        <label class="pos-field-label">Cash tendered</label>
+        <input type="text" id="tendered-input" class="pos-input" placeholder="Enter amount" inputmode="numeric">
+      </div>
+      <div class="pos-change-row" id="change-row" style="display:none">
+        <span>Change</span>
+        <span id="change-display" class="pos-change-val">TZS 0</span>
+      </div>
+    </div>
+
+    {# M-Pesa: phone #}
+    <div id="mpesa-extras" class="pos-pay-extras" style="display:none">
+      <label class="pos-field-label">M-Pesa phone</label>
+      <input type="text" id="mpesa-phone" class="pos-input" placeholder="e.g. 0712 345 678" inputmode="tel">
+    </div>
+
+    <div class="pos-divider"></div>
+
+    {# Customer #}
+    <label class="pos-field-label">Customer</label>
+    <select id="contact-select" class="pos-input pos-select">
+      <option value="">Walk-in customer</option>
+      {% for c in contacts %}
+      <option value="{{ c.pk }}">{{ c.full_name }}{% if c.phone %} · {{ c.phone }}{% endif %}</option>
+      {% endfor %}
+    </select>
+
+    {# Hidden form (built by JS before AJAX send) #}
+    <form id="pos-form" method="post" action="{% url 'pos' %}" style="display:none">
+      {% csrf_token %}
+    </form>
+
+    {# Complete sale CTA #}
+    <button type="button" id="pos-submit-btn" class="pos-cta" disabled>
+      <span class="pos-cta-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Complete sale
+      </span>
+      <span class="pos-cta-loading" style="display:none">
+        <svg class="pos-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity=".25"/><path d="M12 2a10 10 0 0110 10" stroke-linecap="round"/></svg>
+        Processing…
+      </span>
+    </button>
+
+  </div>{# end pos-cart-panel #}
+</div>{# end pos-shell #}
+
+{# ──────────────────────────────────────────────────────
+   Success overlay  (hidden until JS reveals it)
+────────────────────────────────────────────────────── #}
+<div id="pos-overlay" class="pos-overlay" style="display:none" aria-live="polite">
+  <div class="pos-overlay-card">
+
+    <div id="overlay-processing" class="overlay-state">
+      <svg class="pos-spin pos-spin-lg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2">
+        <circle cx="12" cy="12" r="10" stroke-opacity=".2"/>
+        <path d="M12 2a10 10 0 0110 10" stroke-linecap="round"/>
+      </svg>
+      <p class="overlay-title">Processing sale…</p>
+      <p class="overlay-sub">Please wait</p>
+    </div>
+
+    <div id="overlay-success" class="overlay-state" style="display:none">
+      <div class="overlay-check-wrap">
+        <svg class="overlay-check" width="52" height="52" viewBox="0 0 52 52">
+          <circle class="overlay-check-ring"  cx="26" cy="26" r="23" fill="none" stroke-width="3"/>
+          <path   class="overlay-check-tick"  d="M14 26l9 9 16-16" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="overlay-title" id="overlay-title">Sale completed!</p>
+      <p class="overlay-ref"  id="overlay-ref"></p>
+      <div class="overlay-details" id="overlay-details"></div>
+      <p class="overlay-redirect" id="overlay-redirect">Redirecting to receipt…</p>
+    </div>
+
+    <div id="overlay-error" class="overlay-state" style="display:none">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <p class="overlay-title" style="color:var(--red)">Something went wrong</p>
+      <p class="overlay-sub" id="overlay-error-msg"></p>
+      <button type="button" class="btn btn-secondary" id="overlay-dismiss">Dismiss</button>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

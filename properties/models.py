@@ -83,12 +83,14 @@ class Property(models.Model):
     def __str__(self):
         return f"{self.name} - {self.city}"
 
+    @property
     def average_rating(self):
         reviews = self.reviews.all()
         if reviews.exists():
             return round(sum(r.rating for r in reviews) / reviews.count(), 1)
         return None
 
+    @property
     def total_reviews(self):
         return self.reviews.count()
 

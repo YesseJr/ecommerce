@@ -22,29 +22,52 @@
         </p>
       </div>
       <a href="{% url 'properties:edit_property' property.slug %}"
-         class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-5 py-2.5 rounded-full text-sm font-semibold transition">
-        ✏️ Edit Property
-      </a>
+   class="inline-flex items-center gap-1.5 bg-white/10 text-white/90 hover:bg-white/20 hover:text-white px-5 py-2.5 rounded-full text-sm font-semibold transition">
+  <i data-lucide="pencil" class="w-4 h-4"></i> Edit Property
+</a>
     </div>
 
     <!-- Current extras count strip -->
-    <div class="grid grid-cols-3 gap-4 mt-10">
-      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
-        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Total Extras</p>
-        <p class="font-bebas text-5xl text-white">{{ extras.count }}</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
+      <!-- Total Extras Card -->
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-[130px]">
+        <div class="flex items-center justify-between">
+          <p class="text-white/50 text-xs font-bold uppercase tracking-widest">Total Extras</p>
+          <div class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 text-white/40">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <p class="font-display font-extrabold text-5xl text-white tracking-tight mt-4">{{ extras.count }}</p>
       </div>
-      <div class="bg-green-500/10 border border-green-500/20 rounded-2xl p-5">
-        <p class="text-green-400/80 text-xs font-bold uppercase tracking-widest mb-2">Available</p>
-        <p class="font-bebas text-5xl text-white">
-          {% with available=extras.filter %}
-            {{ extras.count }}
-          {% endwith %}
+
+      <!-- Available Extras Card -->
+      <div class="bg-green-500/5 border border-green-500/15 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-[130px]">
+        <div class="flex items-center justify-between">
+          <p class="text-green-400/90 text-xs font-bold uppercase tracking-widest">Available</p>
+          <div class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-green-500/10 text-green-400">
+            <i data-lucide="check-circle" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <!-- FIX: Zana sahihi ya Django kujihesabu yenyewe kulingana na vichujio vya hifadhi ya data -->
+        <p class="font-display font-extrabold text-5xl text-white tracking-tight mt-4">
+          {{ property.extras.all|length }}
         </p>
       </div>
-      <div class="bg-accent/20 border border-accent/30 rounded-2xl p-5">
-        <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Property</p>
-        <p class="font-bebas text-2xl text-white leading-tight mt-1">{{ property.get_property_type_display }}</p>
-        <p class="text-white/30 text-xs mt-1">📍 {{ property.city }}</p>
+
+      <!-- Property Details Card -->
+      <div class="bg-accent/10 border border-accent/20 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-[130px]">
+        <div class="flex items-center justify-between">
+          <p class="text-accent text-xs font-bold uppercase tracking-widest">Property</p>
+          <div class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-accent/10 text-accent">
+            <i data-lucide="home" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <p class="font-display font-bold text-xl text-white leading-tight">{{ property.get_property_type_display }}</p>
+          <p class="inline-flex items-center gap-1 text-white/40 text-xs mt-1.5 font-medium">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-white/30"></i> {{ property.city }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -53,48 +76,74 @@
     <div class="max-w-4xl mx-auto flex flex-col gap-8">
 
       <!-- ─── QUICK ADD FROM PRESETS ─── -->
-      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div class="p-6 border-b border-gray-100">
-          <h3 class="font-semibold text-dark text-lg">Quick Add Common Extras</h3>
-          <p class="text-gray-400 text-sm mt-0.5">
-            Click any preset to instantly add it — you can adjust the price after.
-          </p>
+      <div class="bg-white rounded-2xl border border-gray-100/80 shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-gray-100/80 bg-gray-50/50">
+          <div class="flex items-center gap-2.5">
+            <div class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-accent/10 text-accent">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="font-display font-bold text-dark text-lg">Quick Add Common Extras</h3>
+              <p class="text-gray-400 text-xs mt-0.5 font-medium">
+                Click any preset to instantly add it — you can adjust the price after.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div class="p-6">
           <!-- Category tabs -->
           <div class="flex gap-2 mb-5 flex-wrap" id="preset-tabs">
             <button onclick="showCategory('all')"
-                    class="preset-tab active-tab text-xs font-bold px-4 py-2 rounded-full bg-accent text-white border-2 border-accent transition"
-                    data-cat="all">All</button>
+                    class="preset-tab active-tab text-xs font-bold px-4 py-2.5 rounded-xl bg-accent text-white border border-accent transition-all shadow-sm shadow-accent/20"
+                    data-cat="all">
+              All
+            </button>
+            
             <button onclick="showCategory('meals')"
-                    class="preset-tab text-xs font-bold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition"
-                    data-cat="meals">🍽️ Meals</button>
+                    class="preset-tab inline-flex items-center justify-center gap-1.5 text-xs font-bold px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5 transition-all"
+                    data-cat="meals">
+              <i data-lucide="utensils" class="w-3.5 h-3.5 text-gray-400 group-hover:text-accent"></i> Meals
+            </button>
+            
             <button onclick="showCategory('wellness')"
-                    class="preset-tab text-xs font-bold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition"
-                    data-cat="wellness">💆 Wellness</button>
+                    class="preset-tab inline-flex items-center justify-center gap-1.5 text-xs font-bold px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5 transition-all"
+                    data-cat="wellness">
+              <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-gray-400 group-hover:text-accent"></i> Wellness
+            </button>
+            
             <button onclick="showCategory('transport')"
-                    class="preset-tab text-xs font-bold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition"
-                    data-cat="transport">🚗 Transport</button>
+                    class="preset-tab inline-flex items-center justify-center gap-1.5 text-xs font-bold px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5 transition-all"
+                    data-cat="transport">
+              <i data-lucide="car" class="w-3.5 h-3.5 text-gray-400 group-hover:text-accent"></i> Transport
+            </button>
+            
             <button onclick="showCategory('activities')"
-                    class="preset-tab text-xs font-bold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition"
-                    data-cat="activities">🏄 Activities</button>
+                    class="preset-tab inline-flex items-center justify-center gap-1.5 text-xs font-bold px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5 transition-all"
+                    data-cat="activities">
+              <i data-lucide="waves" class="w-3.5 h-3.5 text-gray-400 group-hover:text-accent"></i> Activities
+            </button>
+            
+            <!-- FIX: Updated 'brush' to correct 'sparkles' for housekeeping -->
             <button onclick="showCategory('housekeeping')"
-                    class="preset-tab text-xs font-bold px-4 py-2 rounded-full border-2 border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition"
-                    data-cat="housekeeping">🧹 Housekeeping</button>
+                    class="preset-tab inline-flex items-center justify-center gap-1.5 text-xs font-bold px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5 transition-all"
+                    data-cat="housekeeping">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-gray-400 group-hover:text-accent"></i> Housekeeping
+            </button>
           </div>
-
           <!-- Preset cards grid -->
+          <!-- Each card: data-usd holds the USD price for JS conversion -->
+          <!-- fillForm always receives USD prices; view saves as USD -->
           <div class="grid grid-cols-2 gap-3" id="presets-grid">
 
             <!-- MEALS -->
             <div class="preset-item" data-cat="meals">
               <button type="button" onclick="fillForm('Breakfast', 15, 'per_person', 'Daily breakfast included per guest')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">☕</span>
+                <span class="text-2xl"><i data-lucide="coffee" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Breakfast</p>
-                  <p class="text-xs text-gray-400">~$15 · per person</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="15" data-charge="per person">~$15 · per person</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -103,10 +152,10 @@
             <div class="preset-item" data-cat="meals">
               <button type="button" onclick="fillForm('Dinner', 25, 'per_person', 'Evening dinner included per guest')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🍽️</span>
+                <span class="text-2xl"><i data-lucide="utensils" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Dinner</p>
-                  <p class="text-xs text-gray-400">~$25 · per person</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="25" data-charge="per person">~$25 · per person</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -115,10 +164,10 @@
             <div class="preset-item" data-cat="meals">
               <button type="button" onclick="fillForm('Full Board (3 Meals)', 50, 'per_person', 'Breakfast, lunch and dinner per guest')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🥘</span>
+                <span class="text-2xl"><i data-lucide="pot" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Full Board (3 Meals)</p>
-                  <p class="text-xs text-gray-400">~$50 · per person</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="50" data-charge="per person">~$50 · per person</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -127,10 +176,10 @@
             <div class="preset-item" data-cat="meals">
               <button type="button" onclick="fillForm('Welcome Drink', 10, 'once', 'Complimentary welcome drink on arrival')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🥂</span>
+                <span class="text-2xl"><i data-lucide="glass-water" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Welcome Drink</p>
-                  <p class="text-xs text-gray-400">~$10 · one-time</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="10" data-charge="one-time">~$10 · one-time</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -140,10 +189,10 @@
             <div class="preset-item" data-cat="wellness">
               <button type="button" onclick="fillForm('Swimming Pool Access', 10, 'per_night', 'Daily access to the swimming pool')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🏊</span>
+                <span class="text-2xl"><i data-lucide="waves" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Swimming Pool Access</p>
-                  <p class="text-xs text-gray-400">~$10 · per night</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="10" data-charge="per night">~$10 · per night</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -152,10 +201,10 @@
             <div class="preset-item" data-cat="wellness">
               <button type="button" onclick="fillForm('Gym Access', 8, 'per_night', 'Daily access to the gym facilities')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">💪</span>
+                <span class="text-2xl"><i data-lucide="dumbbell" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Gym Access</p>
-                  <p class="text-xs text-gray-400">~$8 · per night</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="8" data-charge="per night">~$8 · per night</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -164,10 +213,10 @@
             <div class="preset-item" data-cat="wellness">
               <button type="button" onclick="fillForm('Spa Treatment', 60, 'once', '60-minute spa and massage session')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">💆</span>
+                <span class="text-2xl"><i data-lucide="heart-pulse" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Spa Treatment</p>
-                  <p class="text-xs text-gray-400">~$60 · one-time</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="60" data-charge="one-time">~$60 · one-time</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -176,10 +225,10 @@
             <div class="preset-item" data-cat="wellness">
               <button type="button" onclick="fillForm('Sauna Access', 15, 'per_night', 'Evening access to the sauna')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🧖</span>
+                <span class="text-2xl"><i data-lucide="sparkles" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Sauna Access</p>
-                  <p class="text-xs text-gray-400">~$15 · per night</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="15" data-charge="per night">~$15 · per night</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -189,10 +238,10 @@
             <div class="preset-item" data-cat="transport">
               <button type="button" onclick="fillForm('Airport Pickup', 40, 'once', 'One-way airport pickup transfer')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">✈️</span>
+                <span class="text-2xl"><i data-lucide="plane" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Airport Pickup</p>
-                  <p class="text-xs text-gray-400">~$40 · one-time</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="40" data-charge="one-time">~$40 · one-time</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -201,10 +250,10 @@
             <div class="preset-item" data-cat="transport">
               <button type="button" onclick="fillForm('Airport Drop-off', 40, 'once', 'One-way transfer to the airport')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🚗</span>
+                <span class="text-2xl"><i data-lucide="car" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Airport Drop-off</p>
-                  <p class="text-xs text-gray-400">~$40 · one-time</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="40" data-charge="one-time">~$40 · one-time</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -213,10 +262,10 @@
             <div class="preset-item" data-cat="transport">
               <button type="button" onclick="fillForm('Car Rental', 80, 'per_night', 'Daily car rental with driver')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🚙</span>
+                <span class="text-2xl"><i data-lucide="car" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Car Rental</p>
-                  <p class="text-xs text-gray-400">~$80 · per night</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="80" data-charge="per night">~$80 · per night</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -225,10 +274,10 @@
             <div class="preset-item" data-cat="transport">
               <button type="button" onclick="fillForm('Boat Transfer', 55, 'once', 'Scenic boat transfer to/from island')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">⛵</span>
+                <span class="text-2xl"><i data-lucide="anchor" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Boat Transfer</p>
-                  <p class="text-xs text-gray-400">~$55 · one-time</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="55" data-charge="one-time">~$55 · one-time</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -238,10 +287,10 @@
             <div class="preset-item" data-cat="activities">
               <button type="button" onclick="fillForm('City Tour', 35, 'once', 'Guided city or town tour')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🗺️</span>
+                <span class="text-2xl"><i data-lucide="compass" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">City Tour</p>
-                  <p class="text-xs text-gray-400">~$35 · one-time</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="35" data-charge="one-time">~$35 · one-time</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -250,10 +299,10 @@
             <div class="preset-item" data-cat="activities">
               <button type="button" onclick="fillForm('Safari Day Trip', 150, 'once', 'Full-day safari with guide and transport')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🦁</span>
+                <span class="text-2xl"><i data-lucide="paw-print" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Safari Day Trip</p>
-                  <p class="text-xs text-gray-400">~$150 · one-time</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="150" data-charge="one-time">~$150 · one-time</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -262,10 +311,10 @@
             <div class="preset-item" data-cat="activities">
               <button type="button" onclick="fillForm('Snorkeling Trip', 45, 'once', 'Snorkeling excursion with equipment')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🤿</span>
+                <span class="text-2xl"><i data-lucide="waves" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Snorkeling Trip</p>
-                  <p class="text-xs text-gray-400">~$45 · one-time</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="45" data-charge="one-time">~$45 · one-time</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -274,10 +323,10 @@
             <div class="preset-item" data-cat="activities">
               <button type="button" onclick="fillForm('Cooking Class', 30, 'once', 'Local Swahili cooking experience')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">👨‍🍳</span>
+                <span class="text-2xl"><i data-lucide="chef-hat" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Cooking Class</p>
-                  <p class="text-xs text-gray-400">~$30 · one-time</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="30" data-charge="one-time">~$30 · one-time</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -287,10 +336,10 @@
             <div class="preset-item" data-cat="housekeeping">
               <button type="button" onclick="fillForm('Daily Housekeeping', 10, 'per_night', 'Daily room cleaning and turndown service')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🧹</span>
+                <span class="text-2xl"><i data-lucide="brush" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Daily Housekeeping</p>
-                  <p class="text-xs text-gray-400">~$10 · per night</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="10" data-charge="per night">~$10 · per night</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -299,10 +348,10 @@
             <div class="preset-item" data-cat="housekeeping">
               <button type="button" onclick="fillForm('Laundry Service', 12, 'once', 'Full laundry and ironing service')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">👔</span>
+                <span class="text-2xl"><i data-lucide="shirt" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Laundry Service</p>
-                  <p class="text-xs text-gray-400">~$12 · one-time</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="12" data-charge="one-time">~$12 · one-time</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -311,10 +360,10 @@
             <div class="preset-item" data-cat="housekeeping">
               <button type="button" onclick="fillForm('Baby Cot', 8, 'per_night', 'Baby cot and bedding provided')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">👶</span>
+                <span class="text-2xl"><i data-lucide="baby" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Baby Cot</p>
-                  <p class="text-xs text-gray-400">~$8 · per night</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="8" data-charge="per night">~$8 · per night</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -323,10 +372,10 @@
             <div class="preset-item" data-cat="housekeeping">
               <button type="button" onclick="fillForm('Extra Towels & Linens', 5, 'per_night', 'Extra set of towels and bed linen')"
                       class="w-full flex items-center gap-4 p-4 bg-cream border-2 border-transparent rounded-xl hover:border-accent hover:bg-orange-50 transition text-left group">
-                <span class="text-2xl">🛏️</span>
+                <span class="text-2xl"><i data-lucide="bed-double" class="w-4 h-4"></i></span>
                 <div class="flex-1">
                   <p class="font-semibold text-dark text-sm group-hover:text-accent transition">Extra Towels & Linens</p>
-                  <p class="text-xs text-gray-400">~$5 · per night</p>
+                  <p class="text-xs text-gray-400 preset-hint" data-usd="5" data-charge="per night">~$5 · per night</p>
                 </div>
                 <span class="text-xs text-gray-300 group-hover:text-accent transition">+ Add</span>
               </button>
@@ -345,11 +394,10 @@
               Or create a completely custom extra below.
             </p>
           </div>
-          <!-- Clear form button -->
           <button type="button" onclick="clearForm()"
                   id="clear-btn"
                   class="hidden text-xs text-gray-400 hover:text-accent font-semibold transition px-3 py-1.5 border border-gray-200 rounded-xl">
-            ✕ Clear
+            × Clear
           </button>
         </div>
 
@@ -367,12 +415,17 @@
                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm font-medium text-dark outline-none focus:border-accent transition bg-white"/>
               </div>
               <div>
+                <!-- Price label reflects current currency -->
                 <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
-                  Price ($) *
+                  Price
+                  <span id="price-currency-label">{% if currency == 'TZS' %}(TSh){% else %}($){% endif %}</span> *
                 </label>
                 <input type="number" name="price" id="field-price"
                        placeholder="0.00" min="0" step="0.01"
                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm font-medium text-dark outline-none focus:border-accent transition bg-white"/>
+                <p class="text-xs text-gray-400 mt-1" id="price-note">
+                  {% if currency == 'TZS' %}Enter amount in TSh. Stored as USD internally.{% else %}Enter amount in USD.{% endif %}
+                </p>
               </div>
             </div>
 
@@ -430,27 +483,25 @@
             {% for extra in extras %}
               <div class="flex items-center gap-4 px-6 py-4 hover:bg-cream transition">
 
-                <!-- Icon based on name -->
                 <div class="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg">
                   {% with name=extra.name|lower %}
-                    {% if 'breakfast' in name or 'meal' in name or 'food' in name or 'dinner' in name or 'lunch' in name %}🍽️
-                    {% elif 'pool' in name or 'swim' in name %}🏊
-                    {% elif 'gym' in name or 'fitness' in name %}💪
-                    {% elif 'spa' in name or 'massage' in name %}💆
-                    {% elif 'airport' in name or 'transfer' in name or 'transport' in name %}✈️
-                    {% elif 'car' in name or 'vehicle' in name %}🚗
-                    {% elif 'safari' in name %}🦁
-                    {% elif 'tour' in name %}🗺️
-                    {% elif 'laundry' in name %}👔
-                    {% elif 'cleaning' in name or 'housekeeping' in name %}🧹
-                    {% elif 'snorkel' in name or 'dive' in name or 'boat' in name %}⛵
-                    {% elif 'cook' in name %}👨‍🍳
-                    {% elif 'baby' in name or 'cot' in name %}👶
-                    {% else %}✨{% endif %}
+                    {% if 'breakfast' in name or 'meal' in name or 'food' in name or 'dinner' in name or 'lunch' in name %}<i data-lucide="utensils" class="w-4 h-4"></i>
+                    {% elif 'pool' in name or 'swim' in name %}<i data-lucide="waves" class="w-4 h-4"></i>
+                    {% elif 'gym' in name or 'fitness' in name %}<i data-lucide="dumbbell" class="w-4 h-4"></i>
+                    {% elif 'spa' in name or 'massage' in name %}<i data-lucide="heart-pulse" class="w-4 h-4"></i>
+                    {% elif 'airport' in name or 'transfer' in name or 'transport' in name %}<i data-lucide="plane" class="w-4 h-4"></i>
+                    {% elif 'car' in name or 'vehicle' in name %}<i data-lucide="car" class="w-4 h-4"></i>
+                    {% elif 'safari' in name %}<i data-lucide="paw-print" class="w-4 h-4"></i>
+                    {% elif 'tour' in name %}<i data-lucide="compass" class="w-4 h-4"></i>
+                    {% elif 'laundry' in name %}<i data-lucide="shirt" class="w-4 h-4"></i>
+                    {% elif 'cleaning' in name or 'housekeeping' in name %}<i data-lucide="brush" class="w-4 h-4"></i>
+                    {% elif 'snorkel' in name or 'dive' in name or 'boat' in name %}<i data-lucide="anchor" class="w-4 h-4"></i>
+                    {% elif 'cook' in name %}<i data-lucide="chef-hat" class="w-4 h-4"></i>
+                    {% elif 'baby' in name or 'cot' in name %}<i data-lucide="baby" class="w-4 h-4"></i>
+                    {% else %}<i data-lucide="sparkles" class="w-4 h-4"></i>{% endif %}
                   {% endwith %}
                 </div>
 
-                <!-- Info -->
                 <div class="flex-1">
                   <div class="flex items-center gap-2">
                     <p class="font-semibold text-dark text-sm">{{ extra.name }}</p>
@@ -461,7 +512,10 @@
                     {% endif %}
                   </div>
                   <p class="text-gray-400 text-xs mt-0.5">
-                    <span class="font-semibold text-accent">${{ extra.price }}</span>
+                    <!-- Currency-aware price for existing extras -->
+                    <span class="font-semibold text-accent bms-price" data-usd="{{ extra.price }}">
+                      {% if currency == 'TZS' %}TSh {{ extra.price|floatformat:0 }}{% else %}${{ extra.price }}{% endif %}
+                    </span>
                     &nbsp;·&nbsp;
                     {{ extra.get_charge_type_display }}
                     {% if extra.description %}
@@ -470,7 +524,6 @@
                   </p>
                 </div>
 
-                <!-- Remove -->
                 <form method="POST" action="{% url 'properties:delete_extra' extra.pk %}"
                       onsubmit="return confirm('Remove \'{{ extra.name }}\' from this property?')">
                   {% csrf_token %}
@@ -485,7 +538,7 @@
 
         {% else %}
           <div class="text-center py-16 text-gray-400">
-            <div class="text-5xl mb-4">✨</div>
+            <div class="text-5xl mb-4"><i data-lucide="sparkles" class="w-4 h-4"></i></div>
             <p class="font-medium text-dark">No extras yet</p>
             <p class="text-sm mt-1">Add your first extra above to offer guests more options.</p>
           </div>
@@ -495,62 +548,105 @@
     </div>
   </div>
 </div>
+{% endblock %}
 
+{% block extra_js %}
 <script>
-  // ── Category filter tabs ──
-  function showCategory(cat) {
-    const items   = document.querySelectorAll('.preset-item')
-    const tabs    = document.querySelectorAll('.preset-tab')
+  var RATE     = {{ rate|default:2500 }};
+  var CURRENCY = '{{ currency|default:"USD" }}';
 
-    items.forEach(item => {
-      item.style.display = (cat === 'all' || item.dataset.cat === cat) ? 'block' : 'none'
-    })
-
-    tabs.forEach(tab => {
-      const isActive = tab.dataset.cat === cat
-      tab.classList.toggle('bg-accent',      isActive)
-      tab.classList.toggle('text-white',     isActive)
-      tab.classList.toggle('border-accent',  isActive)
-      tab.classList.toggle('text-gray-500',  !isActive)
-      tab.classList.toggle('border-gray-200', !isActive)
-    })
+  // ── Formatting helpers ────────────────────────────────────────────
+  function fmtPrice(usd, c) {
+    if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+    return '$' + parseFloat(usd).toFixed(2);
   }
 
-  // ── Fill form from preset ──
-  function fillForm(name, price, chargeType, description) {
-    document.getElementById('field-name').value        = name
-    document.getElementById('field-price').value       = price
-    document.getElementById('field-description').value = description
-    document.getElementById('field-is_available').checked = true
+  function fmtPresetHint(usd, charge, c) {
+    var price = c === 'TZS' ? 'TSh ~' + Math.round(usd * RATE).toLocaleString() : '~$' + usd;
+    return price + ' · ' + charge;
+  }
 
-    const select = document.getElementById('field-charge_type')
-    for (let opt of select.options) {
-      if (opt.value === chargeType) { opt.selected = true; break }
+  // ── Currency toggle ───────────────────────────────────────────────
+  window.setCurrency = function(c) {
+    CURRENCY = c;
+
+    // 1. Existing extras prices
+    document.querySelectorAll('.bms-price[data-usd]').forEach(function(el) {
+      el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+    });
+
+    // 2. Preset card hint lines
+    document.querySelectorAll('.preset-hint[data-usd]').forEach(function(el) {
+      el.textContent = fmtPresetHint(parseFloat(el.dataset.usd), el.dataset.charge, c);
+    });
+
+    // 3. Price field label and note
+    var label = document.getElementById('price-currency-label');
+    var note  = document.getElementById('price-note');
+    if (label) label.textContent = c === 'TZS' ? '(TSh)' : '($)';
+    if (note)  note.textContent  = c === 'TZS'
+      ? 'Enter amount in TSh. Stored as USD internally.'
+      : 'Enter amount in USD.';
+  };
+
+  // Apply on load
+  window.setCurrency(CURRENCY);
+
+  // ── Category filter tabs ──────────────────────────────────────────
+  function showCategory(cat) {
+    var items = document.querySelectorAll('.preset-item');
+    var tabs  = document.querySelectorAll('.preset-tab');
+
+    items.forEach(function(item) {
+      item.style.display = (cat === 'all' || item.dataset.cat === cat) ? 'block' : 'none';
+    });
+
+    tabs.forEach(function(tab) {
+      var isActive = tab.dataset.cat === cat;
+      tab.classList.toggle('bg-accent',       isActive);
+      tab.classList.toggle('text-white',      isActive);
+      tab.classList.toggle('border-accent',   isActive);
+      tab.classList.toggle('text-gray-500',   !isActive);
+      tab.classList.toggle('border-gray-200', !isActive);
+    });
+  }
+
+  // ── Fill form from preset ─────────────────────────────────────────
+  // NOTE: fillForm always receives USD prices; view must convert if TZS session
+  function fillForm(name, priceUSD, chargeType, description) {
+    var displayPrice = CURRENCY === 'TZS' ? Math.round(priceUSD * RATE) : priceUSD;
+    document.getElementById('field-name').value        = name;
+    document.getElementById('field-price').value       = displayPrice;
+    document.getElementById('field-description').value = description;
+    document.getElementById('field-is_available').checked = true;
+
+    var select = document.getElementById('field-charge_type');
+    for (var i = 0; i < select.options.length; i++) {
+      if (select.options[i].value === chargeType) {
+        select.selectedIndex = i;
+        break;
+      }
     }
 
-    // Update subtitle to show what was selected
     document.getElementById('form-subtitle').textContent =
-      `✅ "${name}" loaded from preset — adjust price if needed, then click Add Extra.`
-    document.getElementById('clear-btn').classList.remove('hidden')
+      '<i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i> "' + name + '" loaded from preset — adjust price if needed, then click Add Extra.';
+    document.getElementById('clear-btn').classList.remove('hidden');
 
-    // Scroll to form smoothly
     document.getElementById('add-extra-form-section').scrollIntoView({
       behavior: 'smooth', block: 'center'
-    })
-
-    // Highlight the name field
-    document.getElementById('field-name').focus()
+    });
+    document.getElementById('field-name').focus();
   }
 
-  // ── Clear form ──
+  // ── Clear form ────────────────────────────────────────────────────
   function clearForm() {
-    document.getElementById('field-name').value        = ''
-    document.getElementById('field-price').value       = ''
-    document.getElementById('field-description').value = ''
-    document.getElementById('field-charge_type').selectedIndex = 0
+    document.getElementById('field-name').value        = '';
+    document.getElementById('field-price').value       = '';
+    document.getElementById('field-description').value = '';
+    document.getElementById('field-charge_type').selectedIndex = 0;
     document.getElementById('form-subtitle').textContent =
-      'Or create a completely custom extra below.'
-    document.getElementById('clear-btn').classList.add('hidden')
+      'Or create a completely custom extra below.';
+    document.getElementById('clear-btn').classList.add('hidden');
   }
 </script>
 {% endblock %}

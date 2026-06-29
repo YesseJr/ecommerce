@@ -7,6 +7,7 @@
   <title>{% block title %}BookMyStay{% endblock %}</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -41,19 +42,17 @@
 
     <div class="flex items-center gap-8">
 
-      <!-- ── Currency Selector (travellers AND owners) ── -->
-      {% if user.is_traveller or user.is_owner %}
-        <div class="flex items-center gap-1 bg-white/10 rounded-full px-1 py-1">
-          <button id="nav-usd" onclick="navSetCurrency('USD')"
-                  class="nav-curr-btn text-xs font-bold px-3 py-1.5 rounded-full transition-all text-white/60 hover:text-white">
-            $ USD
-          </button>
-          <button id="nav-tzs" onclick="navSetCurrency('TZS')"
-                  class="nav-curr-btn text-xs font-bold px-3 py-1.5 rounded-full transition-all text-white/60 hover:text-white">
-            TSh
-          </button>
-        </div>
-      {% endif %}
+      <!-- ── Currency Selector (all users including guests) ── -->
+      <div class="flex items-center gap-1 bg-white/10 rounded-full px-1 py-1">
+        <button id="nav-usd" onclick="navSetCurrency('USD')"
+                class="nav-curr-btn text-xs font-bold px-3 py-1.5 rounded-full transition-all text-white/60 hover:text-white">
+          $ USD
+        </button>
+        <button id="nav-tzs" onclick="navSetCurrency('TZS')"
+                class="nav-curr-btn text-xs font-bold px-3 py-1.5 rounded-full transition-all text-white/60 hover:text-white">
+          TSh
+        </button>
+      </div>
 
       {% if not user.is_authenticated %}
         <a href="{% url 'properties:home' %}"
@@ -84,7 +83,7 @@
         {% if user.is_superuser %}
           <a href="{% url 'admin:index' %}"
              class="text-white/80 hover:text-accent text-sm font-medium transition">
-            ⚙️ Admin Panel
+            Admin Panel
           </a>
           <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
             Admin
@@ -98,11 +97,11 @@
           </a>
           <a href="{% url 'properties:owner_revenue' %}"
              class="text-white/80 hover:text-accent text-sm font-medium transition">
-            📊 Revenue
+            Revenue Analytics
           </a>
           <a href="{% url 'properties:add_property' %}"
              class="text-white/80 hover:text-accent text-sm font-medium transition">
-            + List Property
+            List Property
           </a>
           <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
             Owner
@@ -116,7 +115,7 @@
           </a>
           <a href="{% url 'bookings:cart' %}"
              class="text-white/80 hover:text-accent text-sm font-medium transition">
-            🛒 Cart
+            Cart
           </a>
 
         {% endif %}
@@ -124,7 +123,7 @@
         <!-- Profile & Logout — visible to all logged in users -->
         <a href="{% url 'users:profile' %}"
            class="text-white/80 hover:text-accent text-sm font-medium transition">
-          👤 {{ user.first_name|default:user.username }}
+          {{ user.first_name|default:user.username }}
         </a>
         <a href="{% url 'users:logout' %}"
            class="bg-white/10 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-white/20 transition">
@@ -158,10 +157,7 @@
           {% elif message.tags == 'warning' %}bg-yellow-500 text-white
           {% else %}bg-primary text-white{% endif %}">
           <span>
-            {% if message.tags == 'error' %}❌
-            {% elif message.tags == 'success' %}✅
-            {% elif message.tags == 'warning' %}⚠️
-            {% else %}ℹ️{% endif %}
+            {% if message.tags == 'error' %}<i data-lucide="x-circle" class="w-4 h-4"></i>{% elif message.tags == 'success' %}<i data-lucide="check-circle" class="w-4 h-4"></i>{% elif message.tags == 'warning' %}<i data-lucide="alert-triangle" class="w-4 h-4"></i>{% else %}<i data-lucide="info" class="w-4 h-4"></i>{% endif %}
           </span>
           {{ message }}
         </div>
@@ -223,7 +219,7 @@
     </div>
 
     <div class="border-t border-white/10 mt-10 pt-6 flex justify-between items-center">
-      <p class="text-white/30 text-xs">© 2026 BookMyStay. Built with ❤️ by Group 3 Technologies.</p>
+      <p class="text-white/30 text-xs">© 2026 BookMyStay. Built with ❤️️ by Group 3 Technologies.</p>
       <p class="text-white/20 text-xs">Tanzania's Accommodation Marketplace</p>
     </div>
   </footer>
@@ -240,16 +236,20 @@
     }, 4000)
   </script>
 
-  <!-- ─── CURRENCY NAV INIT (travellers AND owners) ─── -->
-  {% if user.is_traveller or user.is_owner %}
+  <!-- ─── CURRENCY NAV INIT (all users) ─── -->
   <script>
     (function() {
-      const SET_URL = "{% url 'payments:set_currency' %}";
-      const CSRF    = "{{ csrf_token }}";
+      {% if user.is_traveller or user.is_owner %}
+      var SET_URL = "{% url 'payments:set_currency' %}";
+      var CSRF    = "{{ csrf_token }}";
+      var IS_AUTH = true;
+      {% else %}
+      var IS_AUTH = false;
+      {% endif %}
 
       function updateNavButtons(c) {
-        const usdBtn = document.getElementById('nav-usd');
-        const tzsBtn = document.getElementById('nav-tzs');
+        var usdBtn = document.getElementById('nav-usd');
+        var tzsBtn = document.getElementById('nav-tzs');
         if (!usdBtn || !tzsBtn) return;
         [usdBtn, tzsBtn].forEach(function(b) {
           b.style.background = '';
@@ -262,38 +262,46 @@
 
       function navSetCurrency(c) {
         updateNavButtons(c);
+
+        if (!IS_AUTH) {
+          // Guest: client-side only — update visible prices, no session save
+          if (typeof window.setCurrency === 'function') window.setCurrency(c);
+          return;
+        }
+
+        // Authenticated traveller/owner: save to session then reload
         fetch(SET_URL, {
           method: 'POST',
           headers: {'Content-Type':'application/json','X-CSRFToken':CSRF},
           body: JSON.stringify({currency: c})
         }).then(function() {
           if (window.location.pathname.startsWith('/payments/checkout')) {
-            // Checkout page handles its own DOM updates — delegate to it
             if (typeof window.setCurrency === 'function') window.setCurrency(c);
           } else {
-            // All other pages: reload so Django re-renders server-side prices
             window.location.reload();
           }
         });
       }
 
-      // Expose globally
       window.navSetCurrency = navSetCurrency;
 
-      // Init active button state AND apply currency to all bms-price elements on load
+      // Init button state + apply prices on load
+      {% if user.is_traveller or user.is_owner %}
       fetch("{% url 'payments:currency_info' %}")
         .then(function(r) { return r.json(); })
         .then(function(d) {
           updateNavButtons(d.currency);
-          if (typeof window.setCurrency === 'function') {
-            window.setCurrency(d.currency);
-          }
+          if (typeof window.setCurrency === 'function') window.setCurrency(d.currency);
         })
         .catch(function() { updateNavButtons('USD'); });
+      {% else %}
+      // Guest: default USD; page script already called setCurrency on load
+      updateNavButtons('USD');
+      {% endif %}
     })();
   </script>
-  {% endif %}
 
   {% block extra_js %}{% endblock %}
+  <script>if(typeof lucide !== "undefined") lucide.createIcons();</script>
 </body>
 </html>

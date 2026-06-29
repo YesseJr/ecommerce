@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block topbar_title %}Dashboard{% endblock %}
+{% block topbar_actions %}
+  <a href="{% url 'contact_create' %}" class="btn btn-primary">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add new
+  </a>
+{% endblock %}
+
+{% block content %}
+<div class="kpi-grid">
+  <div class="kpi">
+    <div class="kpi-label">Revenue this month</div>
+    <div class="kpi-val">TZS {{ rev_this|floatformat:0 }}</div>
+    <div class="kpi-delta {% if rev_change >= 0 %}up{% else %}down{% endif %}">
+      {% if rev_change >= 0 %}↑{% else %}↓{% endif %} {{ rev_change|floatformat:1 }}% vs last month
+    </div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Active contacts</div>
+    <div class="kpi-val">{{ total_contacts }}</div>
+    <div class="kpi-delta up">↑ {{ new_this_week }} new this week</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Pipeline value</div>
+    <div class="kpi-val">TZS {{ pipeline_value|floatformat:0 }}</div>
+    <div class="kpi-delta neutral">{{ open_deals }} open deals</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Low stock</div>
+    <div class="kpi-val {% if low_stock_count %}down{% endif %}">{{ low_stock_count }} items</div>
+    <div class="kpi-delta {% if low_stock_count %}down{% else %}neutral{% endif %}">
+      {% if low_stock_count %}⚠ Needs reorder{% else %}All levels OK{% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="card">
+    <div class="card-title">Monthly revenue</div>
+    <div class="bar-chart">
+      {% for m in chart_data %}
+        <div class="bar-wrap">
+          <div class="bar {% if forloop.last %}bar-cur{% else %}bar-prev{% endif %}"
+               data-val="{{ m.total }}"></div>
+          <span class="bar-lbl {% if forloop.last %}cur{% endif %}">{{ m.month }}</span>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="chart-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--amber)"></div>Current month</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#F5D9A4"></div>Previous</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Top contacts</div>
+    {% for c in top_contacts %}
+      <div class="contact-row">
+        <div class="av av-{% cycle 'teal' 'blue' 'amber' 'gray' 'teal' %}">{{ c.initials }}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;color:var(--text)">{{ c.full_name }}</div>
+          <div style="font-size:10px;color:var(--text-3)">TZS {{ c.ltv|default:0|floatformat:0 }}</div>
+        </div>
+        <span class="bdg bdg-{{ c.status }}">{{ c.get_status_display }}</span>
+      </div>
+    {% empty %}
+      <p class="text-muted fs-12">No contacts yet. <a href="{% url 'contact_create' %}">Add one →</a></p>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Recent sales</div>
+  {% if recent_sales %}
+    <table class="tbl">
+      <thead><tr><th>Reference</th><th>Customer</th><th>Payment</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for s in recent_sales %}
+          <tr>
+            <td><a href="{% url 'sale_detail' s.pk %}" style="font-weight:600">{{ s.reference }}</a></td>
+            <td>{{ s.contact.full_name|default:"Walk-in" }}</td>
+            <td>{{ s.get_payment_method_display }}</td>
+            <td class="fw-7">TZS {{ s.total|floatformat:0 }}</td>
+            <td><span class="bdg bdg-{{ s.status }}">{{ s.get_status_display }}</span></td>
+            <td class="text-muted">{{ s.created_at|date:"M d, H:i" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty-state">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <p>No sales yet. <a href="{% url 'pos' %}">Make a sale →</a></p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -10,7 +10,7 @@ class CurrencyConfig(models.Model):
     """
     usd_to_tzs = models.DecimalField(
         max_digits=10, decimal_places=2,
-        default=2600.00,
+        default=2500.00,
         help_text="Exchange rate: 1 USD = this many TZS"
     )
     usd_enabled = models.BooleanField(default=True, help_text="Allow payments in USD")
@@ -27,7 +27,7 @@ class CurrencyConfig(models.Model):
     @classmethod
     def get_config(cls):
         """Return the singleton config, creating it if it doesn't exist."""
-        obj, _ = cls.objects.get_or_create(pk=1, defaults={'usd_to_tzs': 2600.00})
+        obj, _ = cls.objects.get_or_create(pk=1, defaults={'usd_to_tzs': 2500.00})
         return obj
 
     @classmethod

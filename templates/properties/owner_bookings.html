@@ -20,7 +20,7 @@
       </div>
       <a href="{% url 'properties:owner_revenue' %}"
          class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-5 py-2.5 rounded-full text-sm font-semibold transition">
-        📊 Revenue Analytics
+        <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Revenue Analytics
       </a>
     </div>
 
@@ -97,7 +97,7 @@
                           <img src="{{ img.image.url }}" alt="" class="w-full h-full object-cover"/>
                         {% else %}
                           <div class="w-full h-full bg-primary/20 flex items-center justify-center">
-                            <span class="text-xs">🏠</span>
+                            <span class="text-xs"><i data-lucide="home" class="w-4 h-4"></i></span>
                           </div>
                         {% endif %}
                       {% endwith %}
@@ -144,7 +144,7 @@
     {% else %}
       <div class="text-center py-32 text-gray-400">
         <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <span class="text-5xl">📋</span>
+          <span class="text-5xl"><i data-lucide="clipboard-list" class="w-4 h-4"></i></span>
         </div>
         <h3 class="text-xl font-semibold text-dark mb-2">No bookings yet</h3>
         <p class="text-sm max-w-sm mx-auto">When travellers book your properties, reservations will appear here.</p>

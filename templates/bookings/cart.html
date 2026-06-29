@@ -27,13 +27,13 @@
                      class="w-full h-full object-cover"/>
               {% else %}
                 <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
-                  <span class="text-white/30 text-3xl">🏠</span>
+                  <span class="text-white/30 text-3xl"><i data-lucide="home" class="w-4 h-4"></i></span>
                 </div>
               {% endif %}
             {% endwith %}
           </div>
           <div class="flex-1">
-            <p class="text-xs text-gray-400 mb-1">📍 {{ cart.booking_property.city }}</p>
+            <p class="text-xs text-gray-400 mb-1"><i data-lucide="map-pin" class="w-4 h-4"></i> {{ cart.booking_property.city }}</p>
             <h3 class="font-display text-xl font-bold text-dark">
               {{ cart.booking_property.name }}
             </h3>
@@ -65,7 +65,7 @@
             </div>
           </div>
           <p class="text-center text-sm text-gray-400 mt-4">
-            🌙 <span class="font-semibold text-dark">{{ cart.nights }} night{{ cart.nights|pluralize }}</span>
+            <i data-lucide="moon" class="w-4 h-4"></i> <span class="font-semibold text-dark">{{ cart.nights }} night{{ cart.nights|pluralize }}</span>
           </p>
         </div>
 
@@ -140,7 +140,7 @@
           {% csrf_token %}
           <button type="submit"
                   class="text-red-400 text-sm font-semibold hover:text-red-600 transition">
-            🗑 Clear Cart
+            <i data-lucide="trash-2" class="w-4 h-4"></i> Clear Cart
           </button>
         </form>
       </div>
@@ -194,16 +194,17 @@
           </a>
 
           <p class="text-center text-xs text-gray-400 mt-3">
-            🔒 Secure payment · Cancel anytime
+            <i data-lucide="lock" class="w-4 h-4"></i> Secure payment · Cancel anytime
           </p>
         </div>
       </div>
     </div>
 
   {% else %}
-    <!-- Empty Cart -->
     <div class="text-center py-32 text-gray-400">
-      <div class="text-8xl mb-6">🛒</div>
+      <div class="mb-6 flex justify-center">
+        <i data-lucide="shopping-cart" class="w-24 h-24 transform -scale-x-100 text-orange-500"></i>
+      </div>
       <h3 class="text-2xl font-semibold text-dark mb-2">Your cart is empty</h3>
       <p class="text-sm mb-8">Find a property you love and add it to your cart.</p>
       <a href="{% url 'properties:list' %}"

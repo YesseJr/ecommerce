@@ -24,64 +24,70 @@
         <div class="bg-white rounded-2xl p-8 shadow-sm text-center">
 
           <!-- Avatar -->
-          <div class="relative inline-block mb-4">
-            {% if user.profile_photo %}
-              <img src="{{ user.profile_photo.url }}"
-                   class="w-24 h-24 rounded-full object-cover border-4 border-accent mx-auto"/>
-            {% else %}
-              <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center mx-auto border-4 border-accent">
-                <span class="text-white font-bebas text-4xl">
-                  {{ user.first_name|first|default:user.username|first }}
-                </span>
-              </div>
-            {% endif %}
-          </div>
+<div class="relative inline-block mb-4">
+  {% if user.profile_photo %}
+    <img src="{{ user.profile_photo.url }}"
+         class="w-24 h-24 rounded-full object-cover border-4 border-accent mx-auto"/>
+  {% else %}
+    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center mx-auto border-4 border-accent">
+      <span class="text-white font-bebas text-4xl">
+        {{ user.first_name|first|default:user.username|first }}
+      </span>
+    </div>
+  {% endif %}
+</div>
 
-          <!-- Name & Role -->
-          <h2 class="font-display text-2xl font-bold text-dark">
-            {{ user.get_full_name|default:user.username }}
-          </h2>
-          <p class="text-gray-400 text-sm mt-1">@{{ user.username }}</p>
+<!-- Name & Role -->
+<h2 class="font-display text-2xl font-bold text-dark">
+  {{ user.get_full_name|default:user.username }}
+</h2>
+<p class="text-gray-400 text-sm mt-1">@{{ user.username }}</p>
 
-          <!-- Role Badge -->
-          <span class="inline-block mt-3 text-xs font-bold px-4 py-1.5 rounded-full
-            {% if user.is_owner %}bg-blue-100 text-blue-700
-            {% elif user.is_traveller %}bg-orange-100 text-orange-700
-            {% else %}bg-gray-100 text-gray-600{% endif %}">
-            {% if user.is_owner %}🏠 Property Owner
-            {% elif user.is_traveller %}🧳 Traveller
-            {% else %}⚙️ Admin{% endif %}
-          </span>
+<!-- Role Badge -->
+<span class="inline-flex items-center gap-1.5 mt-3 text-xs font-bold px-4 py-1.5 rounded-full
+  {% if user.is_owner %}bg-blue-100 text-blue-700
+  {% elif user.is_traveller %}bg-orange-100 text-orange-700
+  {% else %}bg-gray-100 text-gray-600{% endif %}">
+  {% if user.is_owner %}
+    <i data-lucide="home" class="w-3.5 h-3.5"></i> Property Owner
+  {% elif user.is_traveller %}
+    <i data-lucide="luggage" class="w-3.5 h-3.5"></i> Traveller
+  {% else %}
+    <i data-lucide="settings" class="w-3.5 h-3.5"></i> Admin
+  {% endif %}
+</span>
 
-          <!-- Verified Badge -->
-          {% if user.is_verified %}
-            <div class="mt-2">
-              <span class="text-xs text-green-600 font-semibold">✅ Verified Account</span>
-            </div>
-          {% endif %}
+<!-- Verified Badge -->
+{% if user.is_verified %}
+  <div class="mt-2 flex justify-center">
+    <span class="inline-flex items-center gap-1.5 text-xs text-green-700 font-semibold">
+      <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Verified Account
+    </span>
+  </div>
+{% endif %}
 
-          <!-- Quick Info -->
-          <div class="mt-5 pt-5 border-t border-gray-100 flex flex-col gap-2 text-left">
-            {% if user.email %}
-              <p class="text-xs text-gray-400 flex items-center gap-2">
-                <span>📧</span> {{ user.email }}
-              </p>
-            {% endif %}
-            {% if user.phone %}
-              <p class="text-xs text-gray-400 flex items-center gap-2">
-                <span>📱</span> {{ user.phone }}
-              </p>
-            {% endif %}
-            {% if user.location %}
-              <p class="text-xs text-gray-400 flex items-center gap-2">
-                <span>📍</span> {{ user.location }}
-              </p>
-            {% endif %}
-            <p class="text-xs text-gray-400 flex items-center gap-2">
-              <span>📅</span> Member since {{ user.created_at|date:"M Y" }}
-            </p>
-          </div>
-        </div>
+<!-- Quick Info -->
+<div class="mt-5 pt-5 border-t border-gray-100 flex flex-col gap-2.5 text-left">
+  {% if user.email %}
+    <p class="text-xs text-gray-500 flex items-center gap-2">
+      <i data-lucide="mail" class="w-4 h-4 text-gray-400"></i> {{ user.email }}
+    </p>
+  {% endif %}
+  {% if user.phone %}
+    <p class="text-xs text-gray-500 flex items-center gap-2">
+      <i data-lucide="smartphone" class="w-4 h-4 text-gray-400"></i> {{ user.phone }}
+    </p>
+  {% endif %}
+  {% if user.location %}
+    <p class="text-xs text-gray-500 flex items-center gap-2">
+      <i data-lucide="map-pin" class="w-4 h-4 text-gray-400"></i> {{ user.location }}
+    </p>
+  {% endif %}
+  <p class="text-xs text-gray-500 flex items-center gap-2">
+    <i data-lucide="calendar" class="w-4 h-4 text-gray-400"></i> Member since {{ user.created_at|date:"M Y" }}
+  </p>
+</div>
+</div>
 
         <!-- Stats Card -->
         <div class="bg-white rounded-2xl p-6 shadow-sm">
@@ -129,37 +135,37 @@
             {% if user.is_traveller %}
               <a href="{% url 'payments:my_bookings' %}"
                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
-                <span>📋</span> My Bookings
+                <span><i data-lucide="clipboard-list" class="w-4 h-4"></i></span> My Bookings
               </a>
               <a href="{% url 'bookings:cart' %}"
                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
-                <span>🛒</span> My Cart
+                <span><i data-lucide="shopping-cart" class="w-4 h-4"></i></span> My Cart
               </a>
               <a href="{% url 'properties:list' %}"
                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
-                <span>🔍</span> Browse Properties
+                <span><i data-lucide="search" class="w-4 h-4"></i></span> Browse Properties
               </a>
 
             {% elif user.is_owner %}
               <a href="{% url 'properties:owner_dashboard' %}"
                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
-                <span>📊</span> Dashboard
+                <span><i data-lucide="bar-chart-2" class="w-4 h-4"></i></span> Dashboard
               </a>
               <a href="{% url 'properties:add_property' %}"
                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
-                <span>➕</span> Add Property
+                <span><i data-lucide="plus" class="w-4 h-4"></i></span> Add Property
               </a>
 
             {% elif user.is_superuser %}
               <a href="{% url 'admin:index' %}"
                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
-                <span>⚙️</span> Admin Panel
+                <span><i data-lucide="settings" class="w-4 h-4"></i></span> Admin Panel
               </a>
             {% endif %}
 
             <a href="{% url 'users:logout' %}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 transition text-sm text-red-400 hover:text-red-600 font-medium mt-2 border-t border-gray-100 pt-4">
-              <span>🚪</span> Logout
+              <span><i data-lucide="log-out" class="w-5 h-5"></i></span> Logout
             </a>
           </div>
         </div>
@@ -231,24 +237,25 @@
             </div>
 
             <!-- Profile Photo -->
-            <div>
-              <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
-                Profile Photo
-              </label>
-              {% if user.profile_photo %}
-                <div class="flex items-center gap-4 mb-3">
-                  <img src="{{ user.profile_photo.url }}"
-                       class="w-14 h-14 rounded-full object-cover border-2 border-gray-200"/>
-                  <p class="text-xs text-gray-400">Current photo. Upload new to replace.</p>
-                </div>
-              {% endif %}
-              {{ form.profile_photo }}
-            </div>
+<div>
+  <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+    Profile Photo
+  </label>
+  {% if user.profile_photo %}
+    <div class="flex items-center gap-4 mb-3">
+      <img src="{{ user.profile_photo.url }}"
+           class="w-14 h-14 rounded-full object-cover border-2 border-gray-200"/>
+      <p class="text-xs text-gray-400">Current photo. Upload new to replace.</p>
+    </div>
+  {% endif %}
+  {{ form.profile_photo }}
+</div>
 
-            <button type="submit"
-                    class="bg-accent text-white py-3.5 rounded-xl font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all mt-2">
-              Save Changes ✅
-            </button>
+<button type="submit"
+        class="inline-flex items-center justify-center gap-2 bg-accent text-white px-6 py-3.5 rounded-xl font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all mt-4">
+  Save Changes <i data-lucide="check-circle" class="w-8 h-8 text-emerald-400 group-hover:text-emerald-400"></i>
+</button>
+
           </form>
         </div>
 
@@ -273,7 +280,7 @@
                              class="w-full h-full object-cover"/>
                       {% else %}
                         <div class="w-full h-full bg-primary flex items-center justify-center">
-                          <span class="text-white/40 text-lg">🏠</span>
+                          <span class="text-white/40 text-lg"><i data-lucide="home" class="w-4 h-4"></i></span>
                         </div>
                       {% endif %}
                     {% endwith %}
@@ -321,7 +328,7 @@
                              class="w-full h-full object-cover"/>
                       {% else %}
                         <div class="w-full h-full bg-primary flex items-center justify-center">
-                          <span class="text-white/40 text-lg">🏠</span>
+                          <span class="text-white/40 text-lg"><i data-lucide="home" class="w-4 h-4"></i></span>
                         </div>
                       {% endif %}
                     {% endwith %}
@@ -329,7 +336,7 @@
                   <div class="flex-1">
                     <p class="font-semibold text-dark text-sm">{{ prop.name }}</p>
                     <p class="text-xs text-gray-400">
-                      📍 {{ prop.city }} · ${{ prop.price_per_night }}/night
+                      <i data-lucide="map-pin" class="w-4 h-4"></i> {{ prop.city }} · ${{ prop.price_per_night }}/night
                     </p>
                   </div>
                   <span class="text-xs font-bold px-3 py-1 rounded-full

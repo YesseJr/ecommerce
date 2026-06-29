@@ -69,6 +69,15 @@ class CartItem(models.Model):
     class Meta:
         unique_together = ['cart', 'extra']
 
+    @property
+    def line_total(self):
+        """Calculated cost for this extra based on charge type."""
+        if self.extra.charge_type == 'per_night':
+            return self.extra.price * self.cart.nights
+        elif self.extra.charge_type == 'per_person':
+            return self.extra.price * self.cart.guests
+        return self.extra.price
+
     def __str__(self):
         return f"{self.extra.name} in {self.cart}"
 

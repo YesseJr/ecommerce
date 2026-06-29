@@ -29,7 +29,7 @@
                  class="w-full h-full object-cover"/>
           {% else %}
             <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
-              <span class="text-white/30 text-2xl">🏠</span>
+              <span class="text-white/30 text-2xl"><i data-lucide="home" class="w-4 h-4"></i></span>
             </div>
           {% endif %}
         {% endwith %}
@@ -39,7 +39,7 @@
           {{ booking.booking_property.name }}
         </h3>
         <p class="text-gray-400 text-xs mt-0.5">
-          📍 {{ booking.booking_property.city }} &nbsp;·&nbsp;
+          <i data-lucide="map-pin" class="w-4 h-4"></i> {{ booking.booking_property.city }} &nbsp;·&nbsp;
           {{ booking.check_in|date:"M j" }} – {{ booking.check_out|date:"M j, Y" }} &nbsp;·&nbsp;
           {{ booking.nights }} night{{ booking.nights|pluralize }}
         </p>
@@ -65,7 +65,7 @@
               {% for choice in form.rating %}
                 <label class="star-label cursor-pointer text-3xl text-gray-300 hover:text-gold transition-all"
                        data-value="{{ choice.data.value }}">
-                  {{ choice.tag }}★
+                  {{ choice.tag }}<i data-lucide="star" class="w-4 h-4 fill-current"></i>
                 </label>
               {% endfor %}
             </div>
@@ -77,13 +77,13 @@
             <!-- Cleanliness -->
             <div>
               <label class="block text-sm font-bold text-dark mb-3">
-                🧹 Cleanliness
+                <i data-lucide="brush" class="w-4 h-4"></i> Cleanliness
               </label>
               <div class="flex gap-1" id="rating-cleanliness">
                 {% for choice in form.cleanliness %}
                   <label class="star-label cursor-pointer text-xl text-gray-300 hover:text-gold transition-all"
                          data-value="{{ choice.data.value }}">
-                    {{ choice.tag }}★
+                    {{ choice.tag }}<i data-lucide="star" class="w-4 h-4 fill-current"></i>
                   </label>
                 {% endfor %}
               </div>
@@ -92,13 +92,13 @@
             <!-- Location -->
             <div>
               <label class="block text-sm font-bold text-dark mb-3">
-                📍 Location
+                <i data-lucide="map-pin" class="w-4 h-4"></i> Location
               </label>
               <div class="flex gap-1" id="rating-location">
                 {% for choice in form.location %}
                   <label class="star-label cursor-pointer text-xl text-gray-300 hover:text-gold transition-all"
                          data-value="{{ choice.data.value }}">
-                    {{ choice.tag }}★
+                    {{ choice.tag }}<i data-lucide="star" class="w-4 h-4 fill-current"></i>
                   </label>
                 {% endfor %}
               </div>
@@ -107,13 +107,13 @@
             <!-- Value -->
             <div>
               <label class="block text-sm font-bold text-dark mb-3">
-                💰 Value for Money
+                <i data-lucide="dollar-sign" class="w-4 h-4"></i> Value for Money
               </label>
               <div class="flex gap-1" id="rating-value">
                 {% for choice in form.value %}
                   <label class="star-label cursor-pointer text-xl text-gray-300 hover:text-gold transition-all"
                          data-value="{{ choice.data.value }}">
-                    {{ choice.tag }}★
+                    {{ choice.tag }}<i data-lucide="star" class="w-4 h-4 fill-current"></i>
                   </label>
                 {% endfor %}
               </div>
@@ -151,7 +151,7 @@
 
       <button type="submit"
               class="w-full bg-accent text-white py-4 rounded-2xl font-bold text-base hover:shadow-xl hover:-translate-y-0.5 transition-all">
-        Submit Review 🌟
+        Submit Review <i data-lucide="star" class="w-4 h-4"></i>
       </button>
     </form>
   </div>

@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block topbar_title %}Dashboard{% endblock %}
+{% block topbar_actions %}
+  <a href="{% url 'contact_create' %}" class="btn btn-primary">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New contact
+  </a>
+{% endblock %}
+
+{% block content %}
+
+{# ── KPIs ── #}
+<div class="db-kpi-row">
+  <div class="db-kpi db-kpi-revenue">
+    <div class="db-kpi-eyebrow">Revenue this month</div>
+    <div class="db-kpi-value">TZS {{ rev_this|floatformat:0 }}</div>
+    <div class="db-kpi-delta {% if rev_change >= 0 %}positive{% else %}negative{% endif %}">
+      {% if rev_change >= 0 %}↑{% else %}↓{% endif %} {{ rev_change|floatformat:1 }}% vs last month
+    </div>
+  </div>
+  <div class="db-kpi db-kpi-expenses">
+    <div class="db-kpi-eyebrow">Expenses this month</div>
+    <div class="db-kpi-value">TZS {{ expenses_this|floatformat:0 }}</div>
+    <div class="db-kpi-delta neutral">{{ expense_cats.0.category|default:"—"|capfirst }} is top category</div>
+  </div>
+  <div class="db-kpi db-kpi-profit {% if profit_this >= 0 %}profit-pos{% else %}profit-neg{% endif %}">
+    <div class="db-kpi-eyebrow">Net profit</div>
+    <div class="db-kpi-value">TZS {{ profit_this|floatformat:0 }}</div>
+    <div class="db-kpi-delta {% if profit_this >= 0 %}positive{% else %}negative{% endif %}">
+      {% if profit_this >= 0 %}In the green{% else %}Watch expenses{% endif %}
+    </div>
+  </div>
+  <div class="db-kpi {% if low_stock_count %}db-kpi-alert{% else %}db-kpi-ok{% endif %}">
+    <div class="db-kpi-eyebrow">Stock alerts</div>
+    <div class="db-kpi-value">{{ low_stock_count }}</div>
+    <div class="db-kpi-delta {% if low_stock_count %}negative{% else %}neutral{% endif %}">
+      {% if low_stock_count %}Items need reorder{% else %}All levels healthy{% endif %}
+    </div>
+  </div>
+</div>
+
+{# ── Row 1: Revenue chart + Deal pipeline ── #}
+<div class="db-grid-2 mb-card">
+  <div class="card">
+    <div class="db-card-header">
+      <div class="db-card-title">Revenue — last 6 months</div>
+      <a href="{% url 'reports' %}" class="db-card-link">Full report →</a>
+    </div>
+    <div class="bar-chart">
+      {% for m in chart_data %}
+        <div class="bar-wrap">
+          <div class="bar {% if forloop.last %}bar-cur{% else %}bar-prev{% endif %}" data-val="{{ m.total }}"></div>
+          <span class="bar-lbl {% if forloop.last %}cur{% endif %}">{{ m.month }}</span>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="chart-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--amber)"></div>Current</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#F5D9A4"></div>Previous</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="db-card-header">
+      <div class="db-card-title">Deal pipeline</div>
+      <a href="{% url 'deal_pipeline' %}" class="db-card-link">View all →</a>
+    </div>
+    <div id="pipeline-stages">
+    {% for stage in deal_stages %}
+    <div class="db-stage-row">
+      <span class="bdg bdg-{{ stage.stage }}" style="width:92px;text-align:center">{{ stage.label }}</span>
+      <div class="db-stage-bar-wrap">
+        <div class="db-stage-bar bdg-{{ stage.stage }}" data-count="{{ stage.count }}" style="width:0"></div>
+      </div>
+      <span class="db-stage-count">{{ stage.count }}</span>
+      <span class="db-stage-val">TZS {{ stage.total|floatformat:0 }}</span>
+    </div>
+    {% endfor %}
+    </div>
+  </div>
+</div>
+
+{# ── Row 2: Recent sales + contacts + expense breakdown ── #}
+<div class="db-grid-3-1 mb-card">
+  <div class="card">
+    <div class="db-card-header">
+      <div class="db-card-title">Recent sales</div>
+      <a href="{% url 'sale_list' %}" class="db-card-link">View all →</a>
+    </div>
+    {% if recent_sales %}
+    <table class="tbl">
+      <thead><tr><th>Ref</th><th>Customer</th><th>Method</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for s in recent_sales %}
+        <tr>
+          <td><a href="{% url 'sale_detail' s.pk %}" style="font-weight:600;color:var(--amber)">{{ s.reference }}</a></td>
+          <td>{{ s.contact.full_name|default:"Walk-in" }}</td>
+          <td>{{ s.get_payment_method_display }}</td>
+          <td class="fw-7">TZS {{ s.total|floatformat:0 }}</td>
+          <td><span class="bdg bdg-{{ s.status }}">{{ s.get_status_display }}</span></td>
+          <td class="text-muted">{{ s.created_at|date:"M d, H:i" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="db-empty">No sales recorded yet.</div>
+    {% endif %}
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:14px">
+    {# Top contacts #}
+    <div class="card" style="flex:1">
+      <div class="db-card-header">
+        <div class="db-card-title">Top clients</div>
+        <a href="{% url 'contact_list' %}" class="db-card-link">All →</a>
+      </div>
+      {% for c in top_contacts %}
+      <div class="contact-row">
+        <div class="av av-{% cycle 'teal' 'blue' 'amber' 'gray' 'teal' %}">{{ c.initials }}</div>
+        <div style="flex:1;min-width:0">
+          <a href="{% url 'contact_detail' c.pk %}" style="font-size:12px;font-weight:600;color:var(--text)">{{ c.full_name }}</a>
+          <div style="font-size:10px;color:var(--text-3)">TZS {{ c.ltv|default:0|floatformat:0 }}</div>
+        </div>
+        <span class="bdg bdg-{{ c.status }}">{{ c.get_status_display }}</span>
+      </div>
+      {% empty %}
+      <div class="db-empty">No contacts yet.</div>
+      {% endfor %}
+    </div>
+
+    {# Expense breakdown #}
+    <div class="card" style="flex:1">
+      <div class="db-card-header">
+        <div class="db-card-title">Expenses by category</div>
+        <a href="{% url 'expense_list' %}" class="db-card-link">All →</a>
+      </div>
+      {% for cat in expense_cats %}
+      <div class="db-exp-row">
+        <span class="db-exp-label">{{ cat.category|capfirst }}</span>
+        <span class="db-exp-val">TZS {{ cat.total|floatformat:0 }}</span>
+      </div>
+      {% empty %}
+      <div class="db-empty">No expenses this month.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

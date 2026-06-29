@@ -137,7 +137,7 @@
       <div class="flex gap-4">
         <button type="submit"
                 class="flex-1 bg-accent text-white py-4 rounded-2xl font-semibold text-base hover:shadow-xl hover:-translate-y-0.5 transition-all">
-          Save Changes ✅
+          Save Changes <i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
         </button>
         <a href="{% url 'properties:owner_dashboard' %}"
            class="px-8 py-4 rounded-2xl font-semibold text-base border-2 border-gray-200 text-gray-500 hover:border-gray-400 transition text-center">
@@ -179,7 +179,7 @@
                       {% csrf_token %}
                       <button type="submit"
                               class="text-xs font-semibold bg-white text-dark px-3 py-1.5 rounded-full hover:bg-accent hover:text-white transition w-full">
-                        ⭐ Set as Cover
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400"></i> Set as Cover
                       </button>
                     </form>
                   {% endif %}
@@ -188,7 +188,7 @@
                     {% csrf_token %}
                     <button type="submit"
                             class="text-xs font-semibold bg-white text-red-500 px-3 py-1.5 rounded-full hover:bg-red-500 hover:text-white transition w-full">
-                      🗑 Remove
+                      <i data-lucide="trash-2" class="w-4 h-4"></i> Remove
                     </button>
                   </form>
                 </div>
@@ -215,7 +215,7 @@
                  class="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-white hover:file:bg-orange-600 cursor-pointer"/>
           <button type="submit"
                   class="self-start bg-dark text-white text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-primary transition">
-            Upload Photos 📸
+            Upload Photos <i data-lucide="camera" class="w-4 h-4"></i>
           </button>
         </form>
       </div>

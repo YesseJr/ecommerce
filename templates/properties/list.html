@@ -90,7 +90,7 @@
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
               {% else %}
                 <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
-                  <span class="text-white/30 text-5xl">🏠</span>
+                  <span class="text-white/30 text-5xl"><i data-lucide="home" class="w-4 h-4"></i></span>
                 </div>
               {% endif %}
             {% endwith %}
@@ -101,27 +101,38 @@
 
             {% if prop.average_rating %}
               <span class="absolute top-3 right-3 bg-white/90 text-dark text-xs font-bold px-3 py-1 rounded-full">
-                ⭐ {{ prop.average_rating }}
+                <i data-lucide="star" class="w-4 h-4 text-yellow-400"></i> {{ prop.average_rating }}
               </span>
             {% endif %}
           </div>
 
           <div class="p-5">
-            <p class="text-xs text-gray-400 mb-1">📍 {{ prop.city }}, {{ prop.country }}</p>
+            <p class="text-xs text-gray-400 mb-1"><i data-lucide="map-pin" class="w-4 h-4"></i> {{ prop.city }}, {{ prop.country }}</p>
             <h3 class="font-display text-xl font-bold text-dark mb-1">{{ prop.name }}</h3>
             <p class="text-gray-400 text-xs mb-3 line-clamp-2">{{ prop.description }}</p>
             <div class="flex justify-between items-center pt-3 border-t border-gray-100">
               <div>
                 <!-- FIX 1: class renamed from prop-price → bms-price to match site-wide convention -->
-                <span class="font-bold text-dark text-lg bms-price" data-usd="{{ prop.price_per_night }}">
+                <span class="font-display font-bold text-dark text-xl bms-price" data-usd="{{ prop.price_per_night }}">
                   {% if currency == 'TZS' %}TSh {{ prop.price_per_night|floatformat:0 }}{% else %}${{ prop.price_per_night }}{% endif %}
                 </span>
-                <span class="text-gray-400 text-sm"> / night</span>
+                <span class="text-gray-500 text-xs font-medium">/ night</span>
               </div>
-              <div class="flex gap-3 text-xs text-gray-400">
-                <span>🛏 {{ prop.bedrooms }}bd</span>
-                <span>🚿 {{ prop.bathrooms }}ba</span>
-                <span>👥 {{ prop.max_guests }}</span>
+
+              <!-- (Amenities Badges) -->
+              <div class="flex items-center gap-3.5 text-xs text-gray-500 mt-2.5 pt-2.5 border-t border-gray-100">
+                <span class="inline-flex items-center gap-1 hover:text-dark transition-colors">
+                  <i data-lucide="bed" class="w-4 h-4 text-purple-500"></i>
+                  <span class="font-semibold text-dark">{{ prop.bedrooms }}</span><span>bd</span>
+                </span>
+                <span class="inline-flex items-center gap-1 hover:text-dark transition-colors">
+                  <i data-lucide="bath" class="w-4 h-4 text-blue-500"></i>
+                  <span class="font-semibold text-dark">{{ prop.bathrooms }}</span><span>ba</span>
+                </span>
+                <span class="inline-flex items-center gap-1 hover:text-dark transition-colors">
+                  <i data-lucide="users" class="w-4 h-4 text-orange-500"></i>
+                  <span class="font-semibold text-dark">{{ prop.max_guests }}</span><span>guests</span>
+                </span>
               </div>
             </div>
           </div>
@@ -131,7 +142,7 @@
 
   {% else %}
     <div class="text-center py-24 text-gray-400">
-      <div class="text-7xl mb-6">🔍</div>
+      <div class="text-7xl mb-6"><i data-lucide="search" class="w-4 h-4"></i></div>
       <h3 class="text-xl font-semibold text-dark mb-2">No properties found</h3>
       <p class="text-sm">Try adjusting your filters or search terms.</p>
       <a href="{% url 'properties:list' %}"

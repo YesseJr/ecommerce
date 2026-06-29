@@ -30,11 +30,11 @@
         <div class="flex gap-2">
           <a href="{% url 'bookings:cart' %}"
              class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-4 py-2 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
-            🛒 My Cart
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i> My Cart
           </a>
           <a href="{% url 'payments:my_bookings' %}"
              class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-4 py-2 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
-            📋 All Bookings
+            <i data-lucide="clipboard-list" class="w-4 h-4"></i> All Bookings
           </a>
         </div>
       </div>
@@ -71,98 +71,110 @@
 
     <!-- ─── UPCOMING STAYS ─── -->
     <div class="flex justify-between items-center mb-6">
-      <div>
-        <h2 class="font-display text-3xl font-bold text-dark">
-          Upcoming <em class="text-primary">Stays</em>
-        </h2>
-        <p class="text-gray-400 text-sm mt-0.5">Trips on the horizon</p>
-      </div>
-      <a href="{% url 'payments:my_bookings' %}"
-         class="text-accent font-semibold text-sm flex items-center gap-2 hover:gap-4 transition-all">
-        View all bookings →
-      </a>
-    </div>
+  <div>
+    <h2 class="font-display text-3xl font-bold text-dark">
+      Upcoming <em class="text-primary">Stays</em>
+    </h2>
+    <p class="text-gray-400 text-sm mt-0.5">Trips on the horizon</p>
+  </div>
+  <a href="{% url 'payments:my_bookings' %}"
+     class="group inline-flex items-center gap-1 text-accent font-bold text-sm transition-all">
+    <span>View all bookings</span>
+    <span class="transform group-hover:translate-x-1.5 transition-transform duration-200">→</span>
+  </a>
+</div>
 
-    {% if upcoming_bookings %}
-      <div class="flex flex-col gap-4 mb-14">
-        {% for booking in upcoming_bookings %}
-          <div class="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
-            <div class="flex gap-0 items-stretch">
+{% if upcoming_bookings %}
+  <div class="flex flex-col gap-5 mb-14">
+    {% for booking in upcoming_bookings %}
+      <div class="bg-white rounded-2xl border border-gray-100/80 shadow-sm overflow-hidden hover:shadow-md hover:border-gray-200/50 transition-all duration-300">
+        <div class="flex flex-col sm:flex-row items-stretch">
 
-              <!-- Thumbnail -->
-              <div class="w-52 flex-shrink-0 relative">
-                {% with booking.booking_property.images.first as img %}
-                  {% if img %}
-                    <img src="{{ img.image.url }}" alt="{{ booking.booking_property.name }}"
-                         class="w-full h-full object-cover"/>
-                  {% else %}
-                    <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center min-h-[140px]">
-                      <span class="text-white/20 text-5xl">🏠</span>
-                    </div>
-                  {% endif %}
-                {% endwith %}
-                <div class="absolute top-3 left-3">
-                  <span class="text-xs font-bold px-3 py-1 rounded-full shadow-sm bg-green-500 text-white">
-                    {{ booking.get_status_display }}
-                  </span>
+          <!-- Thumbnail -->
+          <div class="w-full sm:w-56 flex-shrink-0 relative min-h-[160px] sm:min-h-auto">
+            {% with booking.booking_property.images.first as img %}
+              {% if img %}
+                <img src="{{ img.image.url }}" alt="{{ booking.booking_property.name }}"
+                     class="w-full h-full object-cover"/>
+              {% else %}
+                <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
+                  <i data-lucide="home" class="w-8 h-8 text-white/20"></i>
                 </div>
-              </div>
-
-              <!-- Content -->
-              <div class="flex-1 p-6 flex flex-col justify-between">
-                <div>
-                  <div class="flex items-start justify-between mb-2">
-                    <div>
-                      <span class="text-xs font-bold uppercase tracking-widest text-accent mb-1 block">
-                        {{ booking.booking_property.get_property_type_display }}
-                      </span>
-                      <h3 class="font-display text-2xl font-bold text-dark leading-tight">
-                        {{ booking.booking_property.name }}
-                      </h3>
-                    </div>
-                    <div class="text-right flex-shrink-0 ml-4">
-                      <!-- FIX 2: unified bms-price class, correct server-side render -->
-                      <span class="font-bebas text-3xl text-dark bms-price" data-usd="{{ booking.grand_total }}">
-                        {% if currency == 'TZS' %}TSh {{ booking.grand_total|floatformat:0 }}{% else %}${{ booking.grand_total }}{% endif %}
-                      </span>
-                      <p class="text-gray-400 text-xs -mt-1">total</p>
-                    </div>
-                  </div>
-
-                  <div class="flex flex-wrap gap-4 mt-3">
-                    <span class="flex items-center gap-1.5 text-xs text-gray-500">
-                      <span>📍</span> {{ booking.booking_property.city }}, {{ booking.booking_property.country }}
-                    </span>
-                    <span class="flex items-center gap-1.5 text-xs text-gray-500">
-                      <span>📅</span> {{ booking.check_in|date:"M d" }} – {{ booking.check_out|date:"M d, Y" }}
-                    </span>
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-end mt-5 pt-5 border-t border-gray-100">
-                  {% if booking.booking_property.slug %}
-                    <a href="{% url 'properties:detail' booking.booking_property.slug %}"
-                       class="text-xs font-semibold px-4 py-2 rounded-xl border-2 border-gray-200 text-gray-500 hover:border-primary hover:text-primary transition">
-                      👁 View Property
-                    </a>
-                  {% endif %}
-                </div>
-              </div>
+              {% endif %}
+            {% endwith %}
+            
+            <!-- Beji ya Hali ya Booking -->
+            <div class="absolute top-3 left-3">
+              <span class="inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm bg-green-500 text-white">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                {{ booking.get_status_display }}
+              </span>
             </div>
           </div>
-        {% endfor %}
+
+          <!-- Content -->
+          <div class="flex-1 p-6 flex flex-col justify-between bg-white">
+            <div>
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <span class="text-[10px] font-extrabold uppercase tracking-widest text-accent mb-1 block">
+                    {{ booking.booking_property.get_property_type_display }}
+                  </span>
+                  <h3 class="font-display text-xl font-bold text-dark leading-snug">
+                    {{ booking.booking_property.name }}
+                  </h3>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="font-display font-extrabold text-2xl tracking-tight text-dark block bms-price" data-usd="{{ booking.grand_total }}">
+                    {% if currency == 'TZS' %}TSh {{ booking.grand_total|floatformat:0 }}{% else %}${{ booking.grand_total }}{% endif %}
+                  </span>
+                  <p class="text-gray-400 text-[10px] uppercase tracking-wider font-bold mt-0.5">total</p>
+                </div>
+              </div>
+
+              <!-- Taarifa za Eneo na Tarehe -->
+              <div class="flex flex-wrap gap-x-5 gap-y-2 mt-4 text-xs text-gray-500">
+                <span class="inline-flex items-center gap-1.5">
+                  <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gray-400"></i>
+                  <span class="font-medium text-gray-600">{{ booking.booking_property.city }}, {{ booking.booking_property.country }}</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-lg border border-gray-100">
+                  <i data-lucide="calendar" class="w-3.5 h-3.5 text-primary"></i>
+                  <span class="font-semibold text-gray-700">{{ booking.check_in|date:"M d" }} – {{ booking.check_out|date:"M d, Y" }}</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Vitufe vya Chini -->
+            <div class="flex items-center justify-end mt-5 pt-4 border-t border-gray-100/80">
+              {% if booking.booking_property.slug %}
+                <a href="{% url 'properties:detail' booking.booking_property.slug %}"
+                   class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all">
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i> View Property
+                </a>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
       </div>
-    {% else %}
-      <div class="text-center py-16 bg-white rounded-2xl mb-14 text-gray-400">
-        <div class="text-5xl mb-4">🧳</div>
-        <p class="font-semibold text-dark">No upcoming stays yet</p>
-        <p class="text-sm mt-1 mb-6">Time to plan your next trip.</p>
-        <a href="{% url 'properties:list' %}"
-           class="inline-block bg-accent text-white px-8 py-3 rounded-full font-semibold text-sm hover:shadow-xl hover:-translate-y-0.5 transition-all">
-          Browse Properties
-        </a>
-      </div>
-    {% endif %}
+    {% endfor %}
+  </div>
+{% else %}
+  <!-- Hali ya Empty State -->
+  <div class="text-center py-20 bg-white border border-gray-100 rounded-2xl mb-14 shadow-sm">
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cream mb-4">
+      <i data-lucide="luggage" class="w-7 h-7 text-accent/80"></i>
+    </div>
+    <p class="font-display font-bold text-dark text-lg">No upcoming stays yet</p>
+    <p class="text-gray-400 text-sm mt-1 mb-6 max-w-xs mx-auto">Time to break the routine and plan your next magical trip.</p>
+    <a href="{% url 'properties:list' %}"
+       class="inline-flex items-center justify-center gap-2 bg-accent text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider hover:shadow-lg hover:-translate-y-0.5 transition-all">
+      <i data-lucide="search" class="w-3.5 h-3.5"></i> Browse Properties
+    </a>
+  </div>
+{% endif %}
+
 
     <!-- ─── RECENT ACTIVITY ─── -->
     <div class="mb-6">
@@ -205,7 +217,7 @@
       </div>
     {% else %}
       <div class="text-center py-16 bg-white rounded-2xl text-gray-400">
-        <div class="text-5xl mb-4">📋</div>
+        <div class="text-5xl mb-4"><i data-lucide="clipboard-list" class="w-4 h-4"></i></div>
         <p class="font-semibold text-dark">No activity yet</p>
         <p class="text-sm mt-1">Your bookings will show up here.</p>
       </div>

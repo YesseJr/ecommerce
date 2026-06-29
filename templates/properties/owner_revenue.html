@@ -25,7 +25,7 @@
       </div>
       <a href="{% url 'properties:owner_bookings' %}"
          class="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-5 py-2.5 rounded-full text-sm font-semibold transition flex items-center gap-2">
-        📋 All Bookings
+        <i data-lucide="clipboard-list" class="w-4 h-4"></i> All Bookings
       </a>
     </div>
 
@@ -34,7 +34,9 @@
     <div class="grid grid-cols-4 gap-4 mt-10">
       <div class="bg-accent/20 border border-accent/30 rounded-2xl p-5">
         <p class="text-accent/80 text-xs font-bold uppercase tracking-widest mb-2">Total Revenue</p>
-        <p class="font-bebas text-5xl text-white">${{ total_revenue|floatformat:0 }}</p>
+        <p class="font-bebas text-5xl text-white bms-price" data-usd="{{ total_revenue }}">
+          {% if currency == 'TZS' %}TSh {{ total_revenue|floatformat:0 }}{% else %}${{ total_revenue|floatformat:0 }}{% endif %}
+        </p>
         <p class="text-white/30 text-xs mt-1">all confirmed bookings</p>
       </div>
       <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
@@ -49,7 +51,9 @@
       </div>
       <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
         <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Avg Booking Value</p>
-        <p class="font-bebas text-5xl text-white">${{ avg_booking_value|floatformat:0 }}</p>
+        <p class="font-bebas text-5xl text-white bms-price" data-usd="{{ avg_booking_value }}">
+          {% if currency == 'TZS' %}TSh {{ avg_booking_value|floatformat:0 }}{% else %}${{ avg_booking_value|floatformat:0 }}{% endif %}
+        </p>
         <p class="text-white/30 text-xs mt-1">per confirmed booking</p>
       </div>
     </div>
@@ -62,24 +66,50 @@
 
       <!-- Top Performer Banner -->
       {% if top_property and top_property.revenue > 0 %}
-        <div class="bg-gradient-to-r from-primary to-blue-900 rounded-2xl p-6 mb-10 flex items-center gap-5">
-          <div class="w-14 h-14 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
-            <span class="text-3xl">🏆</span>
+        <div class="relative overflow-hidden bg-gradient-to-br from-primary to-blue-950 rounded-2xl p-8 mb-10 flex flex-col md:flex-row md:items-center gap-6 border border-white/5 shadow-lg shadow-primary/10">
+          
+          <!-- Kikombe cha Ushindi (Trophy Icon Container) -->
+          <div class="w-14 h-14 bg-gradient-to-br from-amber-400/20 to-amber-500/5 border border-amber-400/20 rounded-xl flex items-center justify-center flex-shrink-0 shadow-inner">
+            <i data-lucide="trophy" class="w-7 h-7 text-amber-400 drop-shadow-[0_2px_8px_rgba(251,191,36,0.3)]"></i>
           </div>
-          <div class="flex-1">
-            <p class="text-white/60 text-xs font-bold uppercase tracking-widest">Top Performing Property</p>
-            <p class="font-display text-2xl font-bold text-white mt-0.5">{{ top_property.property.name }}</p>
-            <p class="text-white/50 text-sm mt-0.5">
-              {{ top_property.bookings_count }} booking{{ top_property.bookings_count|pluralize }} ·
-              {{ top_property.nights_sold }} night{{ top_property.nights_sold|pluralize }} sold ·
-              📍 {{ top_property.property.city }}
-            </p>
+
+          <!-- Maelezo ya Nyumba (Content Center) -->
+          <div class="flex-1 space-y-1.5">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1 bg-amber-500/10 text-amber-400 border border-amber-500/10 text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-md">
+                ✦ Top Performer
+              </span>
+            </div>
+            <h3 class="font-display text-2xl font-bold text-white tracking-tight leading-snug">
+              {{ top_property.property.name }}
+            </h3>
+            
+            <!-- Takwimu Ndogo Ndogo (Meta Information) -->
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-white/60 pt-0.5">
+              <span class="inline-flex items-center gap-1 font-medium">
+                <span class="font-bold text-white">{{ top_property.bookings_count }}</span> booking{{ top_property.bookings_count|pluralize }}
+              </span>
+              <span class="w-1 h-1 rounded-full bg-white/20"></span>
+              <span class="inline-flex items-center gap-1 font-medium">
+                <span class="font-bold text-white">{{ top_property.nights_sold }}</span> night{{ top_property.nights_sold|pluralize }} sold
+              </span>
+              <span class="w-1 h-1 rounded-full bg-white/20"></span>
+              <span class="inline-flex items-center gap-1 font-medium text-white/50">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-white/40"></i> {{ top_property.property.city }}
+              </span>
+            </div>
           </div>
-          <div class="text-right flex-shrink-0">
-            <p class="font-bebas text-5xl text-accent">${{ top_property.revenue|floatformat:0 }}</p>
-            <p class="text-white/40 text-xs mt-0.5">total earned</p>
+
+          <!-- Thamani ya Mapato (Revenue Dashboard Right) -->
+          <div class="text-left md:text-right flex-shrink-0 bg-white/5 border border-white/5 rounded-xl p-4 md:p-0 md:bg-transparent md:border-0">
+            <span class="font-display font-extrabold text-3xl md:text-4xl tracking-tight text-accent block bms-price" data-usd="{{ top_property.revenue }}">
+              {% if currency == 'TZS' %}TSh {{ top_property.revenue|floatformat:0 }}{% else %}${{ top_property.revenue|floatformat:0 }}{% endif %}
+            </span>
+            <p class="text-white/40 text-[10px] uppercase tracking-widest font-bold mt-1">Total Earned</p>
           </div>
+
         </div>
+
       {% endif %}
 
       <!-- Charts Row -->
@@ -139,89 +169,120 @@
         </div>
       </div>
 
-      <!-- Per-Property Breakdown Table -->
-      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div class="p-6 pb-0 flex justify-between items-center">
-          <div>
-            <h3 class="font-semibold text-dark text-lg">Property Breakdown</h3>
-            <p class="text-gray-400 text-xs mt-0.5 mb-4">Full earnings detail, ranked by revenue</p>
-          </div>
-        </div>
-        <table class="w-full">
-          <thead>
-            <tr class="border-b border-gray-100 bg-gray-50/50">
-              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">#</th>
-              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Property</th>
-              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Bookings</th>
-              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Nights Sold</th>
-              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Avg / Booking</th>
-              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Revenue</th>
-              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-widest text-gray-400">Share</th>
-              <th class="text-left px-6 py-3"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for stat in property_stats %}
-              <tr class="border-b border-gray-50 hover:bg-cream transition">
-                <td class="px-6 py-4 text-sm text-gray-400 font-medium">{{ forloop.counter }}</td>
-                <td class="px-6 py-4">
-                  <div class="flex items-center gap-3">
-                    <div class="w-12 h-9 rounded-lg overflow-hidden flex-shrink-0">
-                      {% with stat.property.images.first as img %}
-                        {% if img %}
-                          <img src="{{ img.image.url }}" alt="" class="w-full h-full object-cover"/>
-                        {% else %}
-                          <div class="w-full h-full bg-primary flex items-center justify-center">
-                            <span class="text-white/40 text-sm">🏠</span>
-                          </div>
-                        {% endif %}
-                      {% endwith %}
-                    </div>
-                    <div>
-                      <p class="font-semibold text-dark text-sm">{{ stat.property.name }}</p>
-                      <p class="text-xs text-gray-400">{{ stat.property.city }} · {{ stat.property.get_property_type_display }}</p>
+<!-- Per-Property Breakdown Table -->
+<div class="bg-white rounded-2xl border border-gray-100/80 shadow-sm overflow-hidden">
+  <!-- Sehemu ya Juu ya Jedwali (Table Header Section) -->
+  <div class="p-6 bg-gray-50/50 border-b border-gray-100/80 flex justify-between items-center">
+    <div class="flex items-center gap-2.5">
+      <div class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-primary/5 text-primary">
+        <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+      </div>
+      <div>
+        <h3 class="font-display font-bold text-dark text-lg">Property Breakdown</h3>
+        <p class="text-gray-400 text-xs mt-0.5 font-medium">Full earnings detail, ranked by revenue</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jedwali Lenyewe (The Table Container) -->
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[800px] border-collapse">
+      <thead>
+        <tr class="border-b border-gray-100 bg-gray-50/30">
+          <th class="text-left px-6 py-3.5 text-center text-[10px] font-extrabold uppercase tracking-widest text-gray-400 w-12">#</th>
+          <th class="text-left px-6 py-3.5 text-[10px] font-extrabold uppercase tracking-widest text-gray-400">Property</th>
+          <th class="text-center px-6 py-3.5 text-[10px] font-extrabold uppercase tracking-widest text-gray-400">Bookings</th>
+          <th class="text-center px-6 py-3.5 text-[10px] font-extrabold uppercase tracking-widest text-gray-400">Nights Sold</th>
+          <th class="text-right px-6 py-3.5 text-[10px] font-extrabold uppercase tracking-widest text-gray-400">Avg / Booking</th>
+          <th class="text-right px-6 py-3.5 text-[10px] font-extrabold uppercase tracking-widest text-gray-400">Revenue</th>
+          <th class="text-left px-6 py-3.5 text-[10px] font-extrabold uppercase tracking-widest text-gray-400 pl-10">Share</th>
+          <th class="text-right px-6 py-3.5 w-24"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50">
+        {% for stat in property_stats %}
+          <tr class="hover:bg-cream/40 transition-colors duration-200 group">
+            <!-- Namba ya Mstari -->
+            <td class="px-6 py-4 text-center text-xs text-gray-400 font-bold font-mono">{{ forloop.counter }}</td>
+            
+            <!-- Taarifa za Nyumba na Picha -->
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-9 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 shadow-inner">
+                  {% with stat.property.images.first as img %}
+                    {% if img %}
+                      <img src="{{ img.image.url }}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                    {% else %}
+                      <div class="w-full h-full bg-gray-50 flex items-center justify-center text-gray-400">
+                        <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                      </div>
+                    {% endif %}
+                  {% endwith %}
+                </div>
+                <div>
+                  <p class="font-semibold text-dark text-sm leading-snug group-hover:text-primary transition-colors">{{ stat.property.name }}</p>
+                  <p class="text-[11px] text-gray-400 font-medium mt-0.5">{{ stat.property.city }} · {{ stat.property.get_property_type_display }}</p>
+                </div>
+              </div>
+            </td>
+            
+            <!-- Idadi ya Bookings -->
+            <td class="px-6 py-4 text-center text-sm text-dark font-semibold font-mono">{{ stat.bookings_count }}</td>
+            
+            <!-- Idadi ya Usiku Zilizouzwa -->
+            <td class="px-6 py-4 text-center text-sm text-dark font-semibold font-mono">{{ stat.nights_sold }}</td>
+            
+            <!-- Wastani wa Kila Booking -->
+            <td class="px-6 py-4 text-right text-sm text-gray-600 font-medium font-mono">
+              <span class="bms-price" data-usd="{{ stat.avg_per_booking }}">
+                {% if currency == 'TZS' %}TSh {{ stat.avg_per_booking|floatformat:0 }}{% else %}${{ stat.avg_per_booking|floatformat:0 }}{% endif %}
+              </span>
+            </td>
+            
+            <!-- Jumla ya Mapato (Revenue) -->
+            <td class="px-6 py-4 text-right">
+              <span class="font-display font-extrabold text-dark text-sm font-mono bms-price" data-usd="{{ stat.revenue }}">
+                {% if currency == 'TZS' %}TSh {{ stat.revenue|floatformat:0 }}{% else %}${{ stat.revenue|floatformat:0 }}{% endif %}
+              </span>
+            </td>
+            
+            <!-- Mwonekano wa Asilimia (Share Progress Bar) -->
+            <td class="px-6 py-4 pl-10">
+              {% if total_revenue > 0 %}
+                <div class="flex items-center gap-3">
+                  <div class="flex-1 bg-gray-100 rounded-full h-1.5 w-24 overflow-hidden">
+                    <div class="bg-accent h-1.5 rounded-full transition-all duration-500 shadow-sm"
+                         style="width: {% widthratio stat.revenue total_revenue 100 %}%">
                     </div>
                   </div>
-                </td>
-                <td class="px-6 py-4 text-sm text-dark font-medium">{{ stat.bookings_count }}</td>
-                <td class="px-6 py-4 text-sm text-dark font-medium">{{ stat.nights_sold }}</td>
-                <td class="px-6 py-4 text-sm text-dark">${{ stat.avg_per_booking|floatformat:0 }}</td>
-                <td class="px-6 py-4">
-                  <span class="font-bold text-accent text-base">${{ stat.revenue|floatformat:0 }}</span>
-                </td>
-                <td class="px-6 py-4">
-                  {% if total_revenue > 0 %}
-                    <div class="flex items-center gap-2">
-                      <div class="flex-1 bg-gray-100 rounded-full h-1.5 w-20">
-                        <div class="bg-accent h-1.5 rounded-full"
-                             style="width: {% widthratio stat.revenue total_revenue 100 %}%">
-                        </div>
-                      </div>
-                      <span class="text-xs text-gray-500">
-                        {% widthratio stat.revenue total_revenue 100 %}%
-                      </span>
-                    </div>
-                  {% else %}
-                    <span class="text-xs text-gray-400">—</span>
-                  {% endif %}
-                </td>
-                <td class="px-6 py-4">
-                  {% if forloop.first and stat.revenue > 0 %}
-                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-green-100 text-green-700">
-                      🏆 Top
-                    </span>
-                  {% endif %}
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+                  <span class="text-xs font-bold text-gray-500 font-mono w-8">
+                    {% widthratio stat.revenue total_revenue 100 %}%
+                  </span>
+                </div>
+              {% else %}
+                <span class="text-xs text-gray-400 font-medium">—</span>
+              {% endif %}
+            </td>
+            
+            <!-- Beji ya Ushindi (Top Performer Status) -->
+            <td class="px-6 py-4 text-right">
+              {% if forloop.first and stat.revenue > 0 %}
+                <span class="inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 border border-amber-100/60 shadow-sm animate-fade-in">
+                  <i data-lucide="trophy" class="w-3 h-3 text-amber-500"></i> Top
+                </span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 
     {% else %}
       <div class="text-center py-24 text-gray-400">
         <div class="w-24 h-24 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <span class="text-5xl">📊</span>
+          <span class="text-5xl"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></span>
         </div>
         <h3 class="text-xl font-semibold text-dark mb-2">No earnings data yet</h3>
         <p class="text-sm mb-6 max-w-sm mx-auto">
@@ -241,23 +302,43 @@
 {% if property_stats %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-  const chartLabels    = {{ chart_labels_json|safe }}
-  const chartRevenue   = {{ chart_revenue_json|safe }}
-  const chartBookings  = {{ chart_bookings_json|safe }}
-  const monthlyLabels  = {{ monthly_labels_json|safe }}
-  const monthlyRevenue = {{ monthly_revenue_json|safe }}
-  const palette = ['#F97316','#1B3A6B','#D97706','#15803D','#7C3AED','#DB2777','#0891B2']
+  var RATE             = {{ rate|default:2500 }};
+  var CURRENCY         = '{{ currency|default:"USD" }}';
+  var chartLabels      = {{ chart_labels_json|safe }};
+  var chartRevenueUSD  = {{ chart_revenue_json|safe }};   // always USD from Django
+  var chartBookings    = {{ chart_bookings_json|safe }};
+  var monthlyLabels    = {{ monthly_labels_json|safe }};
+  var monthlyRevenueUSD = {{ monthly_revenue_json|safe }}; // always USD from Django
+  var palette = ['#F97316','#1B3A6B','#D97706','#15803D','#7C3AED','#DB2777','#0891B2'];
 
-  Chart.defaults.font.family = "'DM Sans', sans-serif"
+  Chart.defaults.font.family = "'DM Sans', sans-serif";
 
-  // Bar: Revenue by Property
-  new Chart(document.getElementById('revenueByPropertyChart'), {
+  // ── Helpers ──────────────────────────────────────────────────────
+  function fmtPrice(usd, c) {
+    if (c === 'TZS') return 'TSh ' + Math.round(usd * RATE).toLocaleString();
+    return '$' + parseFloat(usd).toFixed(2);
+  }
+
+  function convertData(usdArray, c) {
+    return usdArray.map(function(v) {
+      return c === 'TZS' ? Math.round(v * RATE) : v;
+    });
+  }
+
+  function chartTickFmt(c) {
+    return function(v) {
+      return c === 'TZS' ? 'TSh ' + Math.round(v).toLocaleString() : '$' + v.toLocaleString();
+    };
+  }
+
+  // ── Charts ───────────────────────────────────────────────────────
+  var revenueByPropertyChart = new Chart(document.getElementById('revenueByPropertyChart'), {
     type: 'bar',
     data: {
       labels: chartLabels,
       datasets: [{
-        label: 'Revenue ($)',
-        data: chartRevenue,
+        label: CURRENCY === 'TZS' ? 'Revenue (TSh)' : 'Revenue ($)',
+        data: convertData(chartRevenueUSD, CURRENCY),
         backgroundColor: palette,
         borderRadius: 10,
         maxBarThickness: 60,
@@ -267,18 +348,17 @@
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { callback: v => '$' + v.toLocaleString() } },
+        y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { callback: chartTickFmt(CURRENCY) } },
         x: { grid: { display: false } }
       }
     }
-  })
+  });
 
-  // Donut: Revenue Share
-  new Chart(document.getElementById('revenueShareChart'), {
+  var revenueShareChart = new Chart(document.getElementById('revenueShareChart'), {
     type: 'doughnut',
     data: {
       labels: chartLabels,
-      datasets: [{ data: chartRevenue, backgroundColor: palette, borderWidth: 0 }]
+      datasets: [{ data: convertData(chartRevenueUSD, CURRENCY), backgroundColor: palette, borderWidth: 0 }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
@@ -287,16 +367,15 @@
       },
       cutout: '68%',
     }
-  })
+  });
 
-  // Line: Monthly Trend
-  new Chart(document.getElementById('monthlyTrendChart'), {
+  var monthlyTrendChart = new Chart(document.getElementById('monthlyTrendChart'), {
     type: 'line',
     data: {
       labels: monthlyLabels,
       datasets: [{
-        label: 'Revenue ($)',
-        data: monthlyRevenue,
+        label: CURRENCY === 'TZS' ? 'Revenue (TSh)' : 'Revenue ($)',
+        data: convertData(monthlyRevenueUSD, CURRENCY),
         borderColor: '#1B3A6B',
         backgroundColor: 'rgba(27,58,107,0.07)',
         fill: true, tension: 0.4,
@@ -309,14 +388,13 @@
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { callback: v => '$' + v.toLocaleString() } },
+        y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { callback: chartTickFmt(CURRENCY) } },
         x: { grid: { display: false } }
       }
     }
-  })
+  });
 
-  // Bar: Bookings per Property
-  new Chart(document.getElementById('bookingsPerPropertyChart'), {
+  var bookingsPerPropertyChart = new Chart(document.getElementById('bookingsPerPropertyChart'), {
     type: 'bar',
     data: {
       labels: chartLabels,
@@ -336,7 +414,41 @@
         x: { grid: { display: false } }
       }
     }
-  })
+  });
+
+  // ── Currency toggle handler ───────────────────────────────────────
+  // Updates bms-price elements AND re-draws all revenue charts
+  window.setCurrency = function(c) {
+    CURRENCY = c;
+
+    // 1. Update all tagged price elements
+    document.querySelectorAll('.bms-price[data-usd]').forEach(function(el) {
+      el.textContent = fmtPrice(parseFloat(el.dataset.usd), c);
+    });
+
+    // 2. Update revenue bar chart
+    var convertedRevenue = convertData(chartRevenueUSD, c);
+    revenueByPropertyChart.data.datasets[0].data  = convertedRevenue;
+    revenueByPropertyChart.data.datasets[0].label = c === 'TZS' ? 'Revenue (TSh)' : 'Revenue ($)';
+    revenueByPropertyChart.options.scales.y.ticks.callback = chartTickFmt(c);
+    revenueByPropertyChart.update();
+
+    // 3. Update donut chart
+    revenueShareChart.data.datasets[0].data = convertedRevenue;
+    revenueShareChart.update();
+
+    // 4. Update monthly trend chart
+    monthlyTrendChart.data.datasets[0].data  = convertData(monthlyRevenueUSD, c);
+    monthlyTrendChart.data.datasets[0].label = c === 'TZS' ? 'Revenue (TSh)' : 'Revenue ($)';
+    monthlyTrendChart.options.scales.y.ticks.callback = chartTickFmt(c);
+    monthlyTrendChart.update();
+
+    // 5. Bookings chart has no currency — no update needed
+  };
+
+  // Auto-apply current session currency on page load
+  window.setCurrency(CURRENCY);
+
 </script>
 {% endif %}
 {% endblock %}
