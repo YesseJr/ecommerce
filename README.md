@@ -339,7 +339,7 @@ This project was developed **strictly for academic purposes** in partial fulfill
 
 **Third Year Diploma in Information Technology Students**
 
-**J11 Institute of Technology**
+**Dar es Salaam Institute of Technology**
 
 **Academic Year: 2025/2026**
 
