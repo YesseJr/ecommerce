@@ -2,57 +2,141 @@
 {% load static %}
 
 {% block title %}BookMyStay — Find Your Perfect Stay{% endblock %}
+{% block body_class %}has-hero{% endblock %}
 
 {% block content %}
 
 <!-- ─── HERO ─── -->
-<section class="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
-<div class="absolute inset-0"
-     style="background: linear-gradient(to bottom, rgba(17,17,24,0.25) 0%, rgba(17,17,24,0.6) 55%, rgba(17,17,24,0.92) 100%),
-            url('{% static "images/hero-bg.jpeg" %}') center/cover no-repeat;">
-</div>
+<section class="relative h-screen min-h-[720px] flex items-center justify-center overflow-hidden bg-dark">
+
+  <!-- Sliding image layers -->
+  <div class="hero-slider">
+    {% if hero_images %}
+      {% for img in hero_images %}
+        <div class="hero-slide {% if forloop.first %}is-active{% endif %}"
+             style="background-image:url('{{ img.url }}'), {{ img.gradient }};"></div>
+      {% endfor %}
+    {% else %}
+      <!-- No property photos yet — branded destination slides keep the
+           hero rich and on-theme instead of a single flat image. -->
+      <div class="hero-slide is-active"
+           style="background-image:url('{% static "images/hero-bg.jpeg" %}'), linear-gradient(135deg, #F97316 0%, #C2410C 45%, #1B3A6B 100%);">
+        <div class="hero-fallback-silhouette"></div>
+        <div class="absolute bottom-10 left-10 z-[1] flex items-center gap-2 text-white/70">
+          <i data-lucide="palmtree" class="w-5 h-5"></i>
+          <span class="text-xs font-bold tracking-widest uppercase">Zanzibar Beaches</span>
+        </div>
+      </div>
+      <div class="hero-slide hero-fallback-1">
+        <div class="hero-fallback-silhouette"></div>
+        <div class="absolute bottom-10 left-10 z-[1] flex items-center gap-2 text-white/70">
+          <i data-lucide="tent-tree" class="w-5 h-5"></i>
+          <span class="text-xs font-bold tracking-widest uppercase">Serengeti Lodges</span>
+        </div>
+      </div>
+      <div class="hero-slide hero-fallback-2">
+        <div class="hero-fallback-silhouette"></div>
+        <div class="absolute bottom-10 left-10 z-[1] flex items-center gap-2 text-white/70">
+          <i data-lucide="building-2" class="w-5 h-5"></i>
+          <span class="text-xs font-bold tracking-widest uppercase">Dar es Salaam Stays</span>
+        </div>
+      </div>
+      <div class="hero-slide hero-fallback-3">
+        <div class="hero-fallback-silhouette"></div>
+        <div class="absolute bottom-10 left-10 z-[1] flex items-center gap-2 text-white/70">
+          <i data-lucide="mountain" class="w-5 h-5"></i>
+          <span class="text-xs font-bold tracking-widest uppercase">Arusha Retreats</span>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Gradient overlay -->
+  <div class="absolute inset-0 z-[2] pointer-events-none"
+       style="background: linear-gradient(to bottom, rgba(17,17,24,0.35) 0%, rgba(17,17,24,0.55) 45%, rgba(17,17,24,0.94) 100%);">
+  </div>
+  <div class="absolute inset-0 z-[2] pointer-events-none"
+       style="background: radial-gradient(ellipse at center, rgba(17,17,24,0) 40%, rgba(17,17,24,0.5) 100%);">
+  </div>
+
+  <!-- Floating trust badge -->
+  <div class="hidden lg:flex glass-badge floaty absolute top-28 right-12 z-10 items-center gap-3 rounded-2xl px-5 py-4">
+    <div class="w-11 h-11 rounded-full bg-accent/90 flex items-center justify-center flex-shrink-0">
+      <i data-lucide="badge-check" class="w-6 h-6 text-white"></i>
+    </div>
+    <div class="text-left">
+      <div class="text-white font-bold text-sm leading-tight">
+        {% if avg_rating %}{{ avg_rating }} ★ Rated{% else %}Newly Launched{% endif %}
+      </div>
+      <div class="text-white/50 text-xs">by {{ total_guests|default:"our" }} happy guests</div>
+    </div>
+  </div>
 
   <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
-    <div class="inline-flex items-center gap-2 bg-dark/80 border border-accent/40 text-accent px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6">
-      <i data-lucide="home" class="w-4 h-4"></i> Tanzania's Trusted Accommodation Platform
+    <div class="fade-up fade-up-1 inline-flex items-center gap-2 bg-dark/80 border border-accent/40 text-accent px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6">
+      <i data-lucide="sparkles" class="w-4 h-4"></i> Tanzania's Trusted Accommodation Platform
     </div>
 
-    <h1 class="font-display font-bold text-white leading-none mb-6"
-        style="font-size: clamp(3.5rem, 9vw, 7rem);">
-      Find Your <em class="text-accent not-italic">Perfect</em><br/>Place to Stay
+    <h1 class="fade-up fade-up-2 font-display font-bold text-white leading-[0.95] mb-6"
+        style="font-size: clamp(3.5rem, 9vw, 7.5rem); text-shadow: 0 8px 40px rgba(0,0,0,0.35);">
+      Find Your <em class="text-accent not-italic underline-accent">Perfect</em><br/>Place to Stay
     </h1>
 
-    <p class="text-white/65 text-lg font-light max-w-xl mx-auto mb-10 leading-relaxed">
+    <p class="fade-up fade-up-3 text-white/70 text-lg font-light max-w-xl mx-auto mb-10 leading-relaxed">
       Browse verified hotels, villas and apartments across Tanzania.<br/>Book in minutes, stay in comfort.
     </p>
 
     <!-- Search Bar -->
     <form method="GET" action="{% url 'properties:list' %}"
-          class="bg-white rounded-2xl p-2 flex gap-2 max-w-2xl mx-auto shadow-2xl">
-      <div class="flex-1 flex flex-col px-4 py-2 border-r border-gray-200">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Destination</label>
-        <input type="text" name="q" placeholder="City or property name..."
-               class="outline-none text-sm font-medium text-dark bg-transparent"/>
+          class="fade-up fade-up-4 bg-white/95 backdrop-blur rounded-2xl p-2 flex gap-2 max-w-2xl mx-auto shadow-2xl shadow-black/40 ring-1 ring-black/5">
+      <div class="flex-1 flex items-center gap-3 px-4 py-2 border-r border-gray-200">
+        <i data-lucide="map-pin" class="w-4 h-4 text-accent flex-shrink-0"></i>
+        <div class="flex flex-col text-left w-full">
+          <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">Destination</label>
+          <input type="text" name="q" placeholder="City or property name..."
+                 class="outline-none text-sm font-medium text-dark bg-transparent w-full"/>
+        </div>
       </div>
-      <div class="flex flex-col px-4 py-2 border-r border-gray-200">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Type</label>
-        <select name="type" class="outline-none text-sm font-medium text-dark bg-transparent cursor-pointer">
-          <option value="">All Types</option>
-          {% for value, label in property_types %}
-            <option value="{{ value }}">{{ label }}</option>
-          {% endfor %}
-        </select>
+      <div class="flex items-center gap-3 px-4 py-2 border-r border-gray-200">
+        <i data-lucide="building-2" class="w-4 h-4 text-accent flex-shrink-0"></i>
+        <div class="flex flex-col text-left">
+          <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">Type</label>
+          <select name="type" class="outline-none text-sm font-medium text-dark bg-transparent cursor-pointer">
+            <option value="">All Types</option>
+            {% for value, label in property_types %}
+              <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
       </div>
-      <div class="flex flex-col px-4 py-2">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Guests</label>
-        <input type="number" name="guests" placeholder="2" min="1"
-               class="outline-none text-sm font-medium text-dark bg-transparent w-16"/>
+      <div class="flex items-center gap-3 px-4 py-2">
+        <i data-lucide="users" class="w-4 h-4 text-accent flex-shrink-0"></i>
+        <div class="flex flex-col text-left">
+          <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">Guests</label>
+          <input type="number" name="guests" placeholder="2" min="1"
+                 class="outline-none text-sm font-medium text-dark bg-transparent w-14"/>
+        </div>
       </div>
       <button type="submit"
-              class="bg-accent text-white px-6 py-3 rounded-xl font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all whitespace-nowrap">
-        Search ✦
+              class="bg-accent text-white px-6 py-3 rounded-xl font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 hover:bg-orange-600 transition-all whitespace-nowrap flex items-center gap-2">
+        <i data-lucide="search" class="w-4 h-4"></i> Search
       </button>
     </form>
+
+    <!-- Slider dots -->
+    {% if hero_images|length > 1 %}
+      <div class="hero-dots justify-center mt-8" id="hero-dots">
+        {% for img in hero_images %}
+          <div class="hero-dot {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.counter0 }}"></div>
+        {% endfor %}
+      </div>
+    {% elif not hero_images %}
+      <div class="hero-dots justify-center mt-8" id="hero-dots">
+        {% for i in "1234" %}
+          <div class="hero-dot {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.counter0 }}"></div>
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 
   <!-- Scroll hint -->
@@ -64,37 +148,80 @@
 </section>
 
 <!-- ─── STATS ─── -->
-<div class="bg-dark py-8">
-  <div class="flex justify-center gap-20 px-16 flex-wrap">
+<div class="bg-dark py-10 border-t border-white/5">
+  <div class="reveal flex justify-center gap-20 px-16 flex-wrap">
     <div class="text-center">
-      <div class="font-bebas text-4xl text-accent">{{ total_properties }}</div>
+      <div class="font-bebas text-5xl text-accent">
+        <span class="count-up" data-target="{{ total_properties }}">0</span><span class="text-white/30">+</span>
+      </div>
       <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Properties</div>
     </div>
     <div class="text-center">
-      <div class="font-bebas text-4xl text-accent">{{ total_cities }}</div>
+      <div class="font-bebas text-5xl text-accent">
+        <span class="count-up" data-target="{{ total_cities }}">0</span><span class="text-white/30">+</span>
+      </div>
       <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Cities</div>
     </div>
     <div class="text-center">
-      <div class="font-bebas text-4xl text-accent">{{ total_guests }}</div>
+      <div class="font-bebas text-5xl text-accent">
+        <span class="count-up" data-target="{{ total_guests }}">0</span><span class="text-white/30">+</span>
+      </div>
       <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Happy Guests</div>
     </div>
     <div class="text-center">
       {% if avg_rating %}
-        <div class="font-bebas text-4xl text-accent">{{ avg_rating }}★</div>
+        <div class="font-bebas text-5xl text-accent">
+          <span class="count-up" data-target="{{ avg_rating }}" data-decimals="1" data-suffix="★">0.0</span>
+        </div>
       {% else %}
-        <div class="font-bebas text-4xl text-accent">—</div>
+        <div class="font-bebas text-5xl text-accent">—</div>
       {% endif %}
       <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Avg Rating</div>
     </div>
   </div>
 </div>
 
+{% if city_gallery %}
+<!-- ─── EXPLORE BY CITY (bento gallery) ─── -->
+<section class="py-24 px-16 bg-cream">
+  <div class="reveal text-center mb-12">
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Explore Tanzania</span>
+    <h2 class="font-display text-5xl font-bold text-dark mt-2 heading-reveal">
+      Pick Your Next <em class="text-primary">Destination</em>
+    </h2>
+  </div>
+
+  <div class="reveal grid grid-cols-4 grid-rows-2 gap-4 h-[520px]">
+    {% for c in city_gallery %}
+      <a href="{% url 'properties:list' %}?q={{ c.city|urlencode }}"
+         class="group relative rounded-2xl overflow-hidden block
+                {% if forloop.first %}col-span-2 row-span-2{% else %}col-span-1 row-span-1{% endif %}">
+        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+             style="background-image:url('{{ c.url }}'), {{ c.gradient }};"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(17,17,24,0.85) 0%, rgba(17,17,24,0.15) 55%, rgba(17,17,24,0.05) 100%);"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-5 flex items-end justify-between">
+          <div>
+            <div class="text-white font-display font-bold {% if forloop.first %}text-3xl{% else %}text-xl{% endif %} leading-tight">
+              {{ c.city }}
+            </div>
+            <div class="text-white/60 text-xs mt-1">{{ c.count }} place{{ c.count|pluralize }} to stay</div>
+          </div>
+          <div class="w-9 h-9 rounded-full bg-white/15 backdrop-blur flex items-center justify-center group-hover:bg-accent transition-colors flex-shrink-0">
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-white"></i>
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
 <!-- ─── FEATURED PROPERTIES ─── -->
 <section class="py-24 px-16 bg-cream">
-  <div class="flex justify-between items-end mb-12">
+  <div class="reveal flex justify-between items-end mb-12">
     <div>
       <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Hand Picked</span>
-      <h2 class="font-display text-5xl font-bold text-dark mt-2">
+      <h2 class="font-display text-5xl font-bold text-dark mt-2 heading-reveal">
         Featured <em class="text-primary">Stays</em>
       </h2>
       <p class="text-gray-500 mt-2 max-w-md">Top-rated properties loved by our guests.</p>
@@ -109,25 +236,39 @@
     <div class="grid grid-cols-3 gap-6">
       {% for prop in featured %}
         <a href="{% url 'properties:detail' prop.slug %}"
-           class="bg-white rounded-2xl overflow-hidden shadow-sm hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group">
-          <div class="relative h-56 overflow-hidden">
-            {% with prop.images.first as img %}
-              {% if img %}
-                <img src="{{ img.image.url }}" alt="{{ prop.name }}"
-                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+           class="reveal reveal-{{ forloop.counter0|add:1 }} bg-white rounded-2xl overflow-hidden shadow-sm hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group">
+          <div class="relative h-56 overflow-hidden bg-primary">
+            {% with prop.images.all as pimgs %}
+              {% if pimgs.0 %}
+                <img src="{{ pimgs.0.image.url }}" alt="{{ prop.name }}"
+                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 {% if pimgs.1 %}group-hover:opacity-0{% else %}group-hover:scale-105{% endif %}"/>
+                {% if pimgs.1 %}
+                  <img src="{{ pimgs.1.image.url }}" alt="{{ prop.name }}"
+                       class="absolute inset-0 w-full h-full object-cover opacity-0 scale-105 transition-opacity duration-700 group-hover:opacity-100"/>
+                {% endif %}
               {% else %}
                 <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900 flex items-center justify-center">
                   <span class="text-white/20 text-6xl"><i data-lucide="home" class="w-4 h-4"></i></span>
                 </div>
               {% endif %}
             {% endwith %}
-            <div class="absolute inset-0 bg-gradient-to-t from-dark/40 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark/50 via-transparent to-transparent pointer-events-none"></div>
             <span class="absolute top-3 left-3 bg-white/95 text-dark text-xs font-bold px-3 py-1 rounded-full shadow-sm">
               {{ prop.get_property_type_display }}
             </span>
-            <span class="absolute top-3 right-3 bg-white/95 text-dark text-xs font-bold px-3 py-1 rounded-full shadow-sm">
-              {% if prop.average_rating %}<i data-lucide="star" class="w-4 h-4 text-yellow-400"></i> {{ prop.average_rating }}{% else %}<i data-lucide="sparkles" class="w-4 h-4"></i> New{% endif %}
-            </span>
+            <button type="button" onclick="event.preventDefault();event.stopPropagation();this.classList.toggle('is-saved');lucide.createIcons();"
+                    class="wishlist-btn absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-sm hover:scale-110 transition-transform">
+              <i data-lucide="heart" class="w-4 h-4 text-dark/70"></i>
+            </button>
+            {% if prop.average_rating %}
+              <span class="absolute bottom-3 left-3 bg-dark/70 backdrop-blur text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+                <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400"></i> {{ prop.average_rating }}
+              </span>
+            {% else %}
+              <span class="absolute bottom-3 left-3 bg-accent/90 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> New
+              </span>
+            {% endif %}
           </div>
           <div class="p-5">
             <p class="text-xs text-gray-400 mb-1"><i data-lucide="map-pin" class="w-4 h-4"></i> {{ prop.city }}, {{ prop.country }}</p>
@@ -156,13 +297,13 @@
 
 <!-- ─── PROPERTY TYPES ─── -->
 <section class="py-20 px-16 bg-white">
-  <div class="text-center mb-12">
+  <div class="reveal text-center mb-12">
     <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Browse By Type</span>
     <h2 class="font-display text-5xl font-bold text-dark mt-2">
       Every Kind of <em class="text-primary">Stay</em>
     </h2>
   </div>
-  <div class="flex justify-center gap-4 flex-wrap">
+  <div class="reveal flex justify-center gap-4 flex-wrap">
     {% for value, label in property_types %}
       <a href="{% url 'properties:list' %}?type={{ value }}"
          class="flex items-center gap-3 px-6 py-4 bg-cream border-2 border-transparent rounded-2xl hover:border-accent hover:bg-orange-50 hover:-translate-y-1 transition-all">
@@ -182,14 +323,19 @@
 </section>
 
 <!-- ─── WHY BOOKMYSTAY ─── -->
-<section class="py-20 px-16" style="background: linear-gradient(135deg, #1B3A6B 0%, #0F2347 100%)">
-  <div class="text-center mb-14">
+<section class="relative py-20 px-16 overflow-hidden" style="background: linear-gradient(135deg, #1B3A6B 0%, #0F2347 100%)">
+  <div class="absolute w-[420px] h-[420px] rounded-full opacity-30 pointer-events-none"
+       style="top:-140px; left:-100px; background: radial-gradient(circle, #F97316 0%, transparent 70%); filter: blur(60px);"></div>
+  <div class="absolute w-[380px] h-[380px] rounded-full opacity-20 pointer-events-none"
+       style="bottom:-160px; right:-80px; background: radial-gradient(circle, #0891B2 0%, transparent 70%); filter: blur(60px);"></div>
+
+  <div class="relative reveal text-center mb-14">
     <span class="text-xs font-bold tracking-widest uppercase text-gold">✦ Why BookMyStay</span>
-    <h2 class="font-display text-5xl font-bold text-white mt-2">
+    <h2 class="font-display text-5xl font-bold text-white mt-2 heading-reveal">
       The Smarter Way to <em class="text-accent">Book</em>
     </h2>
   </div>
-  <div class="grid grid-cols-4 gap-6 max-w-5xl mx-auto">
+  <div class="relative reveal grid grid-cols-4 gap-6 max-w-5xl mx-auto">
     {% for icon, title, desc in why_items %}
       <div class="text-center p-6 group">
         <div class="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-accent/20 group-hover:border-accent/30 transition">
@@ -227,14 +373,89 @@
   </div>
 </section>
 
+<!-- ─── TESTIMONIALS ─── -->
+<section class="py-20 bg-white overflow-hidden">
+  <div class="reveal text-center mb-14 px-16">
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Guest Stories</span>
+    <h2 class="font-display text-5xl font-bold text-dark mt-2 heading-reveal">
+      Loved by <em class="text-primary">Travellers</em>
+    </h2>
+    <p class="text-gray-500 mt-2 max-w-md mx-auto">Real words from guests who found their perfect stay.</p>
+  </div>
+
+  <div class="reveal relative">
+    <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none hidden md:block"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none hidden md:block"></div>
+
+    <div class="flex gap-6 overflow-x-auto snap-x snap-mandatory px-16 pb-4" style="scrollbar-width: thin;">
+      {% for t in testimonials|slice:":6" %}
+        <div class="bg-cream rounded-2xl p-7 w-80 flex-shrink-0 snap-start border border-black/5">
+          <div class="flex items-center gap-1 mb-4">
+            {% for i in "12345" %}
+              <i data-lucide="star" class="w-4 h-4 {% if forloop.counter <= t.rating %}text-yellow-400{% else %}text-gray-200{% endif %}"></i>
+            {% endfor %}
+          </div>
+          <p class="text-dark/80 text-sm leading-relaxed mb-6">"{{ t.comment|truncatewords:26 }}"</p>
+          <div class="flex items-center gap-3 pt-4 border-t border-black/5">
+            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+              {{ t.traveller.first_name|default:t.traveller.username|first|upper }}
+            </div>
+            <div>
+              <div class="font-semibold text-dark text-sm">{{ t.traveller.first_name|default:t.traveller.username }}</div>
+              <div class="text-gray-400 text-xs">stayed at {{ t.property.name }}</div>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        {% for item in "123456" %}
+          <div class="bg-cream rounded-2xl p-7 w-80 flex-shrink-0 snap-start border border-black/5">
+            <div class="flex items-center gap-1 mb-4">
+              {% for i in "12345" %}<i data-lucide="star" class="w-4 h-4 text-yellow-400"></i>{% endfor %}
+            </div>
+            <p class="text-dark/80 text-sm leading-relaxed mb-6">
+              {% if forloop.counter == 1 %}"Booking took two minutes and the villa looked exactly like the photos. Best stay we've had in Zanzibar."
+              {% elif forloop.counter == 2 %}"BookMyStay made finding a place near the conference so easy. Clean, verified, and great value."
+              {% elif forloop.counter == 3 %}"Loved the transparent pricing in TZS. No surprise fees at checkout, exactly what was promised."
+              {% elif forloop.counter == 4 %}"The host was fantastic and the app made adding breakfast and airport pickup effortless."
+              {% elif forloop.counter == 5 %}"Found a hidden gem apartment in Arusha. Will absolutely book through here again."
+              {% else %}"Support was quick to respond when I needed to change my dates. Really smooth experience."{% endif %}
+            </p>
+            <div class="flex items-center gap-3 pt-4 border-t border-black/5">
+              <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                {% if forloop.counter == 1 %}A{% elif forloop.counter == 2 %}J{% elif forloop.counter == 3 %}N{% elif forloop.counter == 4 %}M{% elif forloop.counter == 5 %}K{% else %}R{% endif %}
+              </div>
+              <div>
+                <div class="font-semibold text-dark text-sm">
+                  {% if forloop.counter == 1 %}Amina{% elif forloop.counter == 2 %}James{% elif forloop.counter == 3 %}Neema{% elif forloop.counter == 4 %}Mwajuma{% elif forloop.counter == 5 %}Kelvin{% else %}Rehema{% endif %}
+                </div>
+                <div class="text-gray-400 text-xs">Verified guest</div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
 <!-- ─── CTA ─── -->
 <section class="py-20 px-16 bg-cream">
-  <div class="bg-accent rounded-3xl p-16 text-center relative overflow-hidden">
+  <div class="reveal bg-accent rounded-3xl p-16 text-center relative overflow-hidden">
     <div class="absolute inset-0 opacity-40"
           style="background: url('{% static "images/cta-bg.png" %}') center/cover">
     </div>
+    <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(249,115,22,0.15) 0%, rgba(17,17,24,0.55) 100%);"></div>
+
+    <div class="hidden md:flex floaty absolute top-8 left-10 w-14 h-14 rounded-2xl glass-badge items-center justify-center">
+      <i data-lucide="key-round" class="w-6 h-6 text-white"></i>
+    </div>
+    <div class="hidden md:flex floaty absolute bottom-10 right-14 w-14 h-14 rounded-2xl glass-badge items-center justify-center" style="animation-delay: 1.2s;">
+      <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
+    </div>
+
     <div class="relative z-10">
-      <h2 class="font-display text-5xl font-bold text-white mb-4">
+      <span class="text-xs font-bold tracking-widest uppercase text-white/70">✦ For Property Owners</span>
+      <h2 class="font-display text-5xl font-bold text-white mt-2 mb-4">
         Ready to List Your Property?
       </h2>
       <p class="text-white/80 max-w-md mx-auto mb-8 leading-relaxed">
@@ -278,6 +499,36 @@
     };
     // Auto-apply on load
     window.setCurrency('{{ currency|default:"USD" }}');
+  })();
+</script>
+
+<!-- Hero image slider -->
+<script>
+  (function() {
+    var slides = document.querySelectorAll('.hero-slide');
+    var dots   = document.querySelectorAll('.hero-dot');
+    if (slides.length < 2) return; // nothing to cycle
+
+    var current = 0;
+    var TIMING  = 5500;
+
+    function goTo(index) {
+      slides[current].classList.remove('is-active');
+      if (dots.length) dots[current].classList.remove('is-active');
+      current = index % slides.length;
+      slides[current].classList.add('is-active');
+      if (dots.length) dots[current].classList.add('is-active');
+    }
+
+    var timer = setInterval(function() { goTo(current + 1); }, TIMING);
+
+    dots.forEach(function(dot, i) {
+      dot.addEventListener('click', function() {
+        clearInterval(timer);
+        goTo(i);
+        timer = setInterval(function() { goTo(current + 1); }, TIMING);
+      });
+    });
   })();
 </script>
 {% endblock %}

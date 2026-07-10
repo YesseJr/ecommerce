@@ -54,6 +54,56 @@ def home(request):
         status='active'
     ).values_list('city', flat=True).distinct()
 
+    # ── Hero slider images — pulled from real, verified listings ──────────
+    # Grabs one photo per property (first uploaded image) across the most
+    # recent active listings, so the hero always reflects real inventory.
+    # Each slide also carries a gradient so if the photo URL 404s (e.g. no
+    # media/ uploaded yet on a fresh deploy) the hero still looks intentional.
+    HERO_GRADIENTS = [
+        'linear-gradient(135deg, #F97316 0%, #C2410C 45%, #1B3A6B 100%)',
+        'linear-gradient(135deg, #0F766E 0%, #164E63 55%, #0F2347 100%)',
+        'linear-gradient(135deg, #1B3A6B 0%, #312E81 55%, #111118 100%)',
+        'linear-gradient(135deg, #D97706 0%, #7C2D12 55%, #111118 100%)',
+        'linear-gradient(135deg, #0891B2 0%, #1B3A6B 55%, #111118 100%)',
+    ]
+    hero_images = []
+    for prop in featured:
+        img = prop.images.first()
+        if img:
+            hero_images.append({
+                'url': img.image.url,
+                'name': prop.name,
+                'city': prop.city,
+                'gradient': HERO_GRADIENTS[len(hero_images) % len(HERO_GRADIENTS)],
+            })
+        if len(hero_images) >= 5:
+            break
+
+    # ── Testimonials — top-rated real guest reviews ───────────────────────
+    testimonials = Review.objects.select_related('traveller', 'property') \
+        .filter(rating__gte=4) \
+        .order_by('-rating', '-created_at')[:6]
+
+    # ── Explore-by-city gallery — one representative photo + live count
+    # per city, built from real listings (no hardcoded destinations). ────
+    city_gallery = []
+    seen_cities = set()
+    for prop in Property.objects.filter(status='active').select_related().order_by('-created_at'):
+        if prop.city in seen_cities:
+            continue
+        img = prop.images.first()
+        if not img:
+            continue
+        seen_cities.add(prop.city)
+        city_gallery.append({
+            'city':  prop.city,
+            'url':   img.image.url,
+            'count': Property.objects.filter(status='active', city=prop.city).count(),
+            'gradient': HERO_GRADIENTS[len(city_gallery) % len(HERO_GRADIENTS)],
+        })
+        if len(city_gallery) >= 5:
+            break
+
     currency, rate = _get_currency_context(request)
     return render(request, 'properties/home.html', {
         'featured':          featured,
@@ -66,6 +116,10 @@ def home(request):
         'total_cities':      total_cities,
         'total_guests':      total_guests,
         'avg_rating':        avg_rating,
+        # Hero + social proof
+        'hero_images':       hero_images,
+        'testimonials':      testimonials,
+        'city_gallery':      city_gallery,
     })
 
 def property_list(request):

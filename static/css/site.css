@@ -1,0 +1,159 @@
+/* ============================================================
+   BookMyStay — Site Effects
+   Ken Burns hero slider, scroll reveals, testimonial marquee.
+   Loaded globally, but only activates on elements with these
+   classes — so it's safe to include on every page.
+   ============================================================ */
+
+/* ── Scroll reveal ─────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(.22,1,.36,1), transform 0.8s cubic-bezier(.22,1,.36,1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-1 { transition-delay: .05s; }
+.reveal-2 { transition-delay: .15s; }
+.reveal-3 { transition-delay: .25s; }
+.reveal-4 { transition-delay: .35s; }
+
+/* Heading "curtain wipe" reveal — pairs with an ancestor .reveal element */
+.heading-reveal {
+  display: inline-block;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1s cubic-bezier(.65,0,.35,1) .15s;
+}
+.reveal.is-visible .heading-reveal { clip-path: inset(0 0% 0 0); }
+
+/* ── Navbar: transparent-over-hero → solid-on-scroll ───────── */
+#site-nav { background: #111118; }
+body.has-hero #site-nav { background: transparent; box-shadow: none; }
+#site-nav.nav-scrolled {
+  background: rgba(17,17,24,0.94) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.18);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+body.has-hero main { padding-top: 0 !important; }
+
+#scroll-progress { transition: width 0.1s linear; }
+
+/* ── Count-up stat numbers (just a hook class, JS drives the value) ── */
+.count-up { font-variant-numeric: tabular-nums; }
+
+
+.hero-slider { position: absolute; inset: 0; overflow: hidden; }
+.hero-slide {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.12);
+  transition: opacity 1.8s ease-in-out;
+  animation: heroKenBurns 14s ease-in-out infinite;
+}
+.hero-slide.is-active { opacity: 1; z-index: 1; }
+@keyframes heroKenBurns {
+  0%   { transform: scale(1.05) translate(0, 0); }
+  50%  { transform: scale(1.16) translate(-1%, -1%); }
+  100% { transform: scale(1.05) translate(0, 0); }
+}
+
+/* Subtle film-grain overlay, sits on every slide so real photos and
+   gradient fallbacks share the same premium texture. */
+.hero-slide::before {
+  content: '';
+  position: absolute; inset: 0;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+/* Gradient underlays — painted beneath any background-image layer, so if
+   a photo URL 404s (e.g. missing media/ on a fresh deploy) the hero still
+   reads as a rich, intentional design rather than a blank hole. Each real
+   slide gets `background-image: url(photo), <gradient>` so the gradient
+   only shows through where the photo layer fails to paint. */
+.hero-fallback-0 { background: linear-gradient(135deg, #F97316 0%, #C2410C 45%, #1B3A6B 100%); }
+.hero-fallback-1 { background: linear-gradient(135deg, #0F766E 0%, #164E63 55%, #0F2347 100%); }
+.hero-fallback-2 { background: linear-gradient(135deg, #1B3A6B 0%, #312E81 55%, #111118 100%); }
+.hero-fallback-3 { background: linear-gradient(135deg, #D97706 0%, #7C2D12 55%, #111118 100%); }
+
+/* Decorative horizon silhouette for the no-media fallback slides */
+.hero-fallback-silhouette {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 22%;
+  background: rgba(17,17,24,0.55);
+  clip-path: polygon(0% 60%, 8% 40%, 18% 55%, 30% 20%, 42% 50%, 55% 15%, 68% 45%, 80% 25%, 92% 48%, 100% 30%, 100% 100%, 0% 100%);
+}
+
+.hero-dots { display: flex; gap: 8px; }
+.hero-dot {
+  width: 8px; height: 8px; border-radius: 999px;
+  background: rgba(255,255,255,0.35);
+  cursor: pointer;
+  transition: all .35s ease;
+}
+.hero-dot.is-active { background: #F97316; width: 26px; }
+
+/* ── Fade / drop-in text ───────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.9s cubic-bezier(.22,1,.36,1) both; }
+.fade-up-1 { animation-delay: .1s; }
+.fade-up-2 { animation-delay: .25s; }
+.fade-up-3 { animation-delay: .4s; }
+.fade-up-4 { animation-delay: .55s; }
+
+/* ── Floating glass badge ──────────────────────────────────── */
+.glass-badge {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+/* ── Testimonial cards ─────────────────────────────────────── */
+.testimonial-track {
+  display: flex;
+  gap: 1.5rem;
+  animation: marquee 38s linear infinite;
+  width: max-content;
+}
+.testimonial-track:hover { animation-play-state: paused; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── Wishlist heart toggle (client-side visual only) ───────── */
+.wishlist-btn svg { transition: all .25s ease; }
+.wishlist-btn.is-saved svg { fill: #F97316; color: #F97316; transform: scale(1.15); }
+
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.floaty { animation: floaty 5s ease-in-out infinite; }
+
+/* ── Shimmer for accent text underline ─────────────────────── */
+.underline-accent { position: relative; display: inline-block; }
+.underline-accent::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: -2px;
+  height: 10px;
+  background: rgba(249,115,22,0.25);
+  border-radius: 4px;
+  z-index: -1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide, .fade-up, .testimonial-track, .floaty, .reveal { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+}
