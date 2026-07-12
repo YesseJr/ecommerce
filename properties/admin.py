@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.contrib import messages
-from .models import Property, PropertyImage, Amenity, PropertyAmenity, PropertyExtra
+from .models import Property, PropertyImage, Amenity, PropertyAmenity, PropertyExtra, Wishlist, RecentlyViewed
 
 
 class PropertyImageInline(admin.TabularInline):
@@ -37,13 +37,13 @@ class PropertyAdmin(admin.ModelAdmin):
     list_display = [
         'property_thumbnail', 'name', 'owner',
         'property_type', 'city', 'price_per_night',
-        'status_badge', 'is_available', 'created_at'
+        'status_badge', 'is_available', 'is_featured', 'is_verified', 'created_at'
     ]
-    list_filter       = ['property_type', 'status', 'is_available', 'city']
+    list_filter       = ['property_type', 'status', 'is_available', 'is_featured', 'is_verified', 'city']
     search_fields     = ['name', 'city', 'owner__username']
     prepopulated_fields = {'slug': ('name',)}
     inlines           = [PropertyImageInline, PropertyExtraInline, PropertyAmenityInline]
-    list_editable     = ['is_available']
+    list_editable     = ['is_available', 'is_featured', 'is_verified']
     ordering          = ['-created_at']
     readonly_fields   = ['created_at', 'updated_at', 'average_rating_display']
 
@@ -51,6 +51,9 @@ class PropertyAdmin(admin.ModelAdmin):
         'approve_properties',
         'reject_properties',
         'mark_inactive',
+        'mark_featured',
+        'unmark_featured',
+        'mark_verified',
     ]
 
     fieldsets = (
@@ -63,11 +66,28 @@ class PropertyAdmin(admin.ModelAdmin):
         ('Pricing & Capacity', {
             'fields': ('price_per_night', 'max_guests', 'bedrooms', 'bathrooms', 'is_available')
         }),
+        ('Trust & Policy', {
+            'fields': ('is_featured', 'is_verified', 'cancellation_policy', 'house_rules', 'accessibility_features')
+        }),
         ('Stats', {
             'fields': ('average_rating_display', 'created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
     )
+
+    @admin.action(description='★ Feature on homepage')
+    def mark_featured(self, request, queryset):
+        updated = queryset.update(is_featured=True)
+        self.message_user(request, f'{updated} propert{"y" if updated == 1 else "ies"} featured.', messages.SUCCESS)
+
+    @admin.action(description='☆ Remove from homepage features')
+    def unmark_featured(self, request, queryset):
+        queryset.update(is_featured=False)
+
+    @admin.action(description='✔ Mark as verified')
+    def mark_verified(self, request, queryset):
+        updated = queryset.update(is_verified=True)
+        self.message_user(request, f'{updated} propert{"y" if updated == 1 else "ies"} verified.', messages.SUCCESS)
 
     # ─── BULK ACTIONS ───────────────────────────────────
 
@@ -182,3 +202,14 @@ class PropertyExtraAdmin(admin.ModelAdmin):
             obj.price
         )
     price_display.short_description = 'Price'
+
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+    list_display = ['user', 'property', 'created_at']
+    search_fields = ['user__username', 'property__name']
+
+
+@admin.register(RecentlyViewed)
+class RecentlyViewedAdmin(admin.ModelAdmin):
+    list_display = ['user', 'property', 'viewed_at']
+    search_fields = ['user__username', 'property__name']

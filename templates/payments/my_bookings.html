@@ -119,6 +119,17 @@
   {% endif %}
 {% endif %}
 
+{% if booking.is_cancellable %}
+  <a href="{% url 'payments:cancel_booking' booking.reference %}"
+     class="inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 transition">
+    <i data-lucide="x-circle" class="w-4 h-4"></i> Cancel
+  </a>
+{% elif booking.status == 'cancelled' and booking.refund_amount is not None %}
+  <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl bg-gray-50 text-gray-500 border border-gray-200">
+    Refund: ${{ booking.refund_amount|floatformat:2 }}
+  </span>
+{% endif %}
+
             </div>
           </div>
         </div>

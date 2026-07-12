@@ -26,6 +26,7 @@ urlpatterns = [
     path('bookings/', include('bookings.urls')),
     path('payments/', include('payments.urls')),
     path('reviews/', include('reviews.urls')),
+    path('inbox/', include('inbox.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

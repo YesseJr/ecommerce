@@ -14,61 +14,96 @@
   </div>
 
   <!-- Filters -->
-  <form method="GET" class="bg-white rounded-2xl p-6 shadow-sm mb-10 flex flex-wrap gap-4 items-end">
+  <form method="GET" class="bg-white rounded-2xl p-6 shadow-sm mb-10 flex flex-col gap-4">
+    <div class="flex flex-wrap gap-4 items-end">
+      <div class="flex flex-col gap-1 flex-1 min-w-[180px]">
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Search</label>
+        <input type="text" name="q" value="{{ filters.q }}" placeholder="Name or city..."
+               class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition"/>
+      </div>
 
-    <div class="flex flex-col gap-1 flex-1 min-w-[180px]">
-      <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Search</label>
-      <input type="text" name="q" value="{{ filters.q }}" placeholder="Name or city..."
-             class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition"/>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">City</label>
+        <select name="city" class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition cursor-pointer">
+          <option value="">All Cities</option>
+          {% for c in cities %}
+            <option value="{{ c }}" {% if filters.city == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Type</label>
+        <select name="type" class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition cursor-pointer">
+          <option value="">All Types</option>
+          {% for value, label in property_types %}
+            <option value="{{ value }}" {% if filters.type == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Check-in</label>
+        <input type="date" name="check_in" value="{{ filters.check_in }}"
+               class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Check-out</label>
+        <input type="date" name="check_out" value="{{ filters.check_out }}"
+               class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition"/>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Min Price</label>
+        <input type="number" name="min_price" value="{{ filters.min_price }}" placeholder="$0"
+               class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition w-24"/>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Max Price</label>
+        <input type="number" name="max_price" value="{{ filters.max_price }}" placeholder="$999"
+               class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition w-24"/>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Guests</label>
+        <input type="number" name="guests" value="{{ filters.guests }}" placeholder="1" min="1"
+               class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition w-20"/>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Sort by</label>
+        <select name="sort" class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition cursor-pointer">
+          <option value="newest"     {% if filters.sort == 'newest' %}selected{% endif %}>Newest</option>
+          <option value="price_low"  {% if filters.sort == 'price_low' %}selected{% endif %}>Price: Low → High</option>
+          <option value="price_high" {% if filters.sort == 'price_high' %}selected{% endif %}>Price: High → Low</option>
+          <option value="rating"     {% if filters.sort == 'rating' %}selected{% endif %}>Top Rated</option>
+        </select>
+      </div>
     </div>
 
-    <div class="flex flex-col gap-1">
-      <label class="text-xs font-bold uppercase tracking-widest text-gray-400">City</label>
-      <select name="city" class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition cursor-pointer">
-        <option value="">All Cities</option>
-        {% for c in cities %}
-          <option value="{{ c }}" {% if filters.city == c %}selected{% endif %}>{{ c }}</option>
+    {% if all_amenities %}
+      <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
+        <span class="text-xs font-bold uppercase tracking-widest text-gray-400 self-center mr-1">Amenities:</span>
+        {% for a in all_amenities %}
+          <label class="inline-flex items-center gap-1.5 bg-cream border-2 border-transparent has-[:checked]:border-accent has-[:checked]:bg-accent/5 rounded-full px-3 py-1.5 text-xs font-medium text-dark cursor-pointer transition">
+            <input type="checkbox" name="amenities" value="{{ a.id }}" class="accent-accent" {% if a.id in filters.amenities %}checked{% endif %}/>
+            {{ a.name }}
+          </label>
         {% endfor %}
-      </select>
+      </div>
+    {% endif %}
+
+    <div class="flex items-center gap-4 pt-1">
+      <button type="submit"
+              class="bg-accent text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition-all">
+        Filter ✦
+      </button>
+      <a href="{% url 'properties:list' %}"
+         class="text-gray-400 text-sm font-medium hover:text-accent transition">
+        Clear all
+      </a>
     </div>
-
-    <div class="flex flex-col gap-1">
-      <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Type</label>
-      <select name="type" class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition cursor-pointer">
-        <option value="">All Types</option>
-        {% for value, label in property_types %}
-          <option value="{{ value }}" {% if filters.type == value %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
-    </div>
-
-    <div class="flex flex-col gap-1">
-      <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Min Price</label>
-      <input type="number" name="min_price" value="{{ filters.min_price }}" placeholder="$0"
-             class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition w-28"/>
-    </div>
-
-    <div class="flex flex-col gap-1">
-      <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Max Price</label>
-      <input type="number" name="max_price" value="{{ filters.max_price }}" placeholder="$999"
-             class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition w-28"/>
-    </div>
-
-    <div class="flex flex-col gap-1">
-      <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Guests</label>
-      <input type="number" name="guests" value="{{ filters.guests }}" placeholder="1" min="1"
-             class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition w-24"/>
-    </div>
-
-    <button type="submit"
-            class="bg-accent text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition-all">
-      Filter ✦
-    </button>
-
-    <a href="{% url 'properties:list' %}"
-       class="text-gray-400 text-sm font-medium hover:text-accent transition py-2.5">
-      Clear
-    </a>
   </form>
 
   <!-- Results Count -->
@@ -95,13 +130,32 @@
               {% endif %}
             {% endwith %}
 
-            <span class="absolute top-3 left-3 bg-white text-dark text-xs font-bold px-3 py-1 rounded-full">
-              {{ prop.get_property_type_display }}
-            </span>
+            <div class="absolute top-3 left-3 flex gap-2">
+              <span class="bg-white text-dark text-xs font-bold px-3 py-1 rounded-full">
+                {{ prop.get_property_type_display }}
+              </span>
+              {% if prop.is_featured %}
+                <span class="bg-accent text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Featured
+                </span>
+              {% endif %}
+            </div>
+
+            {% if user.is_authenticated %}
+              <button type="button" onclick="event.preventDefault();toggleWishlist(this,'{{ prop.slug }}');"
+                      class="wishlist-btn absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-sm hover:scale-110 transition-transform {% if prop.id in wishlisted_ids %}is-saved{% endif %}">
+                <i data-lucide="heart" class="w-4 h-4 {% if prop.id in wishlisted_ids %}text-accent fill-accent{% else %}text-dark/70{% endif %}"></i>
+              </button>
+            {% endif %}
 
             {% if prop.average_rating %}
-              <span class="absolute top-3 right-3 bg-white/90 text-dark text-xs font-bold px-3 py-1 rounded-full">
-                <i data-lucide="star" class="w-4 h-4 text-yellow-400"></i> {{ prop.average_rating }}
+              <span class="absolute bottom-3 left-3 bg-dark/70 backdrop-blur text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+                <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400"></i> {{ prop.average_rating }}
+              </span>
+            {% endif %}
+            {% if prop.is_verified %}
+              <span class="absolute bottom-3 right-3 bg-white/95 text-dark text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                <i data-lucide="badge-check" class="w-3.5 h-3.5 text-accent"></i>
               </span>
             {% endif %}
           </div>
@@ -155,6 +209,25 @@
 </div>
 
 {% block extra_js %}
+<script>
+  function toggleWishlist(btn, slug) {
+    fetch(`/wishlist/toggle/${slug}/`, {
+      method: 'POST',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': '{{ csrf_token }}',
+      },
+    }).then(r => r.json()).then(data => {
+      const icon = btn.querySelector('svg, i');
+      btn.classList.toggle('is-saved', data.saved);
+      if (data.saved) {
+        icon.classList.add('text-accent', 'fill-accent');
+      } else {
+        icon.classList.remove('text-accent', 'fill-accent');
+      }
+    });
+  }
+</script>
 <script>
   (function() {
     const RATE = {{ rate|default:2500 }};

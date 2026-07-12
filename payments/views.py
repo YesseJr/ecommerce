@@ -13,7 +13,13 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 
 from bookings.models import Cart, Booking, BookingExtra
-from .models import Payment, CurrencyConfig
+from .models import Payment, CurrencyConfig, Coupon
+
+
+# ─── Coupon session key helper ─────────────────────────────────────────────
+
+def _coupon_session_key(user):
+    return f'coupon_code_{user.id}'
 
 
 # ─── Generator Helpers ────────────────────────────────────────────────────────
@@ -111,8 +117,22 @@ def checkout(request):
     currency = get_session_currency(request)
     rate     = config.usd_to_tzs
 
+    # Coupon (if applied earlier via AJAX and stored in session)
+    coupon = None
+    discount_usd = Decimal('0')
+    coupon_code = request.session.get(_coupon_session_key(request.user))
+    if coupon_code:
+        coupon = Coupon.objects.filter(code__iexact=coupon_code).first()
+        if coupon:
+            valid, _msg = coupon.is_valid(amount=cart.grand_total)
+            if valid:
+                discount_usd = Decimal(str(coupon.calculate_discount(cart.grand_total)))
+            else:
+                coupon = None
+                request.session.pop(_coupon_session_key(request.user), None)
+
     # Pre-compute converted totals for the template
-    grand_usd   = cart.grand_total
+    grand_usd   = cart.total_with_fees(discount=discount_usd)
     grand_local = convert_amount(grand_usd, currency, rate)
 
     MOBILE_PROVIDERS = [
@@ -123,15 +143,59 @@ def checkout(request):
     ]
 
     context = {
-        'cart':        cart,
-        'currency':    currency,
-        'rate':        rate,
-        'grand_usd':   grand_usd,
-        'grand_local': grand_local,
-        'config':      config,
-        'providers':   MOBILE_PROVIDERS,
+        'cart':          cart,
+        'currency':      currency,
+        'rate':          rate,
+        'grand_usd':     grand_usd,
+        'grand_local':   grand_local,
+        'service_fee':   cart.service_fee,
+        'tax_amount':    cart.tax_amount,
+        'coupon':        coupon,
+        'discount_usd':  discount_usd,
+        'config':        config,
+        'providers':     MOBILE_PROVIDERS,
     }
     return render(request, 'payments/checkout.html', context)
+
+
+@login_required
+@require_POST
+def apply_coupon(request):
+    """AJAX endpoint — validates a coupon code against the current cart."""
+    code = request.POST.get('code', '').strip()
+    if not code:
+        return JsonResponse({'success': False, 'error': 'Enter a coupon code.'})
+
+    try:
+        cart = Cart.objects.get(traveller=request.user)
+    except Cart.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Your cart is empty.'})
+
+    coupon = Coupon.objects.filter(code__iexact=code).first()
+    if not coupon:
+        return JsonResponse({'success': False, 'error': 'That coupon code was not found.'})
+
+    valid, msg = coupon.is_valid(amount=cart.grand_total)
+    if not valid:
+        return JsonResponse({'success': False, 'error': msg})
+
+    request.session[_coupon_session_key(request.user)] = coupon.code
+    discount = coupon.calculate_discount(cart.grand_total)
+    new_total = cart.total_with_fees(discount=Decimal(str(discount)))
+
+    return JsonResponse({
+        'success': True,
+        'code': coupon.code,
+        'discount': float(discount),
+        'new_total': float(new_total),
+    })
+
+
+@login_required
+@require_POST
+def remove_coupon(request):
+    request.session.pop(_coupon_session_key(request.user), None)
+    return JsonResponse({'success': True})
 
 
 @login_required
@@ -177,7 +241,23 @@ def process_payment(request):
 
     config        = CurrencyConfig.get_config()
     rate          = config.usd_to_tzs
-    grand_usd     = cart.grand_total
+
+    # ── Coupon (validated earlier via AJAX, stored in session) ────────────────
+    coupon = None
+    discount_usd = Decimal('0')
+    coupon_code = request.session.get(_coupon_session_key(request.user))
+    if coupon_code:
+        coupon = Coupon.objects.filter(code__iexact=coupon_code).first()
+        if coupon:
+            valid, _msg = coupon.is_valid(amount=cart.grand_total)
+            if valid:
+                discount_usd = Decimal(str(coupon.calculate_discount(cart.grand_total)))
+            else:
+                coupon = None
+
+    service_fee = cart.service_fee
+    tax_amount  = cart.tax_amount
+    grand_usd     = cart.total_with_fees(discount=discount_usd)
     amount_local  = convert_amount(grand_usd, currency, rate)
     exchange_rate = rate if currency == 'TZS' else Decimal('1.00')
 
@@ -186,6 +266,9 @@ def process_payment(request):
     while Booking.objects.filter(reference=reference).exists():
         reference = generate_reference()
 
+    children = cart.children or 0
+    adults   = max(cart.guests - children, 1)
+
     # ── Create Booking ────────────────────────────────────────────────────────
     booking = Booking.objects.create(
         traveller        = request.user,
@@ -193,14 +276,26 @@ def process_payment(request):
         check_in         = cart.check_in,
         check_out        = cart.check_out,
         guests           = cart.guests,
+        adults           = adults,
+        children         = children,
+        special_requests = cart.special_requests,
         price_per_night  = cart.booking_property.price_per_night,
         nights           = cart.nights,
         room_total       = cart.room_total,
         extras_total     = cart.extras_total,
-        grand_total      = cart.grand_total,
+        tax_amount       = tax_amount,
+        service_fee      = service_fee,
+        discount_amount  = discount_usd,
+        grand_total      = grand_usd,
+        coupon           = coupon,
+        cancellation_policy = cart.booking_property.cancellation_policy,
         status           = 'confirmed',
         reference        = reference,
     )
+
+    if coupon:
+        Coupon.objects.filter(pk=coupon.pk).update(used_count=coupon.used_count + 1)
+        request.session.pop(_coupon_session_key(request.user), None)
 
     # ── Snapshot extras ───────────────────────────────────────────────────────
     for item in cart.items.all():
@@ -329,4 +424,53 @@ def payment_history(request):
         'method_filter':  method_filter,
         'status_choices': Payment.STATUS_CHOICES,
         'method_choices': Payment.METHOD_CHOICES[:6],  # exclude legacy
+    })
+
+
+@login_required
+def cancel_booking(request, reference):
+    """Guest-initiated cancellation, refund computed from the snapshotted
+    cancellation policy on the booking (not the live property setting)."""
+    booking = get_object_or_404(Booking, reference=reference, traveller=request.user)
+
+    if not booking.is_cancellable:
+        messages.error(request, "This booking can no longer be cancelled.")
+        return redirect('payments:my_bookings')
+
+    if request.method == 'POST':
+        reason = request.POST.get('reason', '').strip()
+        refund = booking.calculate_refund()
+
+        booking.status = 'cancelled'
+        booking.cancelled_at = timezone.now()
+        booking.cancellation_reason = reason
+        booking.refund_amount = refund
+        booking.save()
+
+        try:
+            payment = booking.payment
+            payment.status = 'refunded' if refund > 0 else 'cancelled'
+            payment.save()
+        except Payment.DoesNotExist:
+            pass
+
+        from inbox.models import Notification
+        Notification.send(
+            booking.booking_property.owner,
+            title=f"Booking cancelled: {booking.booking_property.name}",
+            body=f"{request.user.first_name or request.user.username} cancelled their stay ({booking.reference}).",
+            link=f'/dashboard/bookings/',
+            notif_type='booking',
+        )
+
+        if refund > 0:
+            messages.success(request, f"Booking cancelled. ${refund:.2f} will be refunded per the {booking.get_cancellation_policy_display() if booking.cancellation_policy else 'cancellation'} policy.")
+        else:
+            messages.warning(request, "Booking cancelled. This booking wasn't eligible for a refund under its cancellation policy.")
+
+        return redirect('payments:my_bookings')
+
+    return render(request, 'payments/cancel_booking.html', {
+        'booking': booking,
+        'estimated_refund': booking.calculate_refund(),
     })

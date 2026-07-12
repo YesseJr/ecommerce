@@ -48,6 +48,8 @@ def add_to_cart(request, slug):
         check_in_str  = request.POST.get('check_in')
         check_out_str = request.POST.get('check_out')
         guests        = request.POST.get('guests', 1)
+        children      = request.POST.get('children', 0)
+        special_requests = request.POST.get('special_requests', '').strip()
 
         # Validate dates
         try:
@@ -89,6 +91,11 @@ def add_to_cart(request, slug):
         cart.check_in  = check_in
         cart.check_out = check_out
         cart.guests    = int(guests)
+        try:
+            cart.children = max(int(children), 0)
+        except (TypeError, ValueError):
+            cart.children = 0
+        cart.special_requests = special_requests
         cart.save()
 
         messages.success(request, f"'{prop.name}' added to your cart! 🛒")
@@ -152,6 +159,19 @@ def clear_cart(request):
             cart.check_out        = None
             cart.save()
             messages.success(request, "Cart cleared.")
+        except Cart.DoesNotExist:
+            pass
+    return redirect('bookings:cart')
+
+@login_required
+def update_cart_notes(request):
+    """Save/update the special-requests note on the traveller's cart."""
+    if request.method == 'POST':
+        try:
+            cart = Cart.objects.get(traveller=request.user)
+            cart.special_requests = request.POST.get('special_requests', '').strip()
+            cart.save()
+            messages.success(request, "Note saved.")
         except Cart.DoesNotExist:
             pass
     return redirect('bookings:cart')

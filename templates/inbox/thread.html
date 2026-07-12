@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ other.get_full_name|default:other.username }} — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+
+  <a href="{% url 'inbox:inbox' %}" class="text-sm text-gray-400 hover:text-accent transition inline-flex items-center gap-1 mb-6">
+    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to inbox
+  </a>
+
+  <div class="bg-white rounded-2xl shadow-sm max-w-2xl overflow-hidden">
+    <div class="flex items-center gap-3 p-5 border-b border-gray-100">
+      <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold flex-shrink-0">
+        {{ other.first_name|default:other.username|first|upper }}
+      </div>
+      <div>
+        <p class="font-semibold text-dark text-sm">{{ other.get_full_name|default:other.username }}</p>
+        <p class="text-xs text-gray-400">
+          <a href="{% url 'properties:detail' convo.property.slug %}" class="hover:text-accent transition">{{ convo.property.name }}</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 p-5 max-h-[480px] overflow-y-auto">
+      {% for m in thread_messages %}
+        <div class="flex {% if m.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
+          <div class="max-w-[75%] {% if m.sender == request.user %}bg-accent text-white{% else %}bg-cream text-dark{% endif %} rounded-2xl px-4 py-2.5">
+            <p class="text-sm">{{ m.body }}</p>
+            <p class="text-[10px] mt-1 {% if m.sender == request.user %}text-white/60{% else %}text-gray-400{% endif %}">{{ m.created_at|date:"M j, g:i A" }}</p>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-center text-sm text-gray-400 py-10">No messages yet — say hello!</p>
+      {% endfor %}
+    </div>
+
+    <form method="POST" class="flex gap-2 p-4 border-t border-gray-100">
+      {% csrf_token %}
+      <input type="text" name="body" required autocomplete="off" placeholder="Type a message…"
+             class="flex-1 border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition"/>
+      <button type="submit" class="bg-accent text-white px-5 rounded-xl font-semibold text-sm hover:shadow-lg transition-all">
+        Send
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

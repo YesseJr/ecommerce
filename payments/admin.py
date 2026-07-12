@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.db.models import Sum, Count
-from .models import Payment, CurrencyConfig
+from .models import Payment, CurrencyConfig, Coupon
 
 
 # ─── CurrencyConfig Admin ─────────────────────────────────────────────────────
@@ -212,3 +212,11 @@ class PaymentAdmin(admin.ModelAdmin):
             )
         return '—'
     payment_details_panel.short_description = 'Payment Details'
+
+
+@admin.register(Coupon)
+class CouponAdmin(admin.ModelAdmin):
+    list_display = ['code', 'discount_type', 'discount_value', 'used_count', 'max_uses', 'active', 'valid_from', 'valid_to']
+    list_filter = ['discount_type', 'active']
+    search_fields = ['code']
+    list_editable = ['active']

@@ -1,0 +1,32 @@
+<div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+  <p class="font-semibold text-dark text-sm">Notifications</p>
+  {% if unread %}
+    <button type="button" onclick="markAllNotificationsRead()" class="text-xs text-accent font-semibold hover:underline">Mark all read</button>
+  {% endif %}
+</div>
+<div class="max-h-80 overflow-y-auto">
+  {% for n in notes %}
+    <a href="{{ n.link|default:'#' }}" class="flex items-start gap-3 px-4 py-3 hover:bg-cream/60 transition border-b border-gray-50 {% if not n.is_read %}bg-accent/5{% endif %}">
+      <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+        {% if n.notif_type == 'message' %}
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+        {% elif n.notif_type == 'booking' %}
+          <i data-lucide="calendar-check" class="w-4 h-4"></i>
+        {% elif n.notif_type == 'payment' %}
+          <i data-lucide="credit-card" class="w-4 h-4"></i>
+        {% elif n.notif_type == 'review' %}
+          <i data-lucide="star" class="w-4 h-4"></i>
+        {% else %}
+          <i data-lucide="bell" class="w-4 h-4"></i>
+        {% endif %}
+      </div>
+      <div class="min-w-0">
+        <p class="text-sm font-medium text-dark leading-tight">{{ n.title }}</p>
+        {% if n.body %}<p class="text-xs text-gray-400 mt-0.5 truncate">{{ n.body }}</p>{% endif %}
+        <p class="text-[10px] text-gray-300 mt-1">{{ n.created_at|timesince }} ago</p>
+      </div>
+    </a>
+  {% empty %}
+    <p class="text-center text-sm text-gray-400 py-8">You're all caught up.</p>
+  {% endfor %}
+</div>

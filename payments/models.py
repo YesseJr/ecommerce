@@ -152,3 +152,50 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment {self.transaction_id} — {self.status}"
+
+
+class Coupon(models.Model):
+    """Promo codes — percentage or fixed-amount discounts on bookings."""
+
+    DISCOUNT_TYPES = [
+        ('percent', 'Percentage'),
+        ('fixed', 'Fixed Amount (USD)'),
+    ]
+
+    code = models.CharField(max_length=30, unique=True)
+    description = models.CharField(max_length=200, blank=True)
+    discount_type = models.CharField(max_length=10, choices=DISCOUNT_TYPES, default='percent')
+    discount_value = models.DecimalField(max_digits=10, decimal_places=2)
+    min_booking_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    max_uses = models.PositiveIntegerField(default=0, help_text="0 = unlimited")
+    used_count = models.PositiveIntegerField(default=0)
+    valid_from = models.DateTimeField()
+    valid_to = models.DateTimeField()
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.code
+
+    def is_valid(self, amount=None):
+        from django.utils import timezone
+        now = timezone.now()
+        if not self.active:
+            return False, "This coupon is no longer active."
+        if now < self.valid_from:
+            return False, "This coupon isn't active yet."
+        if now > self.valid_to:
+            return False, "This coupon has expired."
+        if self.max_uses and self.used_count >= self.max_uses:
+            return False, "This coupon has reached its usage limit."
+        if amount is not None and amount < self.min_booking_amount:
+            return False, f"Minimum booking amount for this coupon is ${self.min_booking_amount}."
+        return True, ""
+
+    def calculate_discount(self, amount):
+        if self.discount_type == 'percent':
+            return round(amount * (self.discount_value / 100), 2)
+        return min(self.discount_value, amount)

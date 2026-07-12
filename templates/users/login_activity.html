@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Login Activity — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+
+  <a href="{% url 'users:profile' %}" class="text-sm text-gray-400 hover:text-accent transition inline-flex items-center gap-1 mb-6">
+    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to profile
+  </a>
+
+  <div class="mb-8">
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Security</span>
+    <h1 class="font-display text-4xl font-bold text-dark mt-1">Login Activity</h1>
+    <p class="text-gray-400 text-sm mt-1">Recent sign-ins to your account, most recent first.</p>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-sm divide-y divide-gray-100 max-w-2xl">
+    {% for a in activity %}
+      <div class="flex items-center gap-4 p-5">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 {% if a.success %}bg-emerald-50 text-emerald-500{% else %}bg-red-50 text-red-500{% endif %}">
+          <i data-lucide="{% if a.success %}check{% else %}x{% endif %}" class="w-5 h-5"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-dark">
+            {% if a.success %}Successful sign-in{% else %}Failed sign-in attempt{% endif %}
+          </p>
+          <p class="text-xs text-gray-400 mt-0.5">
+            {{ a.created_at|date:"M j, Y · g:i A" }} · {{ a.ip_address|default:"Unknown IP" }}
+          </p>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center text-sm text-gray-400 py-10">No login activity recorded yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from decimal import Decimal
 from users.models import User
 from properties.models import Property, PropertyExtra
 
@@ -19,6 +20,8 @@ class Cart(models.Model):
     check_in  = models.DateField(null=True, blank=True)
     check_out = models.DateField(null=True, blank=True)
     guests    = models.PositiveIntegerField(default=1)
+    children  = models.PositiveIntegerField(default=0)
+    special_requests = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -52,6 +55,19 @@ class Cart(models.Model):
     @property
     def grand_total(self):
         return self.room_total + self.extras_total
+
+    @property
+    def service_fee(self):
+        """Platform service fee — 5% of room + extras, shown itemized at checkout."""
+        return round(self.grand_total * Decimal('0.05'), 2)
+
+    @property
+    def tax_amount(self):
+        """Illustrative local tax — adjust to match actual applicable rates."""
+        return round(self.grand_total * Decimal('0.03'), 2)
+
+    def total_with_fees(self, discount=Decimal('0')):
+        return round(self.grand_total + self.service_fee + self.tax_amount - discount, 2)
 
 
 class CartItem(models.Model):
@@ -105,13 +121,39 @@ class Booking(models.Model):
     check_in  = models.DateField()
     check_out = models.DateField()
     guests    = models.PositiveIntegerField(default=1)
+    adults    = models.PositiveIntegerField(default=1)
+    children  = models.PositiveIntegerField(default=0)
+    special_requests = models.TextField(blank=True)
 
     # Pricing snapshot at booking time
     price_per_night = models.DecimalField(max_digits=10, decimal_places=2)
     nights          = models.PositiveIntegerField()
     room_total      = models.DecimalField(max_digits=10, decimal_places=2)
     extras_total    = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    tax_amount      = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    service_fee     = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    deposit_amount  = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     grand_total     = models.DecimalField(max_digits=10, decimal_places=2)
+
+    coupon = models.ForeignKey(
+        'payments.Coupon',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='bookings'
+    )
+
+    # Cancellation policy snapshot (copied from the property at booking time
+    # so a later policy change on the listing doesn't retroactively change
+    # what a guest agreed to).
+    cancellation_policy = models.CharField(max_length=20, blank=True, choices=[
+        ('flexible', 'Flexible — full refund up to 24h before check-in'),
+        ('moderate', 'Moderate — full refund up to 5 days before check-in'),
+        ('strict',   'Strict — 50% refund up to 7 days before check-in'),
+    ])
+    cancelled_at         = models.DateTimeField(null=True, blank=True)
+    cancellation_reason  = models.TextField(blank=True)
+    refund_amount         = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     status = models.CharField(
         max_length=20,
@@ -128,6 +170,29 @@ class Booking(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+    @property
+    def is_cancellable(self):
+        return self.status in ('pending', 'confirmed')
+
+    def calculate_refund(self):
+        """
+        Applies the cancellation policy snapshotted at booking time to
+        determine the refund amount if cancelled today.
+        """
+        from datetime import date as _date
+        days_before = (self.check_in - _date.today()).days
+        policy = self.cancellation_policy or 'moderate'
+
+        if policy == 'flexible':
+            pct = 1.0 if days_before >= 1 else 0.0
+        elif policy == 'strict':
+            pct = 0.5 if days_before >= 7 else 0.0
+        else:  # moderate
+            pct = 1.0 if days_before >= 5 else 0.0
+
+        refundable_base = self.grand_total - self.deposit_amount
+        return round(float(refundable_base) * pct, 2)
 
 
 class BookingExtra(models.Model):

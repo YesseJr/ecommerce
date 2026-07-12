@@ -15,6 +15,22 @@
       </h1>
     </div>
 
+    {% if not user.is_verified %}
+      <div class="mb-8 bg-amber-50 border border-amber-200 rounded-2xl px-6 py-4 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <i data-lucide="mail-warning" class="w-5 h-5 text-amber-600 flex-shrink-0"></i>
+          <p class="text-sm text-amber-800">
+            <span class="font-semibold">Your email isn't verified yet.</span>
+            Check your inbox, or resend the link below.
+          </p>
+        </div>
+        <a href="{% url 'users:resend_verification' %}"
+           class="bg-amber-600 text-white text-xs font-semibold px-4 py-2 rounded-full hover:bg-amber-700 transition whitespace-nowrap">
+          Resend Email
+        </a>
+      </div>
+    {% endif %}
+
     <div class="grid grid-cols-3 gap-8">
 
       <!-- Left: Profile Card + Stats -->
@@ -162,6 +178,11 @@
                 <span><i data-lucide="settings" class="w-4 h-4"></i></span> Admin Panel
               </a>
             {% endif %}
+
+            <a href="{% url 'users:login_activity' %}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream transition text-sm text-gray-600 hover:text-accent font-medium">
+              <span><i data-lucide="shield" class="w-4 h-4"></i></span> Login Activity
+            </a>
 
             <a href="{% url 'users:logout' %}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 transition text-sm text-red-400 hover:text-red-600 font-medium mt-2 border-t border-gray-100 pt-4">

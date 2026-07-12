@@ -61,12 +61,20 @@
             </div>
             <div class="bg-cream rounded-xl p-4 text-center">
               <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Guests</p>
-              <p class="font-bold text-dark">{{ cart.guests }} guest{{ cart.guests|pluralize }}</p>
+              <p class="font-bold text-dark">{{ cart.guests }} guest{{ cart.guests|pluralize }}{% if cart.children %} · {{ cart.children }} child{{ cart.children|pluralize:"ren" }}{% endif %}</p>
             </div>
           </div>
           <p class="text-center text-sm text-gray-400 mt-4">
             <i data-lucide="moon" class="w-4 h-4"></i> <span class="font-semibold text-dark">{{ cart.nights }} night{{ cart.nights|pluralize }}</span>
           </p>
+
+          <form method="POST" action="{% url 'bookings:update_cart_notes' %}" class="mt-5 pt-5 border-t border-gray-100">
+            {% csrf_token %}
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Special requests</label>
+            <textarea name="special_requests" rows="2" placeholder="e.g. late check-in, ground floor room…"
+                      class="w-full text-sm border-2 border-gray-200 rounded-xl p-3 outline-none focus:border-accent resize-none">{{ cart.special_requests }}</textarea>
+            <button type="submit" class="mt-2 text-accent text-xs font-semibold hover:underline">Save note</button>
+          </form>
         </div>
 
         <!-- Extras -->
@@ -178,13 +186,28 @@
             {% endfor %}
           </div>
 
+          <div class="border-t border-gray-100 pt-4 mb-2 flex flex-col gap-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">Subtotal</span>
+              <span class="text-dark bms-price" data-usd="{{ cart.grand_total }}">{% if currency == 'TZS' %}TSh {{ cart.grand_total|floatformat:0 }}{% else %}${{ cart.grand_total }}{% endif %}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">Service fee</span>
+              <span class="text-dark bms-price" data-usd="{{ cart.service_fee }}">{% if currency == 'TZS' %}TSh {{ cart.service_fee|floatformat:0 }}{% else %}${{ cart.service_fee }}{% endif %}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">Taxes</span>
+              <span class="text-dark bms-price" data-usd="{{ cart.tax_amount }}">{% if currency == 'TZS' %}TSh {{ cart.tax_amount|floatformat:0 }}{% else %}${{ cart.tax_amount }}{% endif %}</span>
+            </div>
+          </div>
+
           <div class="border-t border-gray-100 pt-4 mb-6">
             <div class="flex justify-between">
               <span class="font-bold text-dark">Total</span>
-              <span class="font-bebas text-3xl text-accent bms-price" data-usd="{{ cart.grand_total }}">{% if currency == 'TZS' %}TSh {{ cart.grand_total|floatformat:0 }}{% else %}${{ cart.grand_total }}{% endif %}</span>
+              <span class="font-bebas text-3xl text-accent bms-price" data-usd="{{ cart.total_with_fees }}">{% if currency == 'TZS' %}TSh {{ cart.total_with_fees|floatformat:0 }}{% else %}${{ cart.total_with_fees }}{% endif %}</span>
             </div>
             <p class="text-xs text-gray-400 mt-1 text-right">
-              Taxes and fees included
+              Have a coupon? Add it at checkout.
             </p>
           </div>
 

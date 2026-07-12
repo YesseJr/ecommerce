@@ -277,6 +277,46 @@
               </span>
             </div>
           {% endfor %}
+
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Service fee</span>
+            <span class="font-semibold price-item" data-usd="{{ service_fee }}">
+              {% if currency == 'TZS' %}TSh {{ service_fee|floatformat:0 }}{% else %}${{ service_fee }}{% endif %}
+            </span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Taxes</span>
+            <span class="font-semibold price-item" data-usd="{{ tax_amount }}">
+              {% if currency == 'TZS' %}TSh {{ tax_amount|floatformat:0 }}{% else %}${{ tax_amount }}{% endif %}
+            </span>
+          </div>
+          {% if coupon %}
+            <div class="flex justify-between text-sm text-emerald-600">
+              <span class="font-medium">Coupon ({{ coupon.code }})</span>
+              <span class="font-semibold price-item" data-usd="{{ discount_usd }}">
+                −{% if currency == 'TZS' %}TSh {{ discount_usd|floatformat:0 }}{% else %}${{ discount_usd }}{% endif %}
+              </span>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Coupon Input -->
+        <div class="border-t border-gray-100 pt-4 pb-1">
+          {% if coupon %}
+            <div class="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">
+              <span class="text-emerald-700 text-xs font-semibold flex items-center gap-1.5">
+                <i data-lucide="badge-percent" class="w-3.5 h-3.5"></i> {{ coupon.code }} applied
+              </span>
+              <button type="button" onclick="removeCoupon()" class="text-emerald-600 text-xs hover:underline">Remove</button>
+            </div>
+          {% else %}
+            <div class="flex gap-2">
+              <input type="text" id="coupon-code-input" placeholder="Coupon code"
+                     class="flex-1 border-2 border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-accent transition uppercase"/>
+              <button type="button" onclick="applyCoupon()" class="bg-dark text-white text-xs font-semibold px-4 rounded-xl hover:bg-black transition">Apply</button>
+            </div>
+            <p id="coupon-msg" class="text-xs mt-1.5"></p>
+          {% endif %}
         </div>
 
         <div class="border-t border-gray-100 pt-4">
@@ -388,6 +428,33 @@
       return 'TSh ' + tzs.toLocaleString();
     }
     return '$' + parseFloat(usd).toFixed(2);
+  }
+
+  // ── Coupon apply/remove ───────────────────────────────────────────────────
+  function applyCoupon() {
+    const input = document.getElementById('coupon-code-input');
+    const msg   = document.getElementById('coupon-msg');
+    if (!input || !input.value.trim()) return;
+
+    fetch("{% url 'payments:apply_coupon' %}", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': CSRF_TOKEN },
+      body: 'code=' + encodeURIComponent(input.value.trim()),
+    }).then(r => r.json()).then(data => {
+      if (data.success) {
+        window.location.reload();
+      } else {
+        msg.textContent = data.error;
+        msg.className = 'text-xs mt-1.5 text-red-500';
+      }
+    });
+  }
+
+  function removeCoupon() {
+    fetch("{% url 'payments:remove_coupon' %}", {
+      method: 'POST',
+      headers: { 'X-CSRFToken': CSRF_TOKEN },
+    }).then(() => window.location.reload());
   }
 
   // ── Currency switcher ─────────────────────────────────────────────────────

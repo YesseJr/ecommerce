@@ -39,7 +39,7 @@ def home(request):
     featured = Property.objects.filter(
         status='active',
         is_available=True
-    ).order_by('-created_at')[:6]
+    ).order_by('-is_featured', '-created_at')[:6]
 
     # ── Real DB stats for the homepage strip ──────────────────────────────────
     total_properties = Property.objects.filter(status='active').count()
@@ -84,21 +84,25 @@ def home(request):
         .filter(rating__gte=4) \
         .order_by('-rating', '-created_at')[:6]
 
-    # ── Explore-by-city gallery — one representative photo + live count
-    # per city, built from real listings (no hardcoded destinations). ────
+    # ── Explore-by-area gallery — one representative photo + live count
+    # per neighborhood, built from real listings (no hardcoded destinations).
+    # Falls back to city name if a property hasn't set a neighborhood yet. ─
     city_gallery = []
-    seen_cities = set()
+    seen_areas = set()
     for prop in Property.objects.filter(status='active').select_related().order_by('-created_at'):
-        if prop.city in seen_cities:
+        area = prop.neighborhood or prop.city
+        if area in seen_areas:
             continue
         img = prop.images.first()
         if not img:
             continue
-        seen_cities.add(prop.city)
+        seen_areas.add(area)
         city_gallery.append({
-            'city':  prop.city,
+            'city':  area,
             'url':   img.image.url,
-            'count': Property.objects.filter(status='active', city=prop.city).count(),
+            'count': Property.objects.filter(status='active').filter(
+                        Q(neighborhood=area) | Q(neighborhood='', city=area)
+                     ).count(),
             'gradient': HERO_GRADIENTS[len(city_gallery) % len(HERO_GRADIENTS)],
         })
         if len(city_gallery) >= 5:
@@ -129,17 +133,22 @@ def property_list(request):
     )
 
     # Search & Filter
-    query     = request.GET.get('q', '')
-    city      = request.GET.get('city', '')
-    prop_type = request.GET.get('type', '')
-    min_price = request.GET.get('min_price', '')
-    max_price = request.GET.get('max_price', '')
-    guests    = request.GET.get('guests', '')
+    query      = request.GET.get('q', '')
+    city       = request.GET.get('city', '')
+    prop_type  = request.GET.get('type', '')
+    min_price  = request.GET.get('min_price', '')
+    max_price  = request.GET.get('max_price', '')
+    guests     = request.GET.get('guests', '')
+    check_in   = request.GET.get('check_in', '')
+    check_out  = request.GET.get('check_out', '')
+    amenity_ids = request.GET.getlist('amenities')
+    sort       = request.GET.get('sort', 'newest')
 
     if query:
         properties = properties.filter(
             Q(name__icontains=query) |
             Q(city__icontains=query) |
+            Q(neighborhood__icontains=query) |
             Q(description__icontains=query)
         )
     if city:
@@ -153,21 +162,68 @@ def property_list(request):
     if guests:
         properties = properties.filter(max_guests__gte=guests)
 
+    # Amenities: property must have ALL selected amenities
+    if amenity_ids:
+        for aid in amenity_ids:
+            properties = properties.filter(amenities__amenity_id=aid)
+        properties = properties.distinct()
+
+    # Availability: exclude properties with a confirmed overlapping booking
+    if check_in and check_out:
+        try:
+            from datetime import datetime as _dt
+            from bookings.models import Booking
+            ci = _dt.strptime(check_in, '%Y-%m-%d').date()
+            co = _dt.strptime(check_out, '%Y-%m-%d').date()
+            if co > ci:
+                busy_property_ids = Booking.objects.filter(
+                    status__in=['confirmed', 'pending'],
+                    check_in__lt=co,
+                    check_out__gt=ci,
+                ).values_list('booking_property_id', flat=True)
+                properties = properties.exclude(id__in=busy_property_ids)
+        except ValueError:
+            pass
+
+    SORT_MAP = {
+        'newest':     '-created_at',
+        'price_low':  'price_per_night',
+        'price_high': '-price_per_night',
+    }
+    if sort == 'rating':
+        from django.db.models import Avg
+        properties = properties.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating', '-created_at')
+    else:
+        properties = properties.order_by(SORT_MAP.get(sort, '-created_at'))
+
     cities = Property.objects.filter(
         status='active'
     ).values_list('city', flat=True).distinct()
+
+    from .models import Amenity
+    all_amenities = Amenity.objects.all()
+
+    wishlisted_ids = set()
+    if request.user.is_authenticated:
+        from .models import Wishlist
+        wishlisted_ids = set(Wishlist.objects.filter(user=request.user).values_list('property_id', flat=True))
 
     currency, rate = _get_currency_context(request)
     return render(request, 'properties/list.html', {
         'properties':     properties,
         'cities':         cities,
         'property_types': Property.PROPERTY_TYPES,
+        'all_amenities':  all_amenities,
+        'wishlisted_ids': wishlisted_ids,
         'currency':       currency,
         'rate':           rate,
         'filters': {
             'q': query, 'city': city,
             'type': prop_type, 'min_price': min_price,
             'max_price': max_price, 'guests': guests,
+            'check_in': check_in, 'check_out': check_out,
+            'amenities': [int(a) for a in amenity_ids if a.isdigit()],
+            'sort': sort,
         }
     })
 
@@ -215,6 +271,19 @@ def property_detail(request, slug):
     images_qs = prop.images.all()
     images_count = images_qs.count()
 
+    # Track "recently viewed" for signed-in guests
+    is_wishlisted = False
+    if request.user.is_authenticated:
+        from .models import RecentlyViewed, Wishlist
+        if request.user != prop.owner:
+            RecentlyViewed.objects.update_or_create(
+                user=request.user, property=prop
+            )
+        is_wishlisted = Wishlist.objects.filter(user=request.user, property=prop).exists()
+
+    from .models import get_similar_properties
+    similar_properties = get_similar_properties(prop, limit=4)
+
     currency, rate = _get_currency_context(request)
     return render(request, 'properties/detail.html', {
         'property':               prop,
@@ -228,6 +297,8 @@ def property_detail(request, slug):
         'rating_range':           range(1, 6),
         'currency':               currency,
         'rate':                   rate,
+        'similar_properties':     similar_properties,
+        'is_wishlisted':          is_wishlisted,
     })
 # ─── OWNER VIEWS ────────────────────────────────────────
 
@@ -592,3 +663,49 @@ def traveller_dashboard(request):
         'rate':              rate,
     }
     return render(request, 'properties/traveller_dashboard.html', context)
+
+# ─── WISHLIST & RECENTLY VIEWED ──────────────────────────
+
+@login_required
+def wishlist_toggle(request, slug):
+    """AJAX POST — adds/removes a property from the current user's wishlist."""
+    from django.http import JsonResponse
+    from .models import Wishlist
+
+    prop = get_object_or_404(Property, slug=slug, status='active')
+    item, created = Wishlist.objects.get_or_create(user=request.user, property=prop)
+    if not created:
+        item.delete()
+        saved = False
+    else:
+        saved = True
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'saved': saved, 'count': request.user.wishlist_items.count()})
+
+    messages.success(request, "Saved to your wishlist." if saved else "Removed from your wishlist.")
+    return redirect('properties:detail', slug=slug)
+
+
+@login_required
+def wishlist_page(request):
+    from .models import Wishlist
+    items = Wishlist.objects.filter(user=request.user).select_related('property').prefetch_related('property__images')
+    currency, rate = _get_currency_context(request)
+    return render(request, 'properties/wishlist.html', {
+        'items': items,
+        'currency': currency,
+        'rate': rate,
+    })
+
+
+@login_required
+def recently_viewed_page(request):
+    from .models import RecentlyViewed
+    items = RecentlyViewed.objects.filter(user=request.user).select_related('property').prefetch_related('property__images')[:12]
+    currency, rate = _get_currency_context(request)
+    return render(request, 'properties/recently_viewed.html', {
+        'items': items,
+        'currency': currency,
+        'rate': rate,
+    })

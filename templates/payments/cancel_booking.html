@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Cancel Booking — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen flex justify-center">
+  <div class="max-w-lg w-full">
+
+    <div class="mb-8">
+      <span class="text-xs font-bold tracking-widest uppercase text-red-500">✦ Cancel Booking</span>
+      <h1 class="font-display text-4xl font-bold text-dark mt-1">{{ booking.booking_property.name }}</h1>
+      <p class="text-gray-400 text-sm mt-1">Booking {{ booking.reference }}</p>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 shadow-sm mb-6">
+      <div class="grid grid-cols-2 gap-4 mb-5">
+        <div class="bg-cream rounded-xl p-4 text-center">
+          <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Check-in</p>
+          <p class="font-bold text-dark">{{ booking.check_in|date:"M j, Y" }}</p>
+        </div>
+        <div class="bg-cream rounded-xl p-4 text-center">
+          <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Check-out</p>
+          <p class="font-bold text-dark">{{ booking.check_out|date:"M j, Y" }}</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 bg-amber-50 border border-amber-100 rounded-xl p-4 mb-5">
+        <i data-lucide="shield-alert" class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"></i>
+        <div>
+          <p class="text-sm font-semibold text-dark">{{ booking.get_cancellation_policy_display }}</p>
+          <p class="text-xs text-gray-500 mt-1">Based on today's date, you're estimated to receive:</p>
+        </div>
+      </div>
+
+      <div class="text-center py-4">
+        <p class="font-bebas text-5xl text-accent">${{ estimated_refund|floatformat:2 }}</p>
+        <p class="text-gray-400 text-xs mt-1">Estimated refund (of ${{ booking.grand_total }} total)</p>
+      </div>
+
+      <form method="POST" class="flex flex-col gap-3 mt-4">
+        {% csrf_token %}
+        <textarea name="reason" rows="3" placeholder="Tell us why you're cancelling (optional)…"
+                  class="w-full text-sm border-2 border-gray-200 rounded-xl p-3 outline-none focus:border-accent resize-none"></textarea>
+        <button type="submit"
+                class="w-full bg-red-500 text-white py-3.5 rounded-xl font-semibold hover:bg-red-600 transition-all"
+                onclick="return confirm('Cancel this booking? This can\'t be undone.')">
+          Confirm Cancellation
+        </button>
+        <a href="{% url 'payments:my_bookings' %}"
+           class="text-center text-gray-400 text-sm font-medium hover:text-dark transition py-2">
+          Never mind, keep my booking
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

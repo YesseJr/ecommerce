@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
-from .models import User
+from .models import User, LoginActivity
 
 
 @admin.register(User)
@@ -61,3 +61,13 @@ class CustomUserAdmin(UserAdmin):
             '🧳 Traveller'
         )
     role_badge.short_description = 'Role'
+
+@admin.register(LoginActivity)
+class LoginActivityAdmin(admin.ModelAdmin):
+    list_display = ['user', 'username_attempted', 'ip_address', 'success', 'created_at']
+    list_filter = ['success', 'created_at']
+    search_fields = ['user__username', 'username_attempted', 'ip_address']
+    readonly_fields = [f.name for f in LoginActivity._meta.fields]
+
+    def has_add_permission(self, request):
+        return False

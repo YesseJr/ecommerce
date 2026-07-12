@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Inbox — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+
+  <div class="mb-10">
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Messages</span>
+    <h1 class="font-display text-5xl font-bold text-dark mt-1">Inbox</h1>
+  </div>
+
+  {% if conversations %}
+    <div class="bg-white rounded-2xl shadow-sm divide-y divide-gray-100 max-w-2xl">
+      {% for c in conversations %}
+        <a href="{% url 'inbox:thread' c.pk %}" class="flex items-center gap-4 p-5 hover:bg-cream/60 transition">
+          <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold flex-shrink-0">
+            {{ c.other.first_name|default:c.other.username|first|upper }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2">
+              <p class="font-semibold text-dark text-sm truncate">
+                {{ c.other.get_full_name|default:c.other.username }}
+              </p>
+              <span class="text-xs text-gray-400 flex-shrink-0">{{ c.updated_at|date:"M j" }}</span>
+            </div>
+            <p class="text-xs text-gray-400 mt-0.5">{{ c.property.name }}</p>
+            {% with last=c.last_message %}
+              {% if last %}
+                <p class="text-sm text-gray-500 truncate mt-1">{{ last.body }}</p>
+              {% endif %}
+            {% endwith %}
+          </div>
+          {% if c.unread %}
+            <span class="w-6 h-6 rounded-full bg-accent text-white text-xs font-bold flex items-center justify-center flex-shrink-0">{{ c.unread }}</span>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-24 text-gray-400">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white shadow-sm mb-4">
+        <i data-lucide="inbox" class="w-6 h-6"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-dark mb-2">No messages yet</h3>
+      <p class="text-sm">Conversations with hosts and guests will show up here.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

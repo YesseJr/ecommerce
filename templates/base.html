@@ -124,6 +124,24 @@
 
         {% endif %}
 
+        <!-- Wishlist, Inbox, Notifications — visible to all logged-in users -->
+        <a href="{% url 'properties:wishlist' %}" title="Wishlist"
+           class="text-white/70 hover:text-accent transition">
+          <i data-lucide="heart" class="w-[18px] h-[18px]"></i>
+        </a>
+        <a href="{% url 'inbox:inbox' %}" title="Messages"
+           class="text-white/70 hover:text-accent transition">
+          <i data-lucide="message-circle" class="w-[18px] h-[18px]"></i>
+        </a>
+        <div class="relative">
+          <button type="button" id="notif-bell-btn" title="Notifications"
+                  class="relative text-white/70 hover:text-accent transition">
+            <i data-lucide="bell" class="w-[18px] h-[18px]"></i>
+            <span id="notif-badge" class="hidden absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-accent text-white text-[9px] font-bold flex items-center justify-center"></span>
+          </button>
+          <div id="notif-dropdown" class="hidden absolute right-0 top-full mt-3 w-80 bg-white rounded-2xl shadow-2xl overflow-hidden text-left z-50"></div>
+        </div>
+
         <!-- Profile & Logout — visible to all logged in users -->
         <a href="{% url 'users:profile' %}"
            class="text-white/80 hover:text-accent text-sm font-medium transition">
@@ -367,6 +385,67 @@
       }
     })();
   </script>
+
+  {% if user.is_authenticated %}
+  <!-- ─── NOTIFICATIONS BELL ─── -->
+  <script>
+    (function() {
+      var btn = document.getElementById('notif-bell-btn');
+      var dropdown = document.getElementById('notif-dropdown');
+      var badge = document.getElementById('notif-badge');
+      if (!btn || !dropdown) return;
+
+      function loadDropdown() {
+        fetch("{% url 'inbox:notifications_dropdown' %}")
+          .then(r => r.text())
+          .then(html => {
+            dropdown.innerHTML = html;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+          });
+      }
+
+      function refreshBadge() {
+        fetch("{% url 'inbox:notifications_dropdown' %}")
+          .then(r => r.text())
+          .then(html => {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            // count unread rows (bg-accent/5 marks unread in the partial)
+            const unreadCount = tmp.querySelectorAll('.bg-accent\\/5').length;
+            if (unreadCount > 0) {
+              badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+              badge.classList.remove('hidden');
+            } else {
+              badge.classList.add('hidden');
+            }
+          });
+      }
+
+      window.markAllNotificationsRead = function() {
+        fetch("{% url 'inbox:mark_notifications_read' %}", {
+          method: 'POST',
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        }).then(() => { loadDropdown(); badge.classList.add('hidden'); });
+      };
+
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isHidden = dropdown.classList.contains('hidden');
+        if (isHidden) loadDropdown();
+        dropdown.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!dropdown.contains(e.target) && e.target !== btn) {
+          dropdown.classList.add('hidden');
+        }
+      });
+
+      refreshBadge();
+      setInterval(refreshBadge, 30000);
+    })();
+  </script>
+  {% endif %}
 
   {% block extra_js %}{% endblock %}
   <script>if(typeof lucide !== "undefined") lucide.createIcons();</script>

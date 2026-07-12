@@ -3,16 +3,22 @@ Django settings for bookmystay project.
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 from django.contrib.messages import constants as messages
 
 # ─── BASE ───────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')  # loads .env if present; harmless if it's not
 
-SECRET_KEY = 'django-insecure-7mvlka7bl-_hi8fxs1y_*38b1+ne+%^+r-ai84qz^w#g)-rm6s'
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-7mvlka7bl-_hi8fxs1y_*38b1+ne+%^+r-ai84qz^w#g)-rm6s'
+)
 
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # ─── APPS ───────────────────────────────────────────────
@@ -31,6 +37,10 @@ INSTALLED_APPS = [
     'bookings',
     'payments',
     'reviews',
+    'inbox',
+
+    # Third-party
+    'anymail',
 ]
 
 # ─── MIDDLEWARE ─────────────────────────────────────────
@@ -97,6 +107,32 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # ─── AUTH ───────────────────────────────────────────────
 AUTH_USER_MODEL      = 'users.User'
 LOGIN_URL            = '/users/login/'
+
+# ─── EMAIL ──────────────────────────────────────────────────────────────
+# Sent through Brevo (via django-anymail) when BREVO_API_KEY is set in the
+# environment. Falls back to the console backend otherwise, so the app
+# still runs (emails just print to the log) if the key isn't configured
+# yet — e.g. on a fresh clone or in local dev.
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
+
+if BREVO_API_KEY:
+    EMAIL_BACKEND = 'anymail.backends.brevo.EmailBackend'
+    ANYMAIL = {
+        'BREVO_API_KEY': BREVO_API_KEY,
+    }
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# IMPORTANT: this address must be a verified sender in your Brevo account
+# (Settings → Senders & IP), or Brevo will reject the send. Update it to
+# whatever address/domain you've verified there.
+DEFAULT_FROM_EMAIL = 'BookMyStay <waythonny@gmail.com>'
+SITE_NAME          = 'BookMyStay'
+SITE_URL           = 'http://localhost:8000'  # update for production
+
+# ─── LOGIN SECURITY ─────────────────────────────────────────────────────
+LOGIN_MAX_ATTEMPTS   = 5
+LOGIN_LOCKOUT_MINUTES = 15
 LOGIN_REDIRECT_URL   = '/'
 LOGOUT_REDIRECT_URL  = '/'
 

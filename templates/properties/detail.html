@@ -44,6 +44,14 @@
       </div>
     {% endif %}
 
+    <!-- Wishlist heart (top-right, over gallery) -->
+    {% if user.is_authenticated %}
+      <button type="button" id="detail-wishlist-btn" data-slug="{{ property.slug }}"
+              class="absolute top-5 left-5 z-10 w-11 h-11 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-lg transition {% if is_wishlisted %}is-saved{% endif %}">
+        <i data-lucide="heart" class="w-5 h-5 {% if is_wishlisted %}text-accent fill-accent{% else %}text-dark/70{% endif %}"></i>
+      </button>
+    {% endif %}
+
     <!-- Overlay Info -->
     <div class="absolute bottom-0 left-0 right-0 px-16 pb-10 z-10">
       <div class="flex justify-between items-end">
@@ -51,6 +59,11 @@
           <span class="bg-accent text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">
             {{ property.get_property_type_display }}
           </span>
+          {% if property.is_verified %}
+            <span class="bg-white/95 text-dark text-xs font-bold px-3 py-1 rounded-full mb-3 ml-2 inline-flex items-center gap-1">
+              <i data-lucide="badge-check" class="w-3.5 h-3.5 text-accent"></i> Verified
+            </span>
+          {% endif %}
           <h1 class="font-display text-5xl font-bold text-white">{{ property.name }}</h1>
           <p class="text-white/70 mt-2"><i data-lucide="map-pin" class="w-4 h-4"></i> {{ property.address }}, {{ property.city }}, {{ property.country }}</p>
         </div>
@@ -149,6 +162,33 @@
   </p>
 </div>
 
+
+      {% if property.house_rules or property.accessibility_features %}
+        <div class="grid grid-cols-2 gap-6">
+          {% if property.house_rules %}
+            <div class="bg-white rounded-2xl p-6 border border-gray-100/80 shadow-sm">
+              <div class="flex items-center gap-2.5 mb-3">
+                <div class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 text-gray-500">
+                  <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                </div>
+                <h3 class="font-display text-lg font-bold text-dark">House Rules</h3>
+              </div>
+              <p class="text-gray-500 text-sm leading-relaxed whitespace-pre-line">{{ property.house_rules }}</p>
+            </div>
+          {% endif %}
+          {% if property.accessibility_features %}
+            <div class="bg-white rounded-2xl p-6 border border-gray-100/80 shadow-sm">
+              <div class="flex items-center gap-2.5 mb-3">
+                <div class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 text-gray-500">
+                  <i data-lucide="accessibility" class="w-4 h-4"></i>
+                </div>
+                <h3 class="font-display text-lg font-bold text-dark">Accessibility</h3>
+              </div>
+              <p class="text-gray-500 text-sm leading-relaxed whitespace-pre-line">{{ property.accessibility_features }}</p>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
 
       <!-- Extras -->
       {% if extras %}
@@ -282,24 +322,37 @@
                 <div class="flex border-b border-gray-200">
                   <div class="flex-1 p-3 border-r border-gray-200">
                     <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Check-in</label>
-                    <input type="date" name="check_in" required min="{{ today }}"
-                           class="w-full outline-none text-sm font-medium text-dark"/>
+                    <input type="text" name="check_in" id="check_in_input" required min="{{ today }}" autocomplete="off" placeholder="Add date"
+                           class="w-full outline-none text-sm font-medium text-dark cursor-pointer"/>
                   </div>
                   <div class="flex-1 p-3">
                     <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Check-out</label>
-                    <!-- FIX #5: min is set dynamically via JS when check_in changes -->
-                    <input type="date" name="check_out" required min="{{ today }}"
-                           class="w-full outline-none text-sm font-medium text-dark"/>
+                    <input type="text" name="check_out" id="check_out_input" required min="{{ today }}" autocomplete="off" placeholder="Add date"
+                           class="w-full outline-none text-sm font-medium text-dark cursor-pointer"/>
+                  </div>
+                </div>
+                <div class="flex border-b border-gray-200">
+                  <div class="flex-1 p-3 border-r border-gray-200">
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Guests</label>
+                    <select name="guests" class="w-full outline-none text-sm font-medium text-dark bg-transparent">
+                      {% for i in guest_range %}
+                        <option value="{{ i }}">{{ i }} guest{{ i|pluralize }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="flex-1 p-3">
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Children</label>
+                    <select name="children" class="w-full outline-none text-sm font-medium text-dark bg-transparent">
+                      {% for i in "012345" %}
+                        <option value="{{ i }}">{{ i }}</option>
+                      {% endfor %}
+                    </select>
                   </div>
                 </div>
                 <div class="p-3">
-                  <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Guests</label>
-                  <!-- FIX #3: Use guest_range from view instead of iterating over a string -->
-                  <select name="guests" class="w-full outline-none text-sm font-medium text-dark bg-transparent">
-                    {% for i in guest_range %}
-                      <option value="{{ i }}">{{ i }} guest{{ i|pluralize }}</option>
-                    {% endfor %}
-                  </select>
+                  <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Special requests <span class="normal-case font-normal text-gray-300">(optional)</span></label>
+                  <textarea name="special_requests" rows="2" placeholder="e.g. late check-in, ground floor room…"
+                            class="w-full outline-none text-sm text-dark bg-transparent resize-none placeholder:text-gray-300"></textarea>
                 </div>
               </div>
               <button type="submit"
@@ -307,6 +360,10 @@
                 Reserve → Add to Cart
               </button>
               <p class="text-center text-xs text-gray-400">You won't be charged yet</p>
+              <div class="flex items-start gap-2 bg-gray-50 rounded-xl p-3 text-xs text-gray-500">
+                <i data-lucide="shield-check" class="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5"></i>
+                <span>{{ property.get_cancellation_policy_display }}</span>
+              </div>
             </form>
           {% else %}
             <div class="text-center py-6 text-gray-400">
@@ -353,10 +410,52 @@
             <p class="text-xs text-gray-400">Member since {{ property.owner.created_at|date:"Y" }}</p>
           </div>
         </div>
+
+        {% if user.is_authenticated and user.is_traveller and user != property.owner %}
+          <button type="button" id="message-host-toggle"
+                  class="mt-4 w-full border-2 border-gray-200 hover:border-accent text-dark hover:text-accent font-semibold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 transition">
+            <i data-lucide="message-circle" class="w-4 h-4"></i> Message Host
+          </button>
+          <form method="POST" action="{% url 'inbox:start' property.slug %}" id="message-host-form" class="hidden mt-3 flex flex-col gap-2">
+            {% csrf_token %}
+            <textarea name="body" rows="3" required placeholder="Hi! I have a question about this place…"
+                      class="w-full text-sm border border-gray-200 rounded-xl p-3 outline-none focus:border-accent resize-none"></textarea>
+            <button type="submit" class="bg-dark text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-black transition">Send Message</button>
+          </form>
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
+
+{% if similar_properties %}
+  <div class="px-16 pb-16">
+    <h2 class="font-display text-3xl font-bold text-dark mb-6">You might also like</h2>
+    <div class="grid grid-cols-4 gap-5">
+      {% for sp in similar_properties %}
+        <a href="{% url 'properties:detail' sp.slug %}" class="bg-white rounded-2xl overflow-hidden shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all group">
+          <div class="relative h-40 overflow-hidden">
+            {% with sp.images.first as spimg %}
+              {% if spimg %}
+                <img src="{{ spimg.image.url }}" alt="{{ sp.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+              {% else %}
+                <div class="w-full h-full bg-gradient-to-br from-primary to-blue-900"></div>
+              {% endif %}
+            {% endwith %}
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-gray-400 mb-1">{{ sp.city }}</p>
+            <h3 class="font-display font-bold text-dark text-sm mb-2 leading-tight">{{ sp.name }}</h3>
+            <span class="font-bold text-accent text-sm">
+              {% if currency == 'TZS' %}TSh {{ sp.price_per_night|floatformat:0 }}{% else %}${{ sp.price_per_night }}{% endif %}
+            </span>
+            <span class="text-gray-400 text-xs"> / night</span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
 
 <style>
   /* FIX #2: Define ring-3 and thumb-active here so active thumbnail highlight works
@@ -364,86 +463,92 @@
   .ring-3        { box-shadow: 0 0 0 3px #F97316; }
   .thumb-active  { box-shadow: 0 0 0 3px #F97316; }
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
    //eslint-disable-next-line
   const unavailableRanges = {{ unavailable_dates_json|default:"[]"|safe }};
 
-  function rangesOverlap(checkIn, checkOut, bookedIn, bookedOut) {
-    const dCheckIn   = new Date(checkIn);
-    const dCheckOut  = new Date(checkOut);
-    const dBookedIn  = new Date(bookedIn);
-    const dBookedOut = new Date(bookedOut);
-    return dCheckIn < dBookedOut && dCheckOut > dBookedIn;
+  // Expand each booked range into a flat list of individual disabled dates
+  // for flatpickr's `disable` option.
+  function expandDisabledDates(ranges) {
+    const out = [];
+    ranges.forEach(r => {
+      let d = new Date(r.check_in);
+      const end = new Date(r.check_out);
+      while (d < end) {
+        out.push(new Date(d).toISOString().split('T')[0]);
+        d.setDate(d.getDate() + 1);
+      }
+    });
+    return out;
   }
 
-  // FIX #1: Merged both DOMContentLoaded blocks into one
   document.addEventListener('DOMContentLoaded', () => {
 
-    // ── Booking / Date Validation ──────────────────────────────────────────
-    const checkInInput  = document.querySelector('input[name="check_in"]');
-    const checkOutInput = document.querySelector('input[name="check_out"]');
-    const bookingForm   = document.querySelector('form[action*="add_to_cart"]');
+    // ── Visual availability calendar (flatpickr) ───────────────────────────
+    const checkInEl  = document.getElementById('check_in_input');
+    const checkOutEl = document.getElementById('check_out_input');
 
-    if (checkInInput && checkOutInput && bookingForm) {
+    if (checkInEl && checkOutEl && typeof flatpickr !== 'undefined') {
+      const disabledDates = expandDisabledDates(unavailableRanges);
 
-      function validateDates() {
-        const checkIn  = checkInInput.value;
-        const checkOut = checkOutInput.value;
-        if (!checkIn || !checkOut) return true;
-        for (const range of unavailableRanges) {
-          if (rangesOverlap(checkIn, checkOut, range.check_in, range.check_out)) {
-            return false;
-          }
-        }
-        return true;
-      }
-
-      function showLiveWarning() {
-        let warningEl = document.getElementById('date-conflict-warning');
-        if (!validateDates()) {
-          if (!warningEl) {
-            warningEl = document.createElement('p');
-            warningEl.id = 'date-conflict-warning';
-            warningEl.className = 'text-red-500 text-xs mt-2 font-medium';
-            warningEl.textContent = '<i data-lucide="alert-triangle" class="w-4 h-4"></i> These dates overlap with an existing booking.';
-            bookingForm.insertBefore(warningEl, bookingForm.querySelector('button[type="submit"]'));
-          }
-        } else if (warningEl) {
-          warningEl.remove();
-        }
-      }
-
-      bookingForm.addEventListener('submit', (e) => {
-        if (!validateDates()) {
-          e.preventDefault();
-          alert(
-            ' This property is already booked for some of those dates.\n' +
-            'Please choose a different date range.'
-          );
-        }
+      const checkOutPicker = flatpickr(checkOutEl, {
+        dateFormat: 'Y-m-d',
+        minDate: '{{ today }}',
+        disable: disabledDates,
       });
 
-      // FIX #5: Update check_out min whenever check_in changes so user
-      // cannot select a check-out date before (or equal to) check-in
-      checkInInput.addEventListener('change', () => {
-        if (checkInInput.value) {
-          // Set check_out minimum to the day after check_in
-          const nextDay = new Date(checkInInput.value);
-          nextDay.setDate(nextDay.getDate() + 1);
-          checkOutInput.min = nextDay.toISOString().split('T')[0];
-          // Clear check_out if it's now before the new minimum
-          if (checkOutInput.value && checkOutInput.value <= checkInInput.value) {
-            checkOutInput.value = '';
+      flatpickr(checkInEl, {
+        dateFormat: 'Y-m-d',
+        minDate: '{{ today }}',
+        disable: disabledDates,
+        onChange: function(selectedDates, dateStr) {
+          const next = new Date(dateStr);
+          next.setDate(next.getDate() + 1);
+          checkOutPicker.set('minDate', next);
+          if (checkOutEl.value && checkOutEl.value <= dateStr) {
+            checkOutPicker.clear();
           }
         }
-        showLiveWarning();
       });
-
-      checkOutInput.addEventListener('change', showLiveWarning);
     }
+
+    // ── Wishlist heart toggle ────────────────────────────────────────────
+    const wishlistBtn = document.getElementById('detail-wishlist-btn');
+    if (wishlistBtn) {
+      wishlistBtn.addEventListener('click', () => {
+        fetch(`/wishlist/toggle/${wishlistBtn.dataset.slug}/`, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': '{{ csrf_token }}',
+          },
+        }).then(r => r.json()).then(data => {
+          const icon = wishlistBtn.querySelector('svg, i');
+          wishlistBtn.classList.toggle('is-saved', data.saved);
+          if (data.saved) {
+            icon.classList.add('text-accent', 'fill-accent');
+          } else {
+            icon.classList.remove('text-accent', 'fill-accent');
+          }
+        });
+      });
+    }
+
+    // ── Message host inline form toggle ─────────────────────────────────
+    const msgToggle = document.getElementById('message-host-toggle');
+    const msgForm   = document.getElementById('message-host-form');
+    if (msgToggle && msgForm) {
+      msgToggle.addEventListener('click', () => msgForm.classList.toggle('hidden'));
+    }
+
+  }); // end DOMContentLoaded
+
+  document.addEventListener('DOMContentLoaded', () => {
 
     // ── Image Gallery Slider ───────────────────────────────────────────────
     const slides    = document.querySelectorAll('.gallery-slide');

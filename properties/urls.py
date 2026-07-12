@@ -8,6 +8,9 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('properties/', views.property_list, name='list'),
     path('properties/<slug:slug>/', views.property_detail, name='detail'),
+    path('wishlist/', views.wishlist_page, name='wishlist'),
+    path('wishlist/toggle/<slug:slug>/', views.wishlist_toggle, name='wishlist_toggle'),
+    path('recently-viewed/', views.recently_viewed_page, name='recently_viewed'),
 
     # Owner
     path('dashboard/', views.owner_dashboard, name='owner_dashboard'),

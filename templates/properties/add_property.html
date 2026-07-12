@@ -98,6 +98,18 @@
               </div>
             </div>
             <div>
+              <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                Neighborhood <span class="normal-case font-normal text-gray-300">(Dar es Salaam–wide)</span>
+              </label>
+              {{ form.neighborhood }}
+              {% if form.neighborhood.errors %}
+                <p class="text-red-500 text-xs mt-1">{{ form.neighborhood.errors.0 }}</p>
+              {% endif %}
+              <div id="neighborhood-other-wrap" class="mt-2 hidden">
+                {{ form.neighborhood_other }}
+              </div>
+            </div>
+            <div>
               <label class="block text-xs font-bold uppercase tracking-widests text-gray-400 mb-2">Full Address</label>
               {{ form.address }}
             </div>
@@ -124,6 +136,23 @@
           <div class="mt-4 flex items-center gap-3">
             {{ form.is_available }}
             <label class="text-sm font-medium text-dark">Available for booking</label>
+          </div>
+        </div>
+
+        <!-- Trust & Policy -->
+        <div class="bg-white rounded-2xl p-8 shadow-sm">
+          <h3 class="font-semibold text-dark mb-6 text-lg">Trust & Policy</h3>
+          <div class="mb-5">
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Cancellation Policy</label>
+            {{ form.cancellation_policy }}
+          </div>
+          <div class="mb-5">
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">House Rules <span class="normal-case font-normal text-gray-300">(optional)</span></label>
+            {{ form.house_rules }}
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Accessibility Features <span class="normal-case font-normal text-gray-300">(optional)</span></label>
+            {{ form.accessibility_features }}
           </div>
         </div>
 
@@ -166,6 +195,16 @@
 
 {% block extra_js %}
 <script>
+  // Show/hide the "Other area" text input based on the neighborhood dropdown
+  document.addEventListener('DOMContentLoaded', function() {
+    const select = document.getElementById('id_neighborhood');
+    const wrap   = document.getElementById('neighborhood-other-wrap');
+    if (!select || !wrap) return;
+    function sync() { wrap.classList.toggle('hidden', select.value !== 'other'); }
+    select.addEventListener('change', sync);
+    sync();
+  });
+
   // No prices to convert on this page — only update the label and hint
   // when the currency toggle is used, so the owner knows what unit to enter.
   window.setCurrency = function(c) {
