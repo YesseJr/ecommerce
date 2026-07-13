@@ -122,6 +122,16 @@
             🛒Cart
           </a>
 
+        <!-- ── MODERATOR / SUPPORT / FINANCE ── -->
+        {% elif user.is_staff_role %}
+          <a href="{% url 'staff:hub' %}"
+             class="text-white/80 hover:text-accent text-sm font-medium transition">
+            Staff Panel
+          </a>
+          <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
+            {{ user.get_role_display }}
+          </span>
+
         {% endif %}
 
         <!-- Wishlist, Inbox, Notifications — visible to all logged-in users -->

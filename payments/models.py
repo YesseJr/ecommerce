@@ -57,6 +57,7 @@ class Payment(models.Model):
         ('success', 'Successful'),
         ('failed', 'Failed'),
         ('refunded', 'Refunded'),
+        ('cancelled', 'Cancelled (no refund)'),
     ]
 
     CURRENCY_CHOICES = [

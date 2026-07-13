@@ -47,7 +47,7 @@ def home(request):
     total_guests     = Booking.objects.filter(status='confirmed').count()
 
     # Average rating across all reviews (round to 1dp)
-    avg_rating_result = Review.objects.aggregate(avg=Avg('rating'))['avg']
+    avg_rating_result = Review.objects.filter(is_hidden=False).aggregate(avg=Avg('rating'))['avg']
     avg_rating        = round(avg_rating_result, 1) if avg_rating_result else None
 
     cities = Property.objects.filter(
@@ -81,7 +81,7 @@ def home(request):
 
     # ── Testimonials — top-rated real guest reviews ───────────────────────
     testimonials = Review.objects.select_related('traveller', 'property') \
-        .filter(rating__gte=4) \
+        .filter(rating__gte=4, is_hidden=False) \
         .order_by('-rating', '-created_at')[:6]
 
     # ── Explore-by-area gallery — one representative photo + live count
@@ -249,7 +249,7 @@ def property_detail(request, slug):
 
     extras  = prop.extras.filter(is_available=True)
     images  = prop.images.all()
-    reviews = prop.reviews.all().order_by('-created_at')[:5]
+    reviews = prop.reviews.filter(is_hidden=False).order_by('-created_at')[:5]
 
     # Unavailable date ranges from confirmed/pending bookings
     import json

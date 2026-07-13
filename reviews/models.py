@@ -40,6 +40,18 @@ class Review(models.Model):
     title = models.CharField(max_length=200)
     comment = models.TextField()
 
+    # ── Moderation ──────────────────────────────────────────
+    is_hidden = models.BooleanField(
+        default=False,
+        help_text="Hidden reviews don't show publicly or count toward the rating average."
+    )
+    hidden_reason = models.CharField(max_length=200, blank=True)
+    moderated_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='moderated_reviews'
+    )
+    moderated_at = models.DateTimeField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

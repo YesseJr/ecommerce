@@ -68,6 +68,8 @@ def login_view(request):
                     return redirect('properties:owner_dashboard')
                 elif user.is_traveller:
                     return redirect('properties:traveller_dashboard')
+                elif user.is_staff_role:
+                    return redirect('staff:hub')
                 return redirect('properties:home')
             else:
                 record_login_attempt(request, user=None, username_attempted=username, success=False)

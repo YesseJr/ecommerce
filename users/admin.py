@@ -46,19 +46,23 @@ class CustomUserAdmin(UserAdmin):
 
     def role_badge(self, obj):
         colors = {
-            'traveller': ('#FFF7ED', '#C2410C'),
-            'owner':     ('#EFF6FF', '#1D4ED8'),
-            'admin':     ('#F0FDF4', '#15803D'),
+            'traveller':  ('#FFF7ED', '#C2410C'),
+            'owner':      ('#EFF6FF', '#1D4ED8'),
+            'admin':      ('#F0FDF4', '#15803D'),
+            'moderator':  ('#FDF4FF', '#A21CAF'),
+            'support':    ('#ECFEFF', '#0E7490'),
+            'finance':    ('#FEFCE8', '#A16207'),
         }
         role = 'admin' if obj.is_superuser else obj.role
         bg, text = colors.get(role, ('#F3F4F6', '#374151'))
+        labels = {
+            'admin': '⚙️ Admin', 'owner': '🏠 Owner', 'traveller': '🧳 Traveller',
+            'moderator': '🛡️ Moderator', 'support': '💬 Support', 'finance': '💰 Finance',
+        }
         return format_html(
             '<span style="background:{}; color:{}; padding:3px 10px; '
             'border-radius:999px; font-size:11px; font-weight:700;">{}</span>',
-            bg, text,
-            '⚙️ Admin' if role == 'admin' else
-            '🏠 Owner' if role == 'owner' else
-            '🧳 Traveller'
+            bg, text, labels.get(role, role.title())
         )
     role_badge.short_description = 'Role'
 

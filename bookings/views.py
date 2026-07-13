@@ -175,3 +175,35 @@ def update_cart_notes(request):
         except Cart.DoesNotExist:
             pass
     return redirect('bookings:cart')
+
+
+# ─── CRON FALLBACK (for hosts without shell/cron access) ─────────────────
+
+from django.conf import settings
+from django.http import JsonResponse, HttpResponseNotFound
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
+
+
+@csrf_exempt
+@require_GET
+def cron_send_stay_emails(request, secret):
+    """
+    Secured HTTP trigger for the same daily email sweep the management
+    command runs — for hosting environments with no cron/Task Scheduler
+    access. Point a free external scheduler (e.g. cron-job.org, or a
+    GitHub Actions scheduled workflow) at this URL once a day.
+
+    Disabled entirely (404) unless CRON_SECRET is set in the environment,
+    and only responds if the secret in the URL matches exactly — this is
+    a plain shared-secret check, not a full auth system, but it's enough
+    to stop randos from triggering it or discovering it exists.
+    """
+    if not settings.CRON_SECRET:
+        return HttpResponseNotFound()
+    if secret != settings.CRON_SECRET:
+        return HttpResponseNotFound()
+
+    from .emails import run_daily_stay_email_sweep
+    result = run_daily_stay_email_sweep()
+    return JsonResponse({'ok': True, **result})

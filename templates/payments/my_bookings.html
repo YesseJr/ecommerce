@@ -42,11 +42,12 @@
             <div class="flex items-center gap-3 mb-1">
               <h3 class="font-display text-xl font-bold text-dark">{{ booking.booking_property.name }}</h3>
               <span class="text-xs font-bold px-3 py-1 rounded-full
-                {% if booking.status == 'confirmed' %}bg-green-100 text-green-700
+                {% if booking.status == 'cancelled' %}bg-red-100 text-red-500
+                {% elif booking.is_completed %}bg-gray-100 text-gray-500
+                {% elif booking.status == 'confirmed' %}bg-green-100 text-green-700
                 {% elif booking.status == 'pending' %}bg-orange-100 text-orange-700
-                {% elif booking.status == 'cancelled' %}bg-red-100 text-red-500
                 {% else %}bg-gray-100 text-gray-500{% endif %}">
-                {{ booking.get_status_display }}
+                {% if booking.is_completed %}Complete{% else %}{{ booking.get_status_display }}{% endif %}
               </span>
             </div>
             <p class="text-gray-400 text-sm">

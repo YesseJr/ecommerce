@@ -155,6 +155,12 @@ class Booking(models.Model):
     cancellation_reason  = models.TextField(blank=True)
     refund_amount         = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
+    # ── Lifecycle email tracking (prevents duplicate sends if a daily
+    # command is re-run) ──────────────────────────────────────────────
+    confirmation_email_sent = models.BooleanField(default=False)
+    welcome_email_sent      = models.BooleanField(default=False)
+    goodbye_email_sent      = models.BooleanField(default=False)
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -173,7 +179,21 @@ class Booking(models.Model):
 
     @property
     def is_cancellable(self):
-        return self.status in ('pending', 'confirmed')
+        from datetime import date as _date
+        return self.status in ('pending', 'confirmed') and self.check_in > _date.today()
+
+    @property
+    def is_completed(self):
+        """Display-only: the stay has fully passed. Doesn't touch the stored
+        status (finance/revenue queries still key off 'confirmed')."""
+        from datetime import date as _date
+        return self.status == 'confirmed' and self.check_out < _date.today()
+
+    @property
+    def is_ongoing(self):
+        from datetime import date as _date
+        today = _date.today()
+        return self.status == 'confirmed' and self.check_in <= today <= self.check_out
 
     def calculate_refund(self):
         """

@@ -181,6 +181,7 @@ class PaymentAdmin(admin.ModelAdmin):
             'processing': '#3b82f6',
             'failed':     '#ef4444',
             'refunded':   '#8b5cf6',
+            'cancelled':  '#6b7280',
         }
         color = colors.get(obj.status, '#9ca3af')
         label = dict(Payment.STATUS_CHOICES).get(obj.status, obj.status)

@@ -10,4 +10,5 @@ urlpatterns = [
     path('cart/extras/remove/<int:extra_pk>/', views.remove_extra_from_cart, name='remove_extra'),
     path('cart/clear/', views.clear_cart, name='clear_cart'),
     path('cart/notes/', views.update_cart_notes, name='update_cart_notes'),
+    path('cron/send-stay-emails/<str:secret>/', views.cron_send_stay_emails, name='cron_send_stay_emails'),
 ]

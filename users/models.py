@@ -8,6 +8,9 @@ class User(AbstractUser):
         ('traveller', 'Traveller'),
         ('owner', 'Property Owner'),
         ('admin', 'Admin'),
+        ('moderator', 'Moderator'),
+        ('support', 'Support'),
+        ('finance', 'Finance'),
     ]
 
     role = models.CharField(
@@ -54,6 +57,23 @@ class User(AbstractUser):
     def is_admin(self):
         # Either superuser OR role set to admin
         return self.is_superuser or self.role == 'admin'
+
+    @property
+    def is_moderator(self):
+        return self.is_superuser or self.role == 'moderator'
+
+    @property
+    def is_support(self):
+        return self.is_superuser or self.role == 'support'
+
+    @property
+    def is_finance(self):
+        return self.is_superuser or self.role == 'finance'
+
+    @property
+    def is_staff_role(self):
+        """True for any of the internal staff roles (not travellers/owners)."""
+        return self.is_superuser or self.role in ('admin', 'moderator', 'support', 'finance')
 
 class LoginActivity(models.Model):
     """Tracks every login attempt (success or failure) for security review

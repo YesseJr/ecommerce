@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Support Dashboard — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-cream">
+  <div class="bg-dark px-16 pt-24 pb-10">
+    <a href="{% url 'staff:hub' %}" class="text-white/40 hover:text-accent text-sm inline-flex items-center gap-1 mb-4 transition">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Staff Hub
+    </a>
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Support</span>
+    <h1 class="font-display text-5xl font-bold text-white mt-2">Guest & Host Lookup</h1>
+
+    <form method="GET" class="mt-6 max-w-lg">
+      <div class="relative">
+        <i data-lucide="search" class="w-4 h-4 text-white/30 absolute left-4 top-1/2 -translate-y-1/2"></i>
+        <input type="text" name="q" value="{{ query }}" placeholder="Search by booking ref, username, email, or property…"
+               class="w-full bg-white/10 border border-white/10 rounded-full pl-11 pr-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-accent transition"/>
+      </div>
+    </form>
+  </div>
+
+  <div class="px-16 -mt-6 pb-20">
+    <div class="grid grid-cols-2 gap-8">
+
+      <!-- Bookings -->
+      <div class="bg-white rounded-2xl shadow-md p-7">
+        <h2 class="font-display text-xl font-bold text-dark mb-5">Bookings</h2>
+        <div class="flex flex-col gap-3 max-h-[560px] overflow-y-auto pr-1">
+          {% for b in bookings %}
+            <div class="border border-gray-100 rounded-xl p-4">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="font-mono text-xs font-semibold text-dark">{{ b.reference }}</span>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full
+                  {% if b.status == 'confirmed' %}bg-emerald-50 text-emerald-600
+                  {% elif b.status == 'cancelled' %}bg-red-50 text-red-500
+                  {% else %}bg-amber-50 text-amber-600{% endif %}">
+                  {{ b.get_status_display }}
+                </span>
+              </div>
+              <p class="text-gray-600 text-xs">{{ b.booking_property.name }}</p>
+              <p class="text-gray-400 text-xs mt-1">
+                {{ b.traveller.username }} · {{ b.check_in|date:"M j" }} → {{ b.check_out|date:"M j, Y" }}
+              </p>
+              {% if b.special_requests %}
+                <p class="text-gray-400 text-xs mt-1 italic">"{{ b.special_requests|truncatewords:15 }}"</p>
+              {% endif %}
+            </div>
+          {% empty %}
+            <p class="text-center text-gray-400 py-8 text-sm">No bookings found.</p>
+          {% endfor %}
+        </div>
+
+        {% if bookings.has_other_pages %}
+          <div class="flex justify-center gap-2 mt-5">
+            {% if bookings.has_previous %}
+              <a href="?q={{ query }}&page={{ bookings.previous_page_number }}" class="text-xs text-gray-400 hover:text-accent px-3 py-1.5">← Prev</a>
+            {% endif %}
+            <span class="text-xs text-gray-400 px-3 py-1.5">Page {{ bookings.number }} of {{ bookings.paginator.num_pages }}</span>
+            {% if bookings.has_next %}
+              <a href="?q={{ query }}&page={{ bookings.next_page_number }}" class="text-xs text-gray-400 hover:text-accent px-3 py-1.5">Next →</a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Conversations -->
+      <div class="bg-white rounded-2xl shadow-md p-7">
+        <h2 class="font-display text-xl font-bold text-dark mb-1">Conversations</h2>
+        <p class="text-gray-400 text-sm mb-5">Read-only — for context while helping resolve an issue.</p>
+        <div class="flex flex-col gap-3 max-h-[560px] overflow-y-auto pr-1">
+          {% for c in conversations %}
+            <a href="{% url 'staff:support_conversation' c.pk %}"
+               class="block border border-gray-100 rounded-xl p-4 hover:border-accent/40 transition">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-semibold text-dark">{{ c.guest.username }} ↔ {{ c.host.username }}</span>
+                <span class="text-xs text-gray-400">{{ c.updated_at|date:"M j" }}</span>
+              </div>
+              <p class="text-gray-400 text-xs">{{ c.property.name }}</p>
+            </a>
+          {% empty %}
+            <p class="text-center text-gray-400 py-8 text-sm">No conversations found.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

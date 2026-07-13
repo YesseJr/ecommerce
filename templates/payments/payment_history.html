@@ -156,6 +156,7 @@
               {% elif payment.status == 'processing' %}bg-blue-50 text-blue-700 border-blue-100
               {% elif payment.status == 'failed' %}bg-red-50 text-red-600 border-red-100
               {% elif payment.status == 'refunded' %}bg-purple-50 text-purple-700 border-purple-100
+              {% elif payment.status == 'cancelled' %}bg-gray-100 text-gray-500 border-gray-200
               {% else %}bg-gray-50 text-gray-600 border-gray-100{% endif %}">
               {% if payment.status == 'success' %}
                 <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
@@ -163,6 +164,8 @@
                 <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
               {% elif payment.status == 'refunded' %}
                 <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+              {% elif payment.status == 'cancelled' %}
+                <i data-lucide="ban" class="w-3.5 h-3.5"></i>
               {% elif payment.status == 'processing' %}
                 <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i>
               {% else %}

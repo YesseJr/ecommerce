@@ -345,6 +345,10 @@ def process_payment(request):
         payment_date       = timezone.now(),
     )
 
+    # ── Confirmation email ──────────────────────────────────────────────────
+    from bookings.emails import send_booking_confirmation_email
+    send_booking_confirmation_email(booking)
+
     # ── Clear cart ────────────────────────────────────────────────────────────
     cart.items.all().delete()
     cart.booking_property = None

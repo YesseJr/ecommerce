@@ -175,14 +175,14 @@ class Property(models.Model):
 
     @property
     def average_rating(self):
-        reviews = self.reviews.all()
+        reviews = self.reviews.filter(is_hidden=False)
         if reviews.exists():
             return round(sum(r.rating for r in reviews) / reviews.count(), 1)
         return None
 
     @property
     def total_reviews(self):
-        return self.reviews.count()
+        return self.reviews.filter(is_hidden=False).count()
 
 
 class PropertyImage(models.Model):

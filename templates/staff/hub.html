@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Staff Dashboard — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-cream">
+  <div class="bg-dark px-16 pt-24 pb-16">
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Staff Area</span>
+    <h1 class="font-display text-5xl font-bold text-white mt-2">
+      Welcome, <em class="text-accent not-italic">{{ user.first_name|default:user.username }}</em>
+    </h1>
+    <p class="text-white/40 text-sm mt-2">{{ user.get_role_display }} access</p>
+  </div>
+
+  <div class="px-16 -mt-8 pb-20">
+    <div class="grid grid-cols-3 gap-6">
+      {% for tile in tiles %}
+        <a href="{% if tile.href %}{{ tile.href }}{% else %}{% url tile.url %}{% endif %}"
+           class="bg-white rounded-2xl p-7 shadow-md hover:-translate-y-1 hover:shadow-xl transition-all group">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center group-hover:bg-accent group-hover:text-white transition">
+              <i data-lucide="{{ tile.icon }}" class="w-6 h-6"></i>
+            </div>
+            {% if tile.count is not None %}
+              <span class="bg-accent/10 text-accent text-xs font-bold px-2.5 py-1 rounded-full">{{ tile.count }}</span>
+            {% endif %}
+          </div>
+          <h3 class="font-display text-xl font-bold text-dark mb-1">{{ tile.title }}</h3>
+          <p class="text-gray-400 text-sm">{{ tile.desc }}</p>
+        </a>
+      {% empty %}
+        <p class="text-gray-400 col-span-3 text-center py-12">No staff dashboards available for your role.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

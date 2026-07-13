@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'payments',
     'reviews',
     'inbox',
+    'staff',
 
     # Third-party
     'anymail',
@@ -129,6 +130,13 @@ else:
 DEFAULT_FROM_EMAIL = 'BookMyStay <waythonny@gmail.com>'
 SITE_NAME          = 'BookMyStay'
 SITE_URL           = 'http://localhost:8000'  # update for production
+
+# ─── SCHEDULED TASK FALLBACK ─────────────────────────────────────────────
+# Only needed if your hosting doesn't give you cron/Task Scheduler access.
+# Set this in your .env, then point a free external cron service (e.g.
+# cron-job.org) at /bookings/cron/send-stay-emails/<CRON_SECRET>/ once a
+# day. Leave blank to disable the endpoint entirely (it 404s if unset).
+CRON_SECRET = os.environ.get('CRON_SECRET', '')
 
 # ─── LOGIN SECURITY ─────────────────────────────────────────────────────
 LOGIN_MAX_ATTEMPTS   = 5

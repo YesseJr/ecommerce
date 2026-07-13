@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ convo.property.name }} — Support{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-20 px-16 bg-cream min-h-screen">
+
+  <a href="{% url 'staff:support' %}" class="text-sm text-gray-400 hover:text-accent transition inline-flex items-center gap-1 mb-6">
+    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Support
+  </a>
+
+  <div class="mb-6">
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Read-only</span>
+    <h1 class="font-display text-3xl font-bold text-dark mt-1">
+      {{ convo.guest.username }} ↔ {{ convo.host.username }}
+    </h1>
+    <p class="text-gray-400 text-sm mt-1">
+      Re: <a href="{% url 'properties:detail' convo.property.slug %}" class="hover:text-accent transition">{{ convo.property.name }}</a>
+    </p>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-sm max-w-2xl overflow-hidden">
+    <div class="flex flex-col gap-4 p-5 max-h-[560px] overflow-y-auto">
+      {% for m in thread_messages %}
+        <div class="flex {% if m.sender == convo.guest %}justify-start{% else %}justify-end{% endif %}">
+          <div class="max-w-[75%] {% if m.sender == convo.guest %}bg-cream text-dark{% else %}bg-primary text-white{% endif %} rounded-2xl px-4 py-2.5">
+            <p class="text-[10px] font-semibold mb-1 opacity-70">{{ m.sender.username }}</p>
+            <p class="text-sm">{{ m.body }}</p>
+            <p class="text-[10px] mt-1 opacity-60">{{ m.created_at|date:"M j, g:i A" }}</p>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-center text-sm text-gray-400 py-10">No messages in this conversation yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+<div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
+  <div style="text-align:center; margin-bottom: 20px;">
+    <span style="font-size: 40px;">🎉</span>
+  </div>
+  <h2 style="color: #111118; font-size: 24px; text-align:center;">Welcome, {{ guest.first_name|default:guest.username }}!</h2>
+  <p style="color: #555; font-size: 14px; line-height: 1.7; text-align:center;">
+    Today's the day — check-in for your stay at <strong>{{ property.name }}</strong>
+    in {{ property.neighborhood|default:property.city }} has arrived. We hope it's a wonderful one.
+  </p>
+
+  {% if property.house_rules %}
+    <div style="background:#FFF7ED; border-radius:12px; padding:16px 18px; margin: 24px 0;">
+      <p style="color:#9A3412; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 8px;">House Rules</p>
+      <p style="color:#7C2D12; font-size:13px; line-height:1.6; margin:0; white-space:pre-line;">{{ property.house_rules }}</p>
+    </div>
+  {% endif %}
+
+  <p style="color: #555; font-size: 13px; line-height: 1.6; text-align:center;">
+    Checking out on <strong>{{ booking.check_out|date:"D, M j, Y" }}</strong>.
+    If anything comes up during your stay, you can message your host directly from your BookMyStay account.
+  </p>
+
+  <p style="color:#999; font-size:12px; text-align:center; margin-top: 24px;">
+    Enjoy your stay! — The {{ site_name }} Team
+  </p>
+</div>

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Finance Dashboard — BookMyStay{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-cream">
+  <div class="bg-dark px-16 pt-24 pb-10">
+    <a href="{% url 'staff:hub' %}" class="text-white/40 hover:text-accent text-sm inline-flex items-center gap-1 mb-4 transition">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Staff Hub
+    </a>
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Finance</span>
+    <h1 class="font-display text-5xl font-bold text-white mt-2">Platform Revenue</h1>
+
+    <div class="grid grid-cols-5 gap-4 mt-10">
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Gross Revenue</p>
+        <p class="font-bebas text-4xl text-white">${{ total_revenue|floatformat:2 }}</p>
+      </div>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Service Fees</p>
+        <p class="font-bebas text-4xl text-accent">${{ total_fees|floatformat:2 }}</p>
+      </div>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Tax Collected</p>
+        <p class="font-bebas text-4xl text-white">${{ total_tax|floatformat:2 }}</p>
+      </div>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Coupon Discounts</p>
+        <p class="font-bebas text-4xl text-white">${{ total_discounts|floatformat:2 }}</p>
+      </div>
+      <div class="bg-red-500/10 border border-red-400/20 rounded-2xl p-5">
+        <p class="text-white/40 text-xs font-bold uppercase tracking-widest mb-2">Refunded</p>
+        <p class="font-bebas text-4xl text-red-400">${{ total_refunded|floatformat:2 }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-16 -mt-6 pb-20">
+    <div class="grid grid-cols-2 gap-8">
+
+      <!-- Recent Payments -->
+      <div class="bg-white rounded-2xl shadow-md p-7">
+        <h2 class="font-display text-xl font-bold text-dark mb-1">Recent Payments</h2>
+        <p class="text-gray-400 text-sm mb-5">{{ confirmed_count }} confirmed · {{ cancelled_count }} cancelled bookings overall.</p>
+        <div class="flex flex-col gap-3 max-h-[500px] overflow-y-auto pr-1">
+          {% for p in recent_payments %}
+            <div class="flex items-center justify-between border border-gray-100 rounded-xl p-4">
+              <div>
+                <p class="text-xs font-semibold text-dark">{{ p.booking.traveller.username }}</p>
+                <p class="text-gray-400 text-xs mt-0.5">{{ p.transaction_id }} · {{ p.created_at|date:"M j, Y" }}</p>
+              </div>
+              <div class="text-right">
+                <p class="font-bebas text-lg text-dark">${{ p.amount_usd|floatformat:2 }}</p>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full
+                  {% if p.status == 'success' %}bg-emerald-50 text-emerald-600
+                  {% elif p.status == 'refunded' or p.status == 'cancelled' %}bg-red-50 text-red-500
+                  {% elif p.status == 'failed' %}bg-red-50 text-red-500
+                  {% else %}bg-amber-50 text-amber-600{% endif %}">
+                  {{ p.get_status_display }}
+                </span>
+              </div>
+            </div>
+          {% empty %}
+            <p class="text-center text-gray-400 py-8 text-sm">No payments yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Coupons -->
+      <div class="bg-white rounded-2xl shadow-md p-7">
+        <h2 class="font-display text-xl font-bold text-dark mb-1">Coupon Usage</h2>
+        <p class="text-gray-400 text-sm mb-5">Manage codes in Django Admin → Payments → Coupons.</p>
+        <div class="flex flex-col gap-3 max-h-[500px] overflow-y-auto pr-1">
+          {% for c in coupons %}
+            <div class="flex items-center justify-between border border-gray-100 rounded-xl p-4">
+              <div>
+                <p class="font-mono text-xs font-semibold text-dark">{{ c.code }}</p>
+                <p class="text-gray-400 text-xs mt-0.5">
+                  {% if c.discount_type == 'percent' %}{{ c.discount_value }}% off{% else %}${{ c.discount_value }} off{% endif %}
+                  · used {{ c.used_count }}{% if c.max_uses %}/{{ c.max_uses }}{% endif %} times
+                </p>
+              </div>
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-full {% if c.active %}bg-emerald-50 text-emerald-600{% else %}bg-gray-100 text-gray-400{% endif %}">
+                {% if c.active %}Active{% else %}Inactive{% endif %}
+              </span>
+            </div>
+          {% empty %}
+            <p class="text-center text-gray-400 py-8 text-sm">No coupons created yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
