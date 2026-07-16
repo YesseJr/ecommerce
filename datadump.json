@@ -1,0 +1,3426 @@
+[
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$awWbRanYfJPLDjx2KYpyHm$smUYAJD5b6O4JMijglUJRdr3X32pOfpx9Y+//reZ/Dk=",
+    "last_login": "2026-07-14T22:59:17.521Z",
+    "is_superuser": true,
+    "username": "od23it",
+    "first_name": "Waython",
+    "last_name": "Yesse",
+    "email": "thonnie@yahoo.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-06-12T21:37:50Z",
+    "role": "admin",
+    "phone": "0625739006",
+    "profile_photo": "",
+    "bio": "",
+    "location": "",
+    "is_verified": true,
+    "created_at": "2026-06-12T21:37:52.652Z",
+    "updated_at": "2026-06-16T08:29:27.216Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$mCzpz6uzUzG9XauSSFwO4y$C1TzFdw0yo7px/EscQqlF0n8uhG4bTiXZprj+4mPRSY=",
+    "last_login": "2026-07-14T22:59:24.967Z",
+    "is_superuser": false,
+    "username": "juma",
+    "first_name": "Juma",
+    "last_name": "Jumanne",
+    "email": "juma@mail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-14T12:38:55.517Z",
+    "role": "traveller",
+    "phone": "0625739006",
+    "profile_photo": "",
+    "bio": "",
+    "location": "",
+    "is_verified": true,
+    "created_at": "2026-06-14T12:38:57.307Z",
+    "updated_at": "2026-06-14T19:41:39.541Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$y5026rgqS1V9TyASWCf1XE$AbnEzynY5qmQ0sO/vjP2R4RH20TvOxFM+YyvzBpwVxQ=",
+    "last_login": "2026-07-14T22:59:17.138Z",
+    "is_superuser": false,
+    "username": "Boss_Kitope",
+    "first_name": "Mzee",
+    "last_name": "Kitope",
+    "email": "kitope@mail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-14T12:41:40.763Z",
+    "role": "owner",
+    "phone": "0625739006",
+    "profile_photo": "",
+    "bio": "",
+    "location": "Kigamboni, Dar es Salaam",
+    "is_verified": true,
+    "created_at": "2026-06-14T12:41:43.197Z",
+    "updated_at": "2026-06-14T19:41:39.537Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$IxCJVWNvHTWZzNK1yr5Men$uQcPRN03ji0iO7rY87yReWxs3G9u7kZWIhkMSoj/Tic=",
+    "last_login": "2026-06-25T16:11:14.479Z",
+    "is_superuser": false,
+    "username": "aminata",
+    "first_name": "Amina",
+    "last_name": "Kadala",
+    "email": "aminata@mail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-15T11:45:14.185Z",
+    "role": "traveller",
+    "phone": "0625739007",
+    "profile_photo": "",
+    "bio": "",
+    "location": "Kigamboni, Dar es Salaam",
+    "is_verified": true,
+    "created_at": "2026-06-15T11:45:16.221Z",
+    "updated_at": "2026-06-15T11:49:13.210Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$R7gXS8KEIjkGhQUwJuA9OB$EQvs+n6xF3LTIEMu9NfheDpBmvmpguiiuSftQpz1xmk=",
+    "last_login": "2026-06-25T21:00:31.802Z",
+    "is_superuser": false,
+    "username": "masamaki",
+    "first_name": "Masamaki",
+    "last_name": "Minofu",
+    "email": "minofu@mail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-15T11:52:44.177Z",
+    "role": "owner",
+    "phone": "0625739008",
+    "profile_photo": "profiles/masamakiowner.png",
+    "bio": "Mr. Masamaki Minofu\r\nFounder, Dreamer, Beach Philosopher, and Professional Enjoyer of Life\r\n\r\nMeet Mr Masamaki Minofu, the legendary founder of Masamaki Minofu Resort in Kigamboni, Dar es Salaam. Known for his unforgettable smile, outrageous collection of hats, and a laugh that can be heard from one end of the beach to the other, Mr Minofu is proof that success and silliness can live happily together.\r\n\r\nBorn with big dreams and an even greater sense of humour, he spent years building businesses while confusing accountants, charming investors, and making friends wherever he went. Today, he is a self-made millionaire who firmly believes that every serious meeting should end with a joke and every beautiful sunset deserves an audience.\r\n\r\nWhen he's not inspecting his luxury resort, you'll find him telling exaggerated stories about how he \"personally taught the ocean how to make waves,\" challenging tourists to dance competitions he can no longer win, or relaxing in his favourite chair while pretending to work.\r\n\r\nFavourite Quote:\r\n\"Money can buy many things, but a good laugh on a beautiful beach is priceless.\"\r\n\r\nSpecial Skills:\r\n\r\n Wearing the world's funniest hats with confidence.\r\n Making strangers laugh within 30 seconds.\r\n Turning business meetings into comedy shows.\r\nSmiling like an idiot who knows a secret treasure is buried somewhere on the beach.\r\n\r\nLife Motto:\r\n\"Work hard, laugh harder, and never trust a man whose hat is less impressive than yours.\"\r\n\r\nFun Fact:\r\nAlthough he looks like everyone's funny grandfather, he secretly owns more beachfront property than most people own socks.",
+    "location": "Kigamboni, Dar es Salaam",
+    "is_verified": true,
+    "created_at": "2026-06-15T11:52:46.110Z",
+    "updated_at": "2026-06-15T14:30:39.881Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$Qiij3FMQShJGXeCItBeXRk$L3PGWyn8SwmP62dvIhzSNyfA8mRjvFDghsZzcmyPh04=",
+    "last_login": "2026-07-03T12:13:25.712Z",
+    "is_superuser": false,
+    "username": "chitemo",
+    "first_name": "Chitemo",
+    "last_name": "Mvivu",
+    "email": "chitemo@mail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-15T14:07:53.886Z",
+    "role": "traveller",
+    "phone": "0625739010",
+    "profile_photo": "profiles/20260329_135052.jpg",
+    "bio": "",
+    "location": "",
+    "is_verified": true,
+    "created_at": "2026-06-15T14:07:55.791Z",
+    "updated_at": "2026-06-29T11:57:21.092Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$QMCLq3tsbRvZhFXfRJjQZo$ao5wm4XEPMqqv77IqUn8snR7bGa78UUWMEKondSD1Qo=",
+    "last_login": "2026-06-22T07:10:12.222Z",
+    "is_superuser": false,
+    "username": "tumbotumbo",
+    "first_name": "Tumbo",
+    "last_name": "Tumbo",
+    "email": "tumbo@mail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-15T14:43:16.832Z",
+    "role": "owner",
+    "phone": "0625739011",
+    "profile_photo": "profiles/image-31.jpg",
+    "bio": "",
+    "location": "Tabata",
+    "is_verified": true,
+    "created_at": "2026-06-15T14:43:19.507Z",
+    "updated_at": "2026-06-15T14:49:01.858Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$1BnHqWGxo5hxM64DJKoBou$aXPKTNcF4qUmq9S+iJC7f501p8cRpINs/fcuFHd+UVA=",
+    "last_login": "2026-06-29T14:11:24.776Z",
+    "is_superuser": false,
+    "username": "john",
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "doe@mail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-17T08:05:27.655Z",
+    "role": "traveller",
+    "phone": "0625739012",
+    "profile_photo": "",
+    "bio": "",
+    "location": "",
+    "is_verified": true,
+    "created_at": "2026-06-17T08:05:29.706Z",
+    "updated_at": "2026-06-17T08:05:29.706Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$w7DYxL0umo0jESAKt5wQ8D$Dr+UxcLOObfrKjIP7geDByna3yChKwf2l1SxhcrNIc8=",
+    "last_login": "2026-06-29T19:45:18.813Z",
+    "is_superuser": false,
+    "username": "karla",
+    "first_name": "Karl",
+    "last_name": "Peters",
+    "email": "karla@mail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-18T14:02:18.280Z",
+    "role": "traveller",
+    "phone": "0625739014",
+    "profile_photo": "",
+    "bio": "",
+    "location": "",
+    "is_verified": true,
+    "created_at": "2026-06-18T14:02:26.608Z",
+    "updated_at": "2026-06-18T14:02:26.608Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$dLRXhJv4kbp4gHJWeO4C8N$/na7ZYobt/1bPU101MpFa25VzxnWKs42hX6cACrEnZk=",
+    "last_login": "2026-06-21T18:23:55.032Z",
+    "is_superuser": false,
+    "username": "nganenepa",
+    "first_name": "Nganenepa",
+    "last_name": "Soduku",
+    "email": "nepa@mail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-21T18:23:52.778Z",
+    "role": "traveller",
+    "phone": "0625739015",
+    "profile_photo": "",
+    "bio": "",
+    "location": "",
+    "is_verified": true,
+    "created_at": "2026-06-21T18:23:55.016Z",
+    "updated_at": "2026-06-21T18:23:55.016Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$B4yLWkmYWs8ZlXvAIxj7Pe$QJ6+nYLeLOZ6bogqXM1EqeNKjwxnatDqluPTHSzwfcg=",
+    "last_login": "2026-06-29T19:01:38.938Z",
+    "is_superuser": false,
+    "username": "mwamnyeto",
+    "first_name": "Mwamnyeto",
+    "last_name": "Bakari",
+    "email": "nondo@mail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-29T19:01:36.855Z",
+    "role": "traveller",
+    "phone": "0625739017",
+    "profile_photo": "profiles/image-38.jpg",
+    "bio": "",
+    "location": "",
+    "is_verified": true,
+    "created_at": "2026-06-29T19:01:38.921Z",
+    "updated_at": "2026-06-29T19:05:05.606Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$CZKKo2z4Qfsxuwmxu49RGi$1j6XXlzZnu3GviVLeELG7TTX7SD5yXx3/AbqXMpn9/k=",
+    "last_login": "2026-06-30T08:27:00.170Z",
+    "is_superuser": false,
+    "username": "marydee",
+    "first_name": "mary",
+    "last_name": "dee",
+    "email": "marydee@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-30T08:26:58.305Z",
+    "role": "traveller",
+    "phone": "0678101999",
+    "profile_photo": "",
+    "bio": "",
+    "location": "",
+    "is_verified": true,
+    "created_at": "2026-06-30T08:27:00.151Z",
+    "updated_at": "2026-06-30T08:27:00.151Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$Z7tcINvVcDTv3WGrzpoxHI$wZmMySftb6REab5Ic6D22I9eH0lmvj3cew6w8VQpWUg=",
+    "last_login": "2026-06-30T09:10:41.755Z",
+    "is_superuser": false,
+    "username": "sawiwi",
+    "first_name": "sawiya",
+    "last_name": "salim",
+    "email": "waythonny@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-30T09:10:39.569Z",
+    "role": "traveller",
+    "phone": "0714155817",
+    "profile_photo": "",
+    "bio": "",
+    "location": "",
+    "is_verified": true,
+    "created_at": "2026-06-30T09:10:41.564Z",
+    "updated_at": "2026-06-30T09:10:41.564Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 1,
+  "fields": {
+    "owner": [
+      "Boss_Kitope"
+    ],
+    "name": "Bata Batani Apartment",
+    "slug": "bata-batani",
+    "property_type": "apartment",
+    "description": "Come and enjoy to the fullest!",
+    "status": "active",
+    "country": "Tanzania",
+    "city": "Dar es Salaam",
+    "neighborhood": "Kigamboni",
+    "address": "Kigamboni Dar es Salaam",
+    "latitude": null,
+    "longitude": null,
+    "price_per_night": "30.00",
+    "max_guests": 3,
+    "bedrooms": 3,
+    "bathrooms": 3,
+    "is_available": true,
+    "is_verified": false,
+    "is_featured": false,
+    "house_rules": "",
+    "accessibility_features": "",
+    "cancellation_policy": "moderate",
+    "created_at": "2026-06-14T12:51:00.365Z",
+    "updated_at": "2026-06-29T19:46:50.387Z"
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 2,
+  "fields": {
+    "owner": [
+      "masamaki"
+    ],
+    "name": "Masamaki Minofu Resort",
+    "slug": "masamaki-minofu-resort",
+    "property_type": "resort",
+    "description": "Welcome to the Kigamboni Resort — where paradise meets punchlines!\r\n\r\nThink of it as your tropical escape with a sense of humour: the ocean waves clap louder than your aunt at a wedding, the palm trees sway like they’re auditioning for a dance show, and the sunsets are so dramatic they deserve their own Netflix series.  \r\n\r\nHere, relaxation is mandatory, fun is unlimited, and the only stress you’ll face is deciding whether to dive into the pool or the ocean first.",
+    "status": "active",
+    "country": "Tanzania",
+    "city": "Dar es Salaam",
+    "neighborhood": "Kigamboni",
+    "address": "Kigamboni",
+    "latitude": null,
+    "longitude": null,
+    "price_per_night": "100.00",
+    "max_guests": 30,
+    "bedrooms": 30,
+    "bathrooms": 30,
+    "is_available": true,
+    "is_verified": false,
+    "is_featured": false,
+    "house_rules": "",
+    "accessibility_features": "",
+    "cancellation_policy": "moderate",
+    "created_at": "2026-06-15T14:37:47.806Z",
+    "updated_at": "2026-06-16T21:19:54.346Z"
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 3,
+  "fields": {
+    "owner": [
+      "tumbotumbo"
+    ],
+    "name": "Zetu Dua  Hotel",
+    "slug": "zetu-dua-hotel",
+    "property_type": "hotel",
+    "description": "Zetu Dua Hotel is a five‑star tropical retreat in Tabata, Dar es Salaam. Surrounded by palm trees and ocean views, it blends modern luxury with Swahili charm. Guests enjoy elegant suites, fine dining, a spa, gym, and vibrant leisure spaces — all designed to deliver comfort, relaxation, and unforgettable experiences.",
+    "status": "active",
+    "country": "Tanzania",
+    "city": "Dar es Salaam",
+    "neighborhood": "Tabata",
+    "address": "Tabata, Dar es Salaam",
+    "latitude": null,
+    "longitude": null,
+    "price_per_night": "150.00",
+    "max_guests": 80,
+    "bedrooms": 80,
+    "bathrooms": 80,
+    "is_available": true,
+    "is_verified": false,
+    "is_featured": false,
+    "house_rules": "",
+    "accessibility_features": "",
+    "cancellation_policy": "moderate",
+    "created_at": "2026-06-15T14:48:25.625Z",
+    "updated_at": "2026-06-17T08:01:24.458Z"
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 4,
+  "fields": {
+    "owner": [
+      "tumbotumbo"
+    ],
+    "name": "Booyakah Hotel",
+    "slug": "booyakah-hotel",
+    "property_type": "hotel",
+    "description": "Booyakah Hotel is the Four Star Hotel Located at Kimara Bonyokwa.",
+    "status": "active",
+    "country": "Tanzania",
+    "city": "Dar es Salaam",
+    "neighborhood": "Kimara Bonyokwa",
+    "address": "Kimara Bonyokwa",
+    "latitude": null,
+    "longitude": null,
+    "price_per_night": "75.00",
+    "max_guests": 20,
+    "bedrooms": 20,
+    "bathrooms": 20,
+    "is_available": true,
+    "is_verified": false,
+    "is_featured": false,
+    "house_rules": "",
+    "accessibility_features": "",
+    "cancellation_policy": "moderate",
+    "created_at": "2026-06-16T10:26:31.940Z",
+    "updated_at": "2026-06-16T20:56:52.710Z"
+  }
+},
+{
+  "model": "properties.property",
+  "pk": 5,
+  "fields": {
+    "owner": [
+      "Boss_Kitope"
+    ],
+    "name": "Supu ya Nyau",
+    "slug": "supu-ya-nyau",
+    "property_type": "apartment",
+    "description": "abc",
+    "status": "active",
+    "country": "Tanzania",
+    "city": "Dar es Salaam",
+    "neighborhood": "Kigamboni",
+    "address": "Kigamboni",
+    "latitude": null,
+    "longitude": null,
+    "price_per_night": "100.00",
+    "max_guests": 10,
+    "bedrooms": 10,
+    "bathrooms": 10,
+    "is_available": true,
+    "is_verified": false,
+    "is_featured": false,
+    "house_rules": "",
+    "accessibility_features": "",
+    "cancellation_policy": "moderate",
+    "created_at": "2026-06-22T07:17:06.840Z",
+    "updated_at": "2026-07-11T13:40:38.188Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 1,
+  "fields": {
+    "property": 1,
+    "image": "properties/copilot_image_1781442761087.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-14T13:22:14.219Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 2,
+  "fields": {
+    "property": 1,
+    "image": "properties/copilot_image_1781442764956.jpeg",
+    "is_primary": true,
+    "caption": "",
+    "uploaded_at": "2026-06-14T13:22:14.254Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 4,
+  "fields": {
+    "property": 1,
+    "image": "properties/image_1781442825184.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-14T13:22:14.344Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 5,
+  "fields": {
+    "property": 1,
+    "image": "properties/image_1781442935503.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-14T13:22:14.375Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 6,
+  "fields": {
+    "property": 1,
+    "image": "properties/image_1781443274959.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-14T13:22:14.403Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 7,
+  "fields": {
+    "property": 1,
+    "image": "properties/copilot_image_1781442761087_SHM8FIf.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-14T19:15:34.672Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 8,
+  "fields": {
+    "property": 2,
+    "image": "properties/image.png",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-15T14:37:47.825Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 9,
+  "fields": {
+    "property": 2,
+    "image": "properties/image-1.png",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-15T14:37:47.840Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 10,
+  "fields": {
+    "property": 3,
+    "image": "properties/image_1781530655220.jpeg",
+    "is_primary": true,
+    "caption": "",
+    "uploaded_at": "2026-06-15T14:48:25.666Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 11,
+  "fields": {
+    "property": 3,
+    "image": "properties/image_1781530804190.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-15T14:48:25.695Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 13,
+  "fields": {
+    "property": 3,
+    "image": "properties/image_17815309552406807016593645842484.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-15T14:48:25.745Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 14,
+  "fields": {
+    "property": 3,
+    "image": "properties/image_17815309880242907385447077559454.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-15T14:48:25.769Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 15,
+  "fields": {
+    "property": 3,
+    "image": "properties/image_17815310010243156988965178296381.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-15T14:48:25.790Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 16,
+  "fields": {
+    "property": 3,
+    "image": "properties/image_17815310291551168955105017160387.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-15T14:48:25.814Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 17,
+  "fields": {
+    "property": 3,
+    "image": "properties/image_17815310583746452828360097152668.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-15T14:48:25.837Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 18,
+  "fields": {
+    "property": 3,
+    "image": "properties/image_17815311059522636491856985324510.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-15T14:48:25.860Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 19,
+  "fields": {
+    "property": 3,
+    "image": "properties/image_17815314536968220016161739618051.jpeg",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-15T14:48:25.885Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 20,
+  "fields": {
+    "property": 2,
+    "image": "properties/immm.png",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-16T21:17:25.613Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 21,
+  "fields": {
+    "property": 2,
+    "image": "properties/mafish.png",
+    "is_primary": false,
+    "caption": "",
+    "uploaded_at": "2026-06-16T21:17:25.643Z"
+  }
+},
+{
+  "model": "properties.propertyimage",
+  "pk": 22,
+  "fields": {
+    "property": 2,
+    "image": "properties/masamaki.png",
+    "is_primary": true,
+    "caption": "",
+    "uploaded_at": "2026-06-16T21:17:25.669Z"
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 1,
+  "fields": {
+    "property": 1,
+    "name": "Breakfast",
+    "description": "You'll enjoy it...",
+    "price": "5.00",
+    "charge_type": "per_person",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 2,
+  "fields": {
+    "property": 1,
+    "name": "Airport Pickup",
+    "description": "",
+    "price": "20.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 3,
+  "fields": {
+    "property": 1,
+    "name": "Pool Access",
+    "description": "",
+    "price": "10.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 4,
+  "fields": {
+    "property": 1,
+    "name": "Wi-Fi",
+    "description": "",
+    "price": "2.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 5,
+  "fields": {
+    "property": 1,
+    "name": "City Tour",
+    "description": "",
+    "price": "20.00",
+    "charge_type": "per_person",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 6,
+  "fields": {
+    "property": 2,
+    "name": "Gym",
+    "description": "Get yourself fit!",
+    "price": "10.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 7,
+  "fields": {
+    "property": 2,
+    "name": "Airport Pickup",
+    "description": "",
+    "price": "10.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 8,
+  "fields": {
+    "property": 2,
+    "name": "Breakfast",
+    "description": "",
+    "price": "5.00",
+    "charge_type": "per_person",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 9,
+  "fields": {
+    "property": 2,
+    "name": "Dinner",
+    "description": "",
+    "price": "8.00",
+    "charge_type": "per_person",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 10,
+  "fields": {
+    "property": 3,
+    "name": "Airport Pickup",
+    "description": "",
+    "price": "20.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 11,
+  "fields": {
+    "property": 3,
+    "name": "Gym",
+    "description": "",
+    "price": "20.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 12,
+  "fields": {
+    "property": 3,
+    "name": "Breakfast",
+    "description": "",
+    "price": "20.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 13,
+  "fields": {
+    "property": 3,
+    "name": "Dinner",
+    "description": "",
+    "price": "20.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 15,
+  "fields": {
+    "property": 4,
+    "name": "Breakfast",
+    "description": "Daily breakfast included per guest",
+    "price": "10.00",
+    "charge_type": "per_person",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 16,
+  "fields": {
+    "property": 4,
+    "name": "Dinner",
+    "description": "Evening dinner included per guest",
+    "price": "25.00",
+    "charge_type": "per_person",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 17,
+  "fields": {
+    "property": 4,
+    "name": "Swimming Pool Access",
+    "description": "Daily access to the swimming pool",
+    "price": "10.00",
+    "charge_type": "per_night",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 18,
+  "fields": {
+    "property": 4,
+    "name": "Welcome Drink",
+    "description": "Complimentary welcome drink on arrival",
+    "price": "10.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 19,
+  "fields": {
+    "property": 4,
+    "name": "Airport Drop-off",
+    "description": "One-way transfer to the airport",
+    "price": "40.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 20,
+  "fields": {
+    "property": 4,
+    "name": "Airport Pickup",
+    "description": "One-way airport pickup transfer",
+    "price": "40.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 21,
+  "fields": {
+    "property": 4,
+    "name": "City Tour",
+    "description": "Guided city or town tour",
+    "price": "35.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 22,
+  "fields": {
+    "property": 4,
+    "name": "Gym Access",
+    "description": "Daily access to the gym facilities",
+    "price": "8.00",
+    "charge_type": "per_night",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 23,
+  "fields": {
+    "property": 4,
+    "name": "Spa Treatment",
+    "description": "60-minute spa and massage session",
+    "price": "60.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 24,
+  "fields": {
+    "property": 4,
+    "name": "Car Rental",
+    "description": "Daily car rental with driver",
+    "price": "80.00",
+    "charge_type": "per_night",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 25,
+  "fields": {
+    "property": 4,
+    "name": "Laundry Service",
+    "description": "Full laundry and ironing service",
+    "price": "12.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 26,
+  "fields": {
+    "property": 4,
+    "name": "Boat Transfer",
+    "description": "Scenic boat transfer to/from island",
+    "price": "55.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 27,
+  "fields": {
+    "property": 3,
+    "name": "Full Board (3 Meals)",
+    "description": "Breakfast, lunch and dinner per guest",
+    "price": "50.00",
+    "charge_type": "per_person",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 28,
+  "fields": {
+    "property": 3,
+    "name": "Welcome Drink",
+    "description": "Complimentary welcome drink on arrival",
+    "price": "10.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 29,
+  "fields": {
+    "property": 3,
+    "name": "Sauna Access",
+    "description": "Evening access to the sauna",
+    "price": "15.00",
+    "charge_type": "per_night",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 30,
+  "fields": {
+    "property": 3,
+    "name": "Airport Drop-off",
+    "description": "One-way transfer to the airport",
+    "price": "40.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 31,
+  "fields": {
+    "property": 3,
+    "name": "Extra Towels & Linens",
+    "description": "Extra set of towels and bed linen",
+    "price": "5.00",
+    "charge_type": "per_night",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 33,
+  "fields": {
+    "property": 3,
+    "name": "Wi-Fi",
+    "description": "",
+    "price": "2.00",
+    "charge_type": "per_night",
+    "is_available": true
+  }
+},
+{
+  "model": "properties.propertyextra",
+  "pk": 34,
+  "fields": {
+    "property": 3,
+    "name": "Spa Treatment",
+    "description": "60-minute spa and massage session",
+    "price": "50.00",
+    "charge_type": "once",
+    "is_available": true
+  }
+},
+{
+  "model": "bookings.cart",
+  "pk": 1,
+  "fields": {
+    "traveller": [
+      "juma"
+    ],
+    "booking_property": null,
+    "check_in": null,
+    "check_out": null,
+    "guests": 1,
+    "children": 0,
+    "special_requests": "",
+    "created_at": "2026-06-14T13:24:32.484Z",
+    "updated_at": "2026-07-13T07:10:06.285Z"
+  }
+},
+{
+  "model": "bookings.cart",
+  "pk": 2,
+  "fields": {
+    "traveller": [
+      "aminata"
+    ],
+    "booking_property": null,
+    "check_in": null,
+    "check_out": null,
+    "guests": 1,
+    "children": 0,
+    "special_requests": "",
+    "created_at": "2026-06-16T08:19:38.873Z",
+    "updated_at": "2026-06-25T19:50:47.850Z"
+  }
+},
+{
+  "model": "bookings.cart",
+  "pk": 3,
+  "fields": {
+    "traveller": [
+      "john"
+    ],
+    "booking_property": null,
+    "check_in": null,
+    "check_out": null,
+    "guests": 2,
+    "children": 0,
+    "special_requests": "",
+    "created_at": "2026-06-17T08:08:30.260Z",
+    "updated_at": "2026-06-17T20:19:26.224Z"
+  }
+},
+{
+  "model": "bookings.cart",
+  "pk": 4,
+  "fields": {
+    "traveller": [
+      "karla"
+    ],
+    "booking_property": null,
+    "check_in": null,
+    "check_out": null,
+    "guests": 1,
+    "children": 0,
+    "special_requests": "",
+    "created_at": "2026-06-19T11:19:15.179Z",
+    "updated_at": "2026-06-29T15:02:43.882Z"
+  }
+},
+{
+  "model": "bookings.cart",
+  "pk": 5,
+  "fields": {
+    "traveller": [
+      "chitemo"
+    ],
+    "booking_property": null,
+    "check_in": null,
+    "check_out": null,
+    "guests": 1,
+    "children": 0,
+    "special_requests": "",
+    "created_at": "2026-06-21T10:41:42.569Z",
+    "updated_at": "2026-06-30T08:50:56.602Z"
+  }
+},
+{
+  "model": "bookings.cart",
+  "pk": 6,
+  "fields": {
+    "traveller": [
+      "nganenepa"
+    ],
+    "booking_property": null,
+    "check_in": null,
+    "check_out": null,
+    "guests": 1,
+    "children": 0,
+    "special_requests": "",
+    "created_at": "2026-06-21T18:25:03.059Z",
+    "updated_at": "2026-06-21T18:25:56.639Z"
+  }
+},
+{
+  "model": "bookings.cart",
+  "pk": 7,
+  "fields": {
+    "traveller": [
+      "marydee"
+    ],
+    "booking_property": null,
+    "check_in": null,
+    "check_out": null,
+    "guests": 1,
+    "children": 0,
+    "special_requests": "",
+    "created_at": "2026-06-30T08:28:54.756Z",
+    "updated_at": "2026-06-30T08:33:49.752Z"
+  }
+},
+{
+  "model": "bookings.cart",
+  "pk": 8,
+  "fields": {
+    "traveller": [
+      "sawiwi"
+    ],
+    "booking_property": 2,
+    "check_in": "2026-07-02",
+    "check_out": "2026-07-05",
+    "guests": 2,
+    "children": 0,
+    "special_requests": "",
+    "created_at": "2026-06-30T09:12:19.677Z",
+    "updated_at": "2026-06-30T09:12:19.687Z"
+  }
+},
+{
+  "model": "bookings.cartitem",
+  "pk": 80,
+  "fields": {
+    "cart": 8,
+    "extra": 6,
+    "added_at": "2026-06-30T09:13:01.774Z"
+  }
+},
+{
+  "model": "bookings.cartitem",
+  "pk": 81,
+  "fields": {
+    "cart": 8,
+    "extra": 7,
+    "added_at": "2026-06-30T09:13:10.839Z"
+  }
+},
+{
+  "model": "bookings.cartitem",
+  "pk": 82,
+  "fields": {
+    "cart": 8,
+    "extra": 9,
+    "added_at": "2026-06-30T09:13:20.577Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 1,
+  "fields": {
+    "traveller": [
+      "juma"
+    ],
+    "booking_property": 1,
+    "check_in": "2026-06-14",
+    "check_out": "2026-06-16",
+    "guests": 3,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "30.00",
+    "nights": 2,
+    "room_total": "60.00",
+    "extras_total": "97.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "157.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-5ZMDAC",
+    "created_at": "2026-06-14T14:18:08.627Z",
+    "updated_at": "2026-06-14T14:18:08.627Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 2,
+  "fields": {
+    "traveller": [
+      "juma"
+    ],
+    "booking_property": 1,
+    "check_in": "2026-06-16",
+    "check_out": "2026-06-17",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "30.00",
+    "nights": 1,
+    "room_total": "30.00",
+    "extras_total": "35.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "65.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-7CSEHZ",
+    "created_at": "2026-06-15T10:45:52.405Z",
+    "updated_at": "2026-06-15T10:45:52.405Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 3,
+  "fields": {
+    "traveller": [
+      "aminata"
+    ],
+    "booking_property": 3,
+    "check_in": "2026-06-16",
+    "check_out": "2026-06-17",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "149.99",
+    "nights": 1,
+    "room_total": "149.99",
+    "extras_total": "0.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "149.99",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-8H8FAC",
+    "created_at": "2026-06-16T08:20:11.312Z",
+    "updated_at": "2026-06-16T21:59:14.006Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 4,
+  "fields": {
+    "traveller": [
+      "john"
+    ],
+    "booking_property": 3,
+    "check_in": "2026-06-17",
+    "check_out": "2026-06-18",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "150.00",
+    "nights": 1,
+    "room_total": "150.00",
+    "extras_total": "80.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "230.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-XYCEYD",
+    "created_at": "2026-06-17T08:10:05.949Z",
+    "updated_at": "2026-06-17T08:10:05.949Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 5,
+  "fields": {
+    "traveller": [
+      "john"
+    ],
+    "booking_property": 2,
+    "check_in": "2026-06-17",
+    "check_out": "2026-06-18",
+    "guests": 2,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "100.00",
+    "nights": 1,
+    "room_total": "100.00",
+    "extras_total": "26.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "126.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-NDI4KB",
+    "created_at": "2026-06-17T20:19:26.171Z",
+    "updated_at": "2026-06-17T20:19:26.171Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 6,
+  "fields": {
+    "traveller": [
+      "karla"
+    ],
+    "booking_property": 2,
+    "check_in": "2026-06-19",
+    "check_out": "2026-06-20",
+    "guests": 2,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "100.00",
+    "nights": 1,
+    "room_total": "100.00",
+    "extras_total": "46.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "146.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-667BIG",
+    "created_at": "2026-06-19T11:21:35.354Z",
+    "updated_at": "2026-06-19T11:21:35.354Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 7,
+  "fields": {
+    "traveller": [
+      "chitemo"
+    ],
+    "booking_property": 4,
+    "check_in": "2026-06-21",
+    "check_out": "2026-06-22",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "75.00",
+    "nights": 1,
+    "room_total": "75.00",
+    "extras_total": "0.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "75.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-DDGF7G",
+    "created_at": "2026-06-21T10:41:54.475Z",
+    "updated_at": "2026-06-21T10:41:54.475Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 8,
+  "fields": {
+    "traveller": [
+      "chitemo"
+    ],
+    "booking_property": 4,
+    "check_in": "2026-06-24",
+    "check_out": "2026-06-25",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "75.00",
+    "nights": 1,
+    "room_total": "75.00",
+    "extras_total": "0.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "75.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-SG9USR",
+    "created_at": "2026-06-21T10:42:32.654Z",
+    "updated_at": "2026-06-21T10:42:32.654Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 9,
+  "fields": {
+    "traveller": [
+      "nganenepa"
+    ],
+    "booking_property": 4,
+    "check_in": "2026-06-25",
+    "check_out": "2026-06-26",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "75.00",
+    "nights": 1,
+    "room_total": "75.00",
+    "extras_total": "385.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "460.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-O4BLF2",
+    "created_at": "2026-06-21T18:25:56.413Z",
+    "updated_at": "2026-06-21T18:25:56.413Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 10,
+  "fields": {
+    "traveller": [
+      "aminata"
+    ],
+    "booking_property": 4,
+    "check_in": "2026-06-23",
+    "check_out": "2026-06-24",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "75.00",
+    "nights": 1,
+    "room_total": "75.00",
+    "extras_total": "385.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "460.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-FS2RM7",
+    "created_at": "2026-06-21T19:52:28.904Z",
+    "updated_at": "2026-06-21T19:52:28.904Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 11,
+  "fields": {
+    "traveller": [
+      "aminata"
+    ],
+    "booking_property": 2,
+    "check_in": "2026-06-21",
+    "check_out": "2026-06-22",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "100.00",
+    "nights": 1,
+    "room_total": "100.00",
+    "extras_total": "0.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "100.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-SKGVLI",
+    "created_at": "2026-06-21T20:08:06.711Z",
+    "updated_at": "2026-06-21T20:08:06.711Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 12,
+  "fields": {
+    "traveller": [
+      "chitemo"
+    ],
+    "booking_property": 1,
+    "check_in": "2026-06-25",
+    "check_out": "2026-06-26",
+    "guests": 2,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "30.00",
+    "nights": 1,
+    "room_total": "30.00",
+    "extras_total": "82.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "112.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-DW5GNS",
+    "created_at": "2026-06-22T07:08:06.796Z",
+    "updated_at": "2026-06-22T07:08:06.796Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 13,
+  "fields": {
+    "traveller": [
+      "juma"
+    ],
+    "booking_property": 2,
+    "check_in": "2026-06-26",
+    "check_out": "2026-06-27",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "100.00",
+    "nights": 1,
+    "room_total": "100.00",
+    "extras_total": "20.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "120.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-2Q63UK",
+    "created_at": "2026-06-24T22:17:08.785Z",
+    "updated_at": "2026-06-24T22:17:08.785Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 14,
+  "fields": {
+    "traveller": [
+      "juma"
+    ],
+    "booking_property": 3,
+    "check_in": "2026-06-27",
+    "check_out": "2026-06-29",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "150.00",
+    "nights": 2,
+    "room_total": "300.00",
+    "extras_total": "0.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "300.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-O7LYFD",
+    "created_at": "2026-06-25T07:18:30.667Z",
+    "updated_at": "2026-06-25T07:18:30.667Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 15,
+  "fields": {
+    "traveller": [
+      "aminata"
+    ],
+    "booking_property": 1,
+    "check_in": "2026-06-26",
+    "check_out": "2026-06-27",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "30.00",
+    "nights": 1,
+    "room_total": "30.00",
+    "extras_total": "57.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "87.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-RWSJ0Z",
+    "created_at": "2026-06-25T19:47:48.329Z",
+    "updated_at": "2026-06-25T19:47:48.329Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 16,
+  "fields": {
+    "traveller": [
+      "aminata"
+    ],
+    "booking_property": 5,
+    "check_in": "2026-06-27",
+    "check_out": "2026-06-28",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "100.00",
+    "nights": 1,
+    "room_total": "100.00",
+    "extras_total": "0.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "100.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-NN4K5C",
+    "created_at": "2026-06-25T19:50:47.834Z",
+    "updated_at": "2026-06-25T19:50:47.834Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 17,
+  "fields": {
+    "traveller": [
+      "karla"
+    ],
+    "booking_property": 3,
+    "check_in": "2026-06-30",
+    "check_out": "2026-07-02",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "150.00",
+    "nights": 2,
+    "room_total": "300.00",
+    "extras_total": "60.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "360.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-A6W9GX",
+    "created_at": "2026-06-29T14:43:11.107Z",
+    "updated_at": "2026-06-29T14:43:11.107Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 18,
+  "fields": {
+    "traveller": [
+      "karla"
+    ],
+    "booking_property": 1,
+    "check_in": "2026-06-30",
+    "check_out": "2026-07-01",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "30.00",
+    "nights": 1,
+    "room_total": "30.00",
+    "extras_total": "45.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "75.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-PC8BAA",
+    "created_at": "2026-06-29T14:59:04.520Z",
+    "updated_at": "2026-06-29T14:59:04.520Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 19,
+  "fields": {
+    "traveller": [
+      "karla"
+    ],
+    "booking_property": 2,
+    "check_in": "2026-07-08",
+    "check_out": "2026-07-09",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "100.00",
+    "nights": 1,
+    "room_total": "100.00",
+    "extras_total": "0.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "100.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-NM6PL2",
+    "created_at": "2026-06-29T15:02:43.865Z",
+    "updated_at": "2026-06-29T15:02:43.865Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 20,
+  "fields": {
+    "traveller": [
+      "marydee"
+    ],
+    "booking_property": 3,
+    "check_in": "2026-07-03",
+    "check_out": "2026-07-05",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "150.00",
+    "nights": 2,
+    "room_total": "300.00",
+    "extras_total": "154.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "454.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-22ELRT",
+    "created_at": "2026-06-30T08:33:49.661Z",
+    "updated_at": "2026-06-30T08:33:49.661Z"
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": 21,
+  "fields": {
+    "traveller": [
+      "chitemo"
+    ],
+    "booking_property": 4,
+    "check_in": "2026-07-06",
+    "check_out": "2026-07-07",
+    "guests": 1,
+    "adults": 1,
+    "children": 0,
+    "special_requests": "",
+    "price_per_night": "75.00",
+    "nights": 1,
+    "room_total": "75.00",
+    "extras_total": "62.00",
+    "tax_amount": "0.00",
+    "service_fee": "0.00",
+    "discount_amount": "0.00",
+    "deposit_amount": "0.00",
+    "grand_total": "137.00",
+    "coupon": null,
+    "cancellation_policy": "",
+    "cancelled_at": null,
+    "cancellation_reason": "",
+    "refund_amount": null,
+    "confirmation_email_sent": false,
+    "welcome_email_sent": false,
+    "goodbye_email_sent": false,
+    "status": "confirmed",
+    "reference": "BMS-F4MNVP",
+    "created_at": "2026-06-30T08:50:56.548Z",
+    "updated_at": "2026-06-30T08:50:56.548Z"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 1,
+  "fields": {
+    "booking": 1,
+    "extra_name": "City Tour",
+    "extra_price": "20.00",
+    "charge_type": "per_person",
+    "subtotal": "60.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 2,
+  "fields": {
+    "booking": 1,
+    "extra_name": "Airport Pickup",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 3,
+  "fields": {
+    "booking": 1,
+    "extra_name": "Wi-Fi",
+    "extra_price": "2.00",
+    "charge_type": "once",
+    "subtotal": "2.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 4,
+  "fields": {
+    "booking": 1,
+    "extra_name": "Breakfast",
+    "extra_price": "5.00",
+    "charge_type": "per_person",
+    "subtotal": "15.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 5,
+  "fields": {
+    "booking": 2,
+    "extra_name": "Airport Pickup",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 6,
+  "fields": {
+    "booking": 2,
+    "extra_name": "Breakfast",
+    "extra_price": "5.00",
+    "charge_type": "per_person",
+    "subtotal": "5.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 7,
+  "fields": {
+    "booking": 2,
+    "extra_name": "Pool Access",
+    "extra_price": "10.00",
+    "charge_type": "once",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 8,
+  "fields": {
+    "booking": 4,
+    "extra_name": "Gym",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 9,
+  "fields": {
+    "booking": 4,
+    "extra_name": "Airport Pickup",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 10,
+  "fields": {
+    "booking": 4,
+    "extra_name": "Wi-Fi",
+    "extra_price": "0.00",
+    "charge_type": "once",
+    "subtotal": "0.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 11,
+  "fields": {
+    "booking": 4,
+    "extra_name": "Dinner",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 12,
+  "fields": {
+    "booking": 4,
+    "extra_name": "Breakfast",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 13,
+  "fields": {
+    "booking": 5,
+    "extra_name": "Breakfast",
+    "extra_price": "5.00",
+    "charge_type": "per_person",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 14,
+  "fields": {
+    "booking": 5,
+    "extra_name": "Dinner",
+    "extra_price": "8.00",
+    "charge_type": "per_person",
+    "subtotal": "16.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 15,
+  "fields": {
+    "booking": 6,
+    "extra_name": "Gym",
+    "extra_price": "10.00",
+    "charge_type": "once",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 16,
+  "fields": {
+    "booking": 6,
+    "extra_name": "Airport Pickup",
+    "extra_price": "10.00",
+    "charge_type": "once",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 17,
+  "fields": {
+    "booking": 6,
+    "extra_name": "Dinner",
+    "extra_price": "8.00",
+    "charge_type": "per_person",
+    "subtotal": "16.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 18,
+  "fields": {
+    "booking": 6,
+    "extra_name": "Breakfast",
+    "extra_price": "5.00",
+    "charge_type": "per_person",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 19,
+  "fields": {
+    "booking": 9,
+    "extra_name": "Breakfast",
+    "extra_price": "10.00",
+    "charge_type": "per_person",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 20,
+  "fields": {
+    "booking": 9,
+    "extra_name": "City Tour",
+    "extra_price": "35.00",
+    "charge_type": "once",
+    "subtotal": "35.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 21,
+  "fields": {
+    "booking": 9,
+    "extra_name": "Airport Pickup",
+    "extra_price": "40.00",
+    "charge_type": "once",
+    "subtotal": "40.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 22,
+  "fields": {
+    "booking": 9,
+    "extra_name": "Dinner",
+    "extra_price": "25.00",
+    "charge_type": "per_person",
+    "subtotal": "25.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 23,
+  "fields": {
+    "booking": 9,
+    "extra_name": "Airport Drop-off",
+    "extra_price": "40.00",
+    "charge_type": "once",
+    "subtotal": "40.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 24,
+  "fields": {
+    "booking": 9,
+    "extra_name": "Welcome Drink",
+    "extra_price": "10.00",
+    "charge_type": "once",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 25,
+  "fields": {
+    "booking": 9,
+    "extra_name": "Swimming Pool Access",
+    "extra_price": "10.00",
+    "charge_type": "per_night",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 26,
+  "fields": {
+    "booking": 9,
+    "extra_name": "Gym Access",
+    "extra_price": "8.00",
+    "charge_type": "per_night",
+    "subtotal": "8.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 27,
+  "fields": {
+    "booking": 9,
+    "extra_name": "Boat Transfer",
+    "extra_price": "55.00",
+    "charge_type": "once",
+    "subtotal": "55.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 28,
+  "fields": {
+    "booking": 9,
+    "extra_name": "Laundry Service",
+    "extra_price": "12.00",
+    "charge_type": "once",
+    "subtotal": "12.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 29,
+  "fields": {
+    "booking": 9,
+    "extra_name": "Car Rental",
+    "extra_price": "80.00",
+    "charge_type": "per_night",
+    "subtotal": "80.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 30,
+  "fields": {
+    "booking": 9,
+    "extra_name": "Spa Treatment",
+    "extra_price": "60.00",
+    "charge_type": "once",
+    "subtotal": "60.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 31,
+  "fields": {
+    "booking": 10,
+    "extra_name": "Breakfast",
+    "extra_price": "10.00",
+    "charge_type": "per_person",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 32,
+  "fields": {
+    "booking": 10,
+    "extra_name": "Spa Treatment",
+    "extra_price": "60.00",
+    "charge_type": "once",
+    "subtotal": "60.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 33,
+  "fields": {
+    "booking": 10,
+    "extra_name": "Dinner",
+    "extra_price": "25.00",
+    "charge_type": "per_person",
+    "subtotal": "25.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 34,
+  "fields": {
+    "booking": 10,
+    "extra_name": "Swimming Pool Access",
+    "extra_price": "10.00",
+    "charge_type": "per_night",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 35,
+  "fields": {
+    "booking": 10,
+    "extra_name": "Welcome Drink",
+    "extra_price": "10.00",
+    "charge_type": "once",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 36,
+  "fields": {
+    "booking": 10,
+    "extra_name": "Airport Drop-off",
+    "extra_price": "40.00",
+    "charge_type": "once",
+    "subtotal": "40.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 37,
+  "fields": {
+    "booking": 10,
+    "extra_name": "Gym Access",
+    "extra_price": "8.00",
+    "charge_type": "per_night",
+    "subtotal": "8.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 38,
+  "fields": {
+    "booking": 10,
+    "extra_name": "Airport Pickup",
+    "extra_price": "40.00",
+    "charge_type": "once",
+    "subtotal": "40.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 39,
+  "fields": {
+    "booking": 10,
+    "extra_name": "City Tour",
+    "extra_price": "35.00",
+    "charge_type": "once",
+    "subtotal": "35.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 40,
+  "fields": {
+    "booking": 10,
+    "extra_name": "Car Rental",
+    "extra_price": "80.00",
+    "charge_type": "per_night",
+    "subtotal": "80.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 41,
+  "fields": {
+    "booking": 10,
+    "extra_name": "Laundry Service",
+    "extra_price": "12.00",
+    "charge_type": "once",
+    "subtotal": "12.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 42,
+  "fields": {
+    "booking": 10,
+    "extra_name": "Boat Transfer",
+    "extra_price": "55.00",
+    "charge_type": "once",
+    "subtotal": "55.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 43,
+  "fields": {
+    "booking": 12,
+    "extra_name": "Breakfast",
+    "extra_price": "5.00",
+    "charge_type": "per_person",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 44,
+  "fields": {
+    "booking": 12,
+    "extra_name": "Airport Pickup",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 45,
+  "fields": {
+    "booking": 12,
+    "extra_name": "Pool Access",
+    "extra_price": "10.00",
+    "charge_type": "once",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 46,
+  "fields": {
+    "booking": 12,
+    "extra_name": "Wi-Fi",
+    "extra_price": "2.00",
+    "charge_type": "once",
+    "subtotal": "2.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 47,
+  "fields": {
+    "booking": 12,
+    "extra_name": "City Tour",
+    "extra_price": "20.00",
+    "charge_type": "per_person",
+    "subtotal": "40.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 48,
+  "fields": {
+    "booking": 13,
+    "extra_name": "Gym",
+    "extra_price": "10.00",
+    "charge_type": "once",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 49,
+  "fields": {
+    "booking": 13,
+    "extra_name": "Airport Pickup",
+    "extra_price": "10.00",
+    "charge_type": "once",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 50,
+  "fields": {
+    "booking": 15,
+    "extra_name": "Airport Pickup",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 51,
+  "fields": {
+    "booking": 15,
+    "extra_name": "Wi-Fi",
+    "extra_price": "2.00",
+    "charge_type": "once",
+    "subtotal": "2.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 52,
+  "fields": {
+    "booking": 15,
+    "extra_name": "City Tour",
+    "extra_price": "20.00",
+    "charge_type": "per_person",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 53,
+  "fields": {
+    "booking": 15,
+    "extra_name": "Pool Access",
+    "extra_price": "10.00",
+    "charge_type": "once",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 54,
+  "fields": {
+    "booking": 15,
+    "extra_name": "Breakfast",
+    "extra_price": "5.00",
+    "charge_type": "per_person",
+    "subtotal": "5.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 55,
+  "fields": {
+    "booking": 17,
+    "extra_name": "Airport Pickup",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 56,
+  "fields": {
+    "booking": 17,
+    "extra_name": "Gym",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 57,
+  "fields": {
+    "booking": 17,
+    "extra_name": "Breakfast",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 58,
+  "fields": {
+    "booking": 18,
+    "extra_name": "Breakfast",
+    "extra_price": "5.00",
+    "charge_type": "per_person",
+    "subtotal": "5.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 59,
+  "fields": {
+    "booking": 18,
+    "extra_name": "Airport Pickup",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 60,
+  "fields": {
+    "booking": 18,
+    "extra_name": "City Tour",
+    "extra_price": "20.00",
+    "charge_type": "per_person",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 61,
+  "fields": {
+    "booking": 20,
+    "extra_name": "Airport Pickup",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 62,
+  "fields": {
+    "booking": 20,
+    "extra_name": "Gym",
+    "extra_price": "20.00",
+    "charge_type": "once",
+    "subtotal": "20.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 63,
+  "fields": {
+    "booking": 20,
+    "extra_name": "Full Board (3 Meals)",
+    "extra_price": "50.00",
+    "charge_type": "per_person",
+    "subtotal": "50.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 64,
+  "fields": {
+    "booking": 20,
+    "extra_name": "Airport Drop-off",
+    "extra_price": "40.00",
+    "charge_type": "once",
+    "subtotal": "40.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 65,
+  "fields": {
+    "booking": 20,
+    "extra_name": "Welcome Drink",
+    "extra_price": "10.00",
+    "charge_type": "once",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 66,
+  "fields": {
+    "booking": 20,
+    "extra_name": "Wi-Fi",
+    "extra_price": "2.00",
+    "charge_type": "per_night",
+    "subtotal": "4.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 67,
+  "fields": {
+    "booking": 20,
+    "extra_name": "Extra Towels & Linens",
+    "extra_price": "5.00",
+    "charge_type": "per_night",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 68,
+  "fields": {
+    "booking": 21,
+    "extra_name": "Swimming Pool Access",
+    "extra_price": "10.00",
+    "charge_type": "per_night",
+    "subtotal": "10.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 69,
+  "fields": {
+    "booking": 21,
+    "extra_name": "Airport Drop-off",
+    "extra_price": "40.00",
+    "charge_type": "once",
+    "subtotal": "40.00"
+  }
+},
+{
+  "model": "bookings.bookingextra",
+  "pk": 70,
+  "fields": {
+    "booking": 21,
+    "extra_name": "Laundry Service",
+    "extra_price": "12.00",
+    "charge_type": "once",
+    "subtotal": "12.00"
+  }
+},
+{
+  "model": "payments.currencyconfig",
+  "pk": 1,
+  "fields": {
+    "usd_to_tzs": "2500.00",
+    "usd_enabled": true,
+    "tzs_enabled": true,
+    "updated_at": "2026-06-26T07:19:09.614Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 1,
+  "fields": {
+    "booking": 1,
+    "traveller": [
+      "juma"
+    ],
+    "payment_method": "card",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "157.00",
+    "amount_usd": "0.00",
+    "transaction_id": "3E73D36F-4AAF-4A",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-14T14:18:08.680Z",
+    "created_at": "2026-06-14T14:18:08.681Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 2,
+  "fields": {
+    "booking": 2,
+    "traveller": [
+      "juma"
+    ],
+    "payment_method": "card",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "65.00",
+    "amount_usd": "0.00",
+    "transaction_id": "43A33ADF-BFE5-44",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-15T10:45:52.449Z",
+    "created_at": "2026-06-15T10:45:52.450Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 3,
+  "fields": {
+    "booking": 3,
+    "traveller": [
+      "aminata"
+    ],
+    "payment_method": "airtel",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "149.99",
+    "amount_usd": "0.00",
+    "transaction_id": "6F380833-CC9E-48",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-16T08:20:11.322Z",
+    "created_at": "2026-06-16T08:20:11.322Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 4,
+  "fields": {
+    "booking": 4,
+    "traveller": [
+      "john"
+    ],
+    "payment_method": "mpesa",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "230.00",
+    "amount_usd": "0.00",
+    "transaction_id": "A381AE74-0458-49",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-17T08:10:06.015Z",
+    "created_at": "2026-06-17T08:10:06.015Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 5,
+  "fields": {
+    "booking": 5,
+    "traveller": [
+      "john"
+    ],
+    "payment_method": "cash",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "126.00",
+    "amount_usd": "0.00",
+    "transaction_id": "C6ECA270-1BF7-47",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-17T20:19:26.207Z",
+    "created_at": "2026-06-17T20:19:26.208Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 6,
+  "fields": {
+    "booking": 6,
+    "traveller": [
+      "karla"
+    ],
+    "payment_method": "card",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "146.00",
+    "amount_usd": "0.00",
+    "transaction_id": "D702D11B-B93F-4F",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-19T11:21:35.408Z",
+    "created_at": "2026-06-19T11:21:35.408Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 7,
+  "fields": {
+    "booking": 7,
+    "traveller": [
+      "chitemo"
+    ],
+    "payment_method": "mpesa",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "75.00",
+    "amount_usd": "0.00",
+    "transaction_id": "3A905B6C-359B-40",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-21T10:41:54.485Z",
+    "created_at": "2026-06-21T10:41:54.486Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 8,
+  "fields": {
+    "booking": 8,
+    "traveller": [
+      "chitemo"
+    ],
+    "payment_method": "mpesa",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "75.00",
+    "amount_usd": "0.00",
+    "transaction_id": "F663740C-0D7E-4E",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-21T10:42:32.668Z",
+    "created_at": "2026-06-21T10:42:32.668Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 9,
+  "fields": {
+    "booking": 9,
+    "traveller": [
+      "nganenepa"
+    ],
+    "payment_method": "card",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "460.00",
+    "amount_usd": "0.00",
+    "transaction_id": "DE362E61-9628-4F",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-21T18:25:56.610Z",
+    "created_at": "2026-06-21T18:25:56.610Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 10,
+  "fields": {
+    "booking": 10,
+    "traveller": [
+      "aminata"
+    ],
+    "payment_method": "card",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "460.00",
+    "amount_usd": "0.00",
+    "transaction_id": "0C2C1470-2F7D-48",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-21T19:52:29.024Z",
+    "created_at": "2026-06-21T19:52:29.024Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 11,
+  "fields": {
+    "booking": 11,
+    "traveller": [
+      "aminata"
+    ],
+    "payment_method": "airtel",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "100.00",
+    "amount_usd": "0.00",
+    "transaction_id": "DFC3C73E-39F0-44",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-21T20:08:06.725Z",
+    "created_at": "2026-06-21T20:08:06.727Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 12,
+  "fields": {
+    "booking": 12,
+    "traveller": [
+      "chitemo"
+    ],
+    "payment_method": "card",
+    "provider": "",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "112.00",
+    "amount_usd": "0.00",
+    "transaction_id": "20F1FA58-53A5-43",
+    "authorization_code": "",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-22T07:08:06.856Z",
+    "created_at": "2026-06-22T07:08:06.858Z",
+    "updated_at": "2026-06-24T22:14:43.009Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 13,
+  "fields": {
+    "booking": 13,
+    "traveller": [
+      "juma"
+    ],
+    "payment_method": "mpesa",
+    "provider": "mpesa",
+    "currency": "TZS",
+    "exchange_rate": "2600.00",
+    "amount": "312000.00",
+    "amount_usd": "120.00",
+    "transaction_id": "TXN-677239C4-202606242217",
+    "authorization_code": "",
+    "receipt_number": "RCP-MP-LURHXUPBCW",
+    "status": "success",
+    "payment_date": "2026-06-24T22:17:08.809Z",
+    "created_at": "2026-06-24T22:17:08.810Z",
+    "updated_at": "2026-06-24T22:17:08.810Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 14,
+  "fields": {
+    "booking": 14,
+    "traveller": [
+      "juma"
+    ],
+    "payment_method": "credit_card",
+    "provider": "mpesa",
+    "currency": "TZS",
+    "exchange_rate": "2600.00",
+    "amount": "780000.00",
+    "amount_usd": "300.00",
+    "transaction_id": "TXN-D5C1B0F7-202606250718",
+    "authorization_code": "AUTH-274629",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-25T07:18:30.681Z",
+    "created_at": "2026-06-25T07:18:30.682Z",
+    "updated_at": "2026-06-25T07:18:30.682Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 15,
+  "fields": {
+    "booking": 15,
+    "traveller": [
+      "aminata"
+    ],
+    "payment_method": "airtel",
+    "provider": "airtel",
+    "currency": "TZS",
+    "exchange_rate": "2600.00",
+    "amount": "226200.00",
+    "amount_usd": "87.00",
+    "transaction_id": "TXN-2EFFB3EC-202606251947",
+    "authorization_code": "",
+    "receipt_number": "RCP-AM-UKP1V43ZGE",
+    "status": "success",
+    "payment_date": "2026-06-25T19:47:48.377Z",
+    "created_at": "2026-06-25T19:47:48.378Z",
+    "updated_at": "2026-06-25T19:47:48.378Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 16,
+  "fields": {
+    "booking": 16,
+    "traveller": [
+      "aminata"
+    ],
+    "payment_method": "credit_card",
+    "provider": "Visa",
+    "currency": "TZS",
+    "exchange_rate": "2600.00",
+    "amount": "260000.00",
+    "amount_usd": "100.00",
+    "transaction_id": "TXN-A6FE7DFC-202606251950",
+    "authorization_code": "AUTH-655090",
+    "receipt_number": "",
+    "status": "success",
+    "payment_date": "2026-06-25T19:50:47.841Z",
+    "created_at": "2026-06-25T19:50:47.842Z",
+    "updated_at": "2026-06-25T19:50:47.842Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 17,
+  "fields": {
+    "booking": 17,
+    "traveller": [
+      "karla"
+    ],
+    "payment_method": "airtel",
+    "provider": "airtel",
+    "currency": "TZS",
+    "exchange_rate": "2500.00",
+    "amount": "900000.00",
+    "amount_usd": "360.00",
+    "transaction_id": "TXN-569C8C2E-202606291443",
+    "authorization_code": "",
+    "receipt_number": "RCP-AM-O5YXY5GPPE",
+    "status": "success",
+    "payment_date": "2026-06-29T14:43:11.149Z",
+    "created_at": "2026-06-29T14:43:11.150Z",
+    "updated_at": "2026-06-29T14:43:11.150Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 18,
+  "fields": {
+    "booking": 18,
+    "traveller": [
+      "karla"
+    ],
+    "payment_method": "airtel",
+    "provider": "airtel",
+    "currency": "TZS",
+    "exchange_rate": "2500.00",
+    "amount": "187500.00",
+    "amount_usd": "75.00",
+    "transaction_id": "TXN-38A2A1B8-202606291459",
+    "authorization_code": "",
+    "receipt_number": "RCP-AM-GRO14N8MOP",
+    "status": "success",
+    "payment_date": "2026-06-29T14:59:04.588Z",
+    "created_at": "2026-06-29T14:59:04.590Z",
+    "updated_at": "2026-06-29T14:59:04.590Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 19,
+  "fields": {
+    "booking": 19,
+    "traveller": [
+      "karla"
+    ],
+    "payment_method": "mpesa",
+    "provider": "mpesa",
+    "currency": "TZS",
+    "exchange_rate": "2500.00",
+    "amount": "250000.00",
+    "amount_usd": "100.00",
+    "transaction_id": "TXN-F2226E33-202606291502",
+    "authorization_code": "",
+    "receipt_number": "RCP-MP-LHH0EV19B2",
+    "status": "success",
+    "payment_date": "2026-06-29T15:02:43.874Z",
+    "created_at": "2026-06-29T15:02:43.874Z",
+    "updated_at": "2026-06-29T15:02:43.874Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 20,
+  "fields": {
+    "booking": 20,
+    "traveller": [
+      "marydee"
+    ],
+    "payment_method": "mpesa",
+    "provider": "mpesa",
+    "currency": "TZS",
+    "exchange_rate": "2500.00",
+    "amount": "1135000.00",
+    "amount_usd": "454.00",
+    "transaction_id": "TXN-FE44C7FB-202606300833",
+    "authorization_code": "",
+    "receipt_number": "RCP-MP-CJKWX8CW9D",
+    "status": "success",
+    "payment_date": "2026-06-30T08:33:49.735Z",
+    "created_at": "2026-06-30T08:33:49.735Z",
+    "updated_at": "2026-06-30T08:33:49.735Z"
+  }
+},
+{
+  "model": "payments.payment",
+  "pk": 21,
+  "fields": {
+    "booking": 21,
+    "traveller": [
+      "chitemo"
+    ],
+    "payment_method": "airtel",
+    "provider": "airtel",
+    "currency": "USD",
+    "exchange_rate": "1.00",
+    "amount": "137.00",
+    "amount_usd": "137.00",
+    "transaction_id": "TXN-49DA71E4-202606300850",
+    "authorization_code": "",
+    "receipt_number": "RCP-AM-DG8SOSESPY",
+    "status": "success",
+    "payment_date": "2026-06-30T08:50:56.587Z",
+    "created_at": "2026-06-30T08:50:56.587Z",
+    "updated_at": "2026-06-30T08:50:56.587Z"
+  }
+},
+{
+  "model": "reviews.review",
+  "pk": 1,
+  "fields": {
+    "booking": 1,
+    "traveller": [
+      "juma"
+    ],
+    "property": 1,
+    "rating": 5,
+    "cleanliness": 5,
+    "location": 4,
+    "value": 5,
+    "title": "Superb...",
+    "comment": "I loved everything out there...",
+    "is_hidden": false,
+    "hidden_reason": "",
+    "moderated_by": null,
+    "moderated_at": null,
+    "created_at": "2026-06-14T18:54:08.696Z"
+  }
+},
+{
+  "model": "reviews.review",
+  "pk": 2,
+  "fields": {
+    "booking": 2,
+    "traveller": [
+      "juma"
+    ],
+    "property": 1,
+    "rating": 5,
+    "cleanliness": 5,
+    "location": 5,
+    "value": 5,
+    "title": ";swoiuAIUFGXFE42T53YT5Y",
+    "comment": "HE1RY456T3WEWArwq4aurty",
+    "is_hidden": false,
+    "hidden_reason": "",
+    "moderated_by": null,
+    "moderated_at": null,
+    "created_at": "2026-06-15T10:46:56.099Z"
+  }
+},
+{
+  "model": "reviews.review",
+  "pk": 3,
+  "fields": {
+    "booking": 6,
+    "traveller": [
+      "karla"
+    ],
+    "property": 2,
+    "rating": 5,
+    "cleanliness": 4,
+    "location": 5,
+    "value": 5,
+    "title": "jghftdgtg",
+    "comment": "tersrxsurl75euewy45ew",
+    "is_hidden": false,
+    "hidden_reason": "",
+    "moderated_by": null,
+    "moderated_at": null,
+    "created_at": "2026-06-19T11:26:05.722Z"
+  }
+},
+{
+  "model": "reviews.review",
+  "pk": 4,
+  "fields": {
+    "booking": 7,
+    "traveller": [
+      "chitemo"
+    ],
+    "property": 4,
+    "rating": 5,
+    "cleanliness": 4,
+    "location": 5,
+    "value": 5,
+    "title": "baaab kubwa",
+    "comment": "Saafi",
+    "is_hidden": false,
+    "hidden_reason": "",
+    "moderated_by": null,
+    "moderated_at": null,
+    "created_at": "2026-06-22T07:09:40.797Z"
+  }
+},
+{
+  "model": "reviews.review",
+  "pk": 5,
+  "fields": {
+    "booking": 20,
+    "traveller": [
+      "marydee"
+    ],
+    "property": 3,
+    "rating": 5,
+    "cleanliness": 5,
+    "location": 5,
+    "value": 5,
+    "title": "yre'lfsgj;kretu",
+    "comment": "64wtryipo54w'p",
+    "is_hidden": false,
+    "hidden_reason": "",
+    "moderated_by": null,
+    "moderated_at": null,
+    "created_at": "2026-06-30T08:36:20.775Z"
+  }
+},
+{
+  "model": "reviews.review",
+  "pk": 6,
+  "fields": {
+    "booking": 21,
+    "traveller": [
+      "chitemo"
+    ],
+    "property": 4,
+    "rating": 4,
+    "cleanliness": 5,
+    "location": 4,
+    "value": 3,
+    "title": "good",
+    "comment": "better",
+    "is_hidden": false,
+    "hidden_reason": "",
+    "moderated_by": null,
+    "moderated_at": "2026-07-13T06:20:42.985Z",
+    "created_at": "2026-06-30T08:52:47.885Z"
+  }
+}
+]

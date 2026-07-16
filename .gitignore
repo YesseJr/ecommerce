@@ -14,6 +14,7 @@ db.sqlite3
 media/
 staticfiles/
 *.log
+stay_emails_log.txt
 
 # Editor/OS
 .vscode/

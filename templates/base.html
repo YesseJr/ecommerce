@@ -37,147 +37,29 @@
   <div id="scroll-progress" class="fixed top-0 left-0 h-[3px] bg-accent z-[60]" style="width:0%;"></div>
 
   <!-- ─── NAVBAR ─── -->
-  <nav id="site-nav" class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-16 py-4 transition-all duration-500">
+  <nav id="site-nav" class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-6 md:px-10 lg:px-16 py-4 transition-all duration-500">
 
     <!-- Logo -->
-    <a href="{% url 'properties:home' %}" class="font-bebas text-3xl tracking-widest text-white">
+    <a href="{% url 'properties:home' %}" class="font-bebas text-2xl sm:text-3xl tracking-widest text-white">
       Book<span class="text-accent">MyStay</span>
     </a>
 
-    <div class="flex items-center gap-8">
-
-      <!-- ── Currency Selector (all users including guests) ── -->
-      <div class="flex items-center gap-1 bg-white/10 rounded-full px-1 py-1">
-        <button id="nav-usd" onclick="navSetCurrency('USD')"
-                class="nav-curr-btn text-xs font-bold px-3 py-1.5 rounded-full transition-all text-white/60 hover:text-white">
-          $ USD
-        </button>
-        <button id="nav-tzs" onclick="navSetCurrency('TZS')"
-                class="nav-curr-btn text-xs font-bold px-3 py-1.5 rounded-full transition-all text-white/60 hover:text-white">
-          TSh
-        </button>
-      </div>
-
-      {% if not user.is_authenticated %}
-        <a href="{% url 'properties:home' %}"
-           class="text-white/80 hover:text-accent text-sm font-medium transition">
-          Home
-        </a>
-      {% endif %}
-
-      <!-- Traveller Dashboard goes first, before Properties -->
-      {% if user.is_traveller %}
-        <a href="{% url 'properties:traveller_dashboard' %}"
-           class="text-white/80 hover:text-accent text-sm font-medium transition">
-          Dashboard
-        </a>
-      {% endif %}
-
-      <!-- Hide Properties for owners only -->
-      {% if not user.is_owner %}
-        <a href="{% url 'properties:list' %}"
-           class="text-white/80 hover:text-accent text-sm font-medium transition">
-          Properties
-        </a>
-      {% endif %}
-
-      {% if user.is_authenticated %}
-
-        <!-- ── SUPERUSER / ADMIN ── -->
-        {% if user.is_superuser %}
-          <a href="{% url 'admin:index' %}"
-             class="text-white/80 hover:text-accent text-sm font-medium transition">
-            Admin Panel
-          </a>
-          <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
-            Admin
-          </span>
-
-        <!-- ── PROPERTY OWNER ── -->
-        {% elif user.is_owner %}
-          <a href="{% url 'properties:owner_dashboard' %}"
-             class="text-white/80 hover:text-accent text-sm font-medium transition">
-            Dashboard
-          </a>
-          <a href="{% url 'properties:owner_revenue' %}"
-             class="text-white/80 hover:text-accent text-sm font-medium transition">
-            Revenue Analytics
-          </a>
-          <a href="{% url 'properties:add_property' %}"
-             class="text-white/80 hover:text-accent text-sm font-medium transition">
-            List Property
-          </a>
-          <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
-            Owner
-          </span>
-
-        <!-- ── TRAVELLER ── -->
-        {% elif user.is_traveller %}
-          <a href="{% url 'payments:my_bookings' %}"
-             class="text-white/80 hover:text-accent text-sm font-medium transition">
-            My Bookings
-          </a>
-          <a href="{% url 'bookings:cart' %}"
-             class="text-white/80 hover:text-accent text-sm font-medium transition">
-            🛒Cart
-          </a>
-
-        <!-- ── MODERATOR / SUPPORT / FINANCE ── -->
-        {% elif user.is_staff_role %}
-          <a href="{% url 'staff:hub' %}"
-             class="text-white/80 hover:text-accent text-sm font-medium transition">
-            Staff Panel
-          </a>
-          <span class="text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
-            {{ user.get_role_display }}
-          </span>
-
-        {% endif %}
-
-        <!-- Wishlist, Inbox, Notifications — visible to all logged-in users -->
-        <a href="{% url 'properties:wishlist' %}" title="Wishlist"
-           class="text-white/70 hover:text-accent transition">
-          <i data-lucide="heart" class="w-[18px] h-[18px]"></i>
-        </a>
-        <a href="{% url 'inbox:inbox' %}" title="Messages"
-           class="text-white/70 hover:text-accent transition">
-          <i data-lucide="message-circle" class="w-[18px] h-[18px]"></i>
-        </a>
-        <div class="relative">
-          <button type="button" id="notif-bell-btn" title="Notifications"
-                  class="relative text-white/70 hover:text-accent transition">
-            <i data-lucide="bell" class="w-[18px] h-[18px]"></i>
-            <span id="notif-badge" class="hidden absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-accent text-white text-[9px] font-bold flex items-center justify-center"></span>
-          </button>
-          <div id="notif-dropdown" class="hidden absolute right-0 top-full mt-3 w-80 bg-white rounded-2xl shadow-2xl overflow-hidden text-left z-50"></div>
-        </div>
-
-        <!-- Profile & Logout — visible to all logged in users -->
-        <a href="{% url 'users:profile' %}"
-           class="text-white/80 hover:text-accent text-sm font-medium transition">
-          {{ user.first_name|default:user.username }}
-        </a>
-        <a href="{% url 'users:logout' %}"
-           class="bg-white/10 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-white/20 transition">
-          Logout
-        </a>
-
-      {% else %}
-
-        <!-- ── GUEST (not logged in) ── -->
-        <a href="{% url 'users:login' %}"
-           class="text-white/80 hover:text-accent text-sm font-medium transition">
-          Login
-        </a>
-        <a href="{% url 'users:register' %}"
-           class="bg-accent text-white px-5 py-2 rounded-full text-sm font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all">
-          Get Started
-        </a>
-
-      {% endif %}
-
+    <!-- Desktop nav -->
+    <div class="hidden lg:flex items-center gap-8">
+      {% include 'partials/_nav_links.html' with mobile=False %}
     </div>
+
+    <!-- Mobile hamburger -->
+    <button type="button" id="mobile-menu-btn" aria-label="Open menu"
+            class="lg:hidden text-white p-2 -mr-2">
+      <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
+    </button>
   </nav>
+
+  <!-- Mobile drawer -->
+  <div id="mobile-menu" class="hidden lg:hidden fixed inset-0 z-40 bg-dark/98 backdrop-blur pt-24 px-6 overflow-y-auto">
+    {% include 'partials/_nav_links.html' with mobile=True %}
+  </div>
 
   <!-- ─── MESSAGES ─── -->
   {% if messages %}
@@ -280,16 +162,18 @@
       {% endif %}
 
       function updateNavButtons(c) {
-        var usdBtn = document.getElementById('nav-usd');
-        var tzsBtn = document.getElementById('nav-tzs');
-        if (!usdBtn || !tzsBtn) return;
-        [usdBtn, tzsBtn].forEach(function(b) {
+        // Matches every currency button on the page — desktop nav AND the
+        // mobile drawer both use the .nav-curr-btn class, so one call
+        // keeps them in sync regardless of which one was clicked.
+        document.querySelectorAll('.nav-curr-btn').forEach(function(b) {
           b.style.background = '';
           b.style.color = 'rgba(255,255,255,0.6)';
         });
-        var active = c === 'TZS' ? tzsBtn : usdBtn;
-        active.style.background = 'rgba(255,255,255,0.2)';
-        active.style.color = 'white';
+        var idSuffix = c === 'TZS' ? 'nav-tzs' : 'nav-usd';
+        document.querySelectorAll('[id$="' + idSuffix + '"]').forEach(function(b) {
+          b.style.background = 'rgba(255,255,255,0.2)';
+          b.style.color = 'white';
+        });
       }
 
       function navSetCurrency(c) {
@@ -348,6 +232,29 @@
           });
         }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
         els.forEach(function(el) { io.observe(el); });
+      }
+
+      // ── Mobile hamburger menu ──────────────────────────────────────
+      var menuBtn  = document.getElementById('mobile-menu-btn');
+      var menuIcon = document.getElementById('mobile-menu-icon');
+      var menu     = document.getElementById('mobile-menu');
+      if (menuBtn && menu) {
+        menuBtn.addEventListener('click', function() {
+          var isOpen = !menu.classList.contains('hidden');
+          menu.classList.toggle('hidden');
+          document.body.style.overflow = isOpen ? '' : 'hidden';
+          if (menuIcon) menuIcon.setAttribute('data-lucide', isOpen ? 'menu' : 'x');
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+        // Close the drawer when any link inside it is tapped
+        menu.querySelectorAll('a').forEach(function(a) {
+          a.addEventListener('click', function() {
+            menu.classList.add('hidden');
+            document.body.style.overflow = '';
+            if (menuIcon) menuIcon.setAttribute('data-lucide', 'menu');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+          });
+        });
       }
 
       var nav = document.getElementById('site-nav');

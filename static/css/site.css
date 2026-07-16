@@ -111,6 +111,52 @@ body.has-hero main { padding-top: 0 !important; }
 .fade-up-3 { animation-delay: .4s; }
 .fade-up-4 { animation-delay: .55s; }
 
+/* ── Pop-in — punchy, "advertisement reveal" entrance ────────
+   Overshoots past 100% scale then settles, unlike the gentler
+   fade-up above. Used for the hero's headline/badge/CTA so they
+   feel alive against the continuously-moving background. ──── */
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.55) translateY(26px); filter: blur(6px); }
+  55%  { opacity: 1; transform: scale(1.06) translateY(-3px); filter: blur(0); }
+  75%  { transform: scale(0.98) translateY(1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.pop-in {
+  display: inline-block;
+  opacity: 0;
+  animation: popIn 0.85s cubic-bezier(.22,1,.36,1) both;
+}
+.pop-in-1 { animation-delay: .05s; }
+.pop-in-2 { animation-delay: .28s; }
+.pop-in-3 { animation-delay: .48s; }
+.pop-in-4 { animation-delay: .68s; }
+.pop-in-5 { animation-delay: .95s; }
+.pop-in-6 { animation-delay: 1.15s; }
+.pop-in-7 { animation-delay: 1.3s; }
+
+/* Accent word: pop-in entrance + continuous shimmer combined into a
+   single animation shorthand — putting .pop-in and .text-shimmer as
+   two separate classes on one element would conflict, since only the
+   later class's `animation` declaration would win and silently drop
+   the other. This class does both at once instead. */
+@keyframes textShimmer {
+  0%   { background-position: 0% center; }
+  100% { background-position: -200% center; }
+}
+.hero-word-shimmer {
+  display: inline-block;
+  opacity: 0;
+  background: linear-gradient(90deg, #FDBA74 0%, #F97316 25%, #FDBA74 50%, #F97316 75%, #FDBA74 100%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation:
+    popIn 0.85s cubic-bezier(.22,1,.36,1) .48s both,
+    textShimmer 4.5s linear 1.6s infinite;
+}
+
 /* ── Floating glass badge ──────────────────────────────────── */
 .glass-badge {
   backdrop-filter: blur(14px);
@@ -136,6 +182,28 @@ body.has-hero main { padding-top: 0 !important; }
 .wishlist-btn svg { transition: all .25s ease; }
 .wishlist-btn.is-saved svg { fill: #F97316; color: #F97316; transform: scale(1.15); }
 
+/* ── 3D tilt cards — transform is set directly via JS on          ──
+   mousemove (no CSS transition, for real-time tracking); the
+   `.tilt-reset` class adds a transition just for the snap-back
+   on mouseleave, so the two never fight over the same property. */
+.tilt-card {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt-card.tilt-reset { transition: transform 0.5s cubic-bezier(.22,1,.36,1); }
+.tilt-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255,255,255,0.35) 0%, transparent 55%);
+  z-index: 5;
+}
+.tilt-card:hover .tilt-glare { opacity: 1; }
+
 
 @keyframes floaty {
   0%, 100% { transform: translateY(0); }
@@ -155,5 +223,6 @@ body.has-hero main { padding-top: 0 !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-slide, .fade-up, .testimonial-track, .floaty, .reveal { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+  .hero-slide, .fade-up, .testimonial-track, .floaty, .reveal, .pop-in { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; filter: none !important; }
+  .hero-word-shimmer { animation: none !important; background: none !important; -webkit-text-fill-color: initial !important; color: #F97316 !important; opacity: 1 !important; }
 }
