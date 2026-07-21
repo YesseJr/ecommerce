@@ -3,3 +3,4 @@ Pillow>=10.0
 django-anymail[brevo]
 python-dotenv
 PyMySQL
+cryptography

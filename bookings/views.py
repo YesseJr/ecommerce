@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 from datetime import date
 from properties.models import Property, PropertyExtra, check_property_availability
 from .models import Cart, CartItem
@@ -29,10 +30,22 @@ def cart_view(request):
         currency = 'USD'
         rate     = 2500.0
 
+    # One-time upsell suggestion — popped so it only shows once, right
+    # after the add that triggered it, not on every future cart visit.
+    suggested_extra = None
+    suggestion_id = request.session.pop('extra_suggestion_id', None)
+    if suggestion_id and cart:
+        suggested_extra = PropertyExtra.objects.filter(
+            pk=suggestion_id, is_available=True
+        ).exclude(
+            pk__in=cart.items.values_list('extra_id', flat=True)
+        ).first()
+
     return render(request, 'bookings/cart.html', {
-        'cart':     cart,
-        'currency': currency,
-        'rate':     rate,
+        'cart':             cart,
+        'currency':         currency,
+        'rate':             rate,
+        'suggested_extra':  suggested_extra,
     })
 
 
@@ -105,45 +118,66 @@ def add_to_cart(request, slug):
 
 
 @login_required
-def add_extra_to_cart(request, extra_pk):
-    if request.method == 'POST':
-        extra = get_object_or_404(PropertyExtra, pk=extra_pk)
+def sync_cart_extras(request):
+    """
+    One submit, any number of extras — checked boxes get added, unchecked
+    ones already in the cart get removed, in a single request instead of
+    a page reload per extra.
+    """
+    if request.method != 'POST':
+        return redirect('bookings:cart')
 
-        try:
-            cart = Cart.objects.get(traveller=request.user)
-        except Cart.DoesNotExist:
-            messages.error(request, "Your cart is empty.")
-            return redirect('properties:home')
+    try:
+        cart = Cart.objects.get(traveller=request.user)
+    except Cart.DoesNotExist:
+        messages.error(request, "Your cart is empty.")
+        return redirect('properties:home')
 
-        if extra.property_id != cart.booking_property_id:
-            messages.error(request, "This extra doesn't belong to your current property.")
-            return redirect('bookings:cart')
+    if not cart.booking_property:
+        messages.error(request, "Add a property to your cart first.")
+        return redirect('bookings:cart')
 
-        item, created = CartItem.objects.get_or_create(
-            cart=cart,
-            extra=extra
+    submitted_ids = {
+        int(i) for i in request.POST.getlist('extra_ids') if i.isdigit()
+    }
+    # Safety: only ever act on extras this property actually offers —
+    # ignore anything submitted that doesn't belong here.
+    valid_ids = set(
+        cart.booking_property.extras.filter(is_available=True).values_list('pk', flat=True)
+    )
+    selected_ids = submitted_ids & valid_ids
+
+    current_ids = set(cart.items.values_list('extra_id', flat=True))
+    to_add = selected_ids - current_ids
+    to_remove = current_ids - selected_ids
+
+    if to_add:
+        CartItem.objects.bulk_create([CartItem(cart=cart, extra_id=eid) for eid in to_add])
+    if to_remove:
+        cart.items.filter(extra_id__in=to_remove).delete()
+
+    if to_add or to_remove:
+        parts = []
+        if to_add:
+            parts.append(f"{len(to_add)} extra{'s' if len(to_add) != 1 else ''} added")
+        if to_remove:
+            parts.append(f"{len(to_remove)} removed")
+        messages.success(request, f"{' · '.join(parts)}. ✅")
+    else:
+        messages.info(request, "No changes to your extras.")
+
+    # ── Upsell nudge — only fires when something was actually just added,
+    # and only suggests an extra they genuinely haven't picked yet. ──────
+    if to_add:
+        remaining = cart.booking_property.extras.filter(is_available=True).exclude(
+            pk__in=selected_ids
         )
-
-        if created:
-            messages.success(request, f"'{extra.name}' added to cart! ✅")
-        else:
-            messages.info(request, f"'{extra.name}' is already in your cart.")
-
-    return redirect('bookings:cart')
-
-
-@login_required
-def remove_extra_from_cart(request, extra_pk):
-    if request.method == 'POST':
-        extra = get_object_or_404(PropertyExtra, pk=extra_pk)
-
-        try:
-            cart = Cart.objects.get(traveller=request.user)
-            item = CartItem.objects.get(cart=cart, extra=extra)
-            item.delete()
-            messages.success(request, f"'{extra.name}' removed from cart.")
-        except (Cart.DoesNotExist, CartItem.DoesNotExist):
-            messages.error(request, "Item not found in cart.")
+        if remaining.exists():
+            food_pick = remaining.filter(
+                Q(name__icontains='breakfast') | Q(name__icontains='meal') |
+                Q(name__icontains='dinner') | Q(name__icontains='food')
+            ).first()
+            request.session['extra_suggestion_id'] = (food_pick or remaining.first()).pk
 
     return redirect('bookings:cart')
 

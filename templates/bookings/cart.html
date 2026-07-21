@@ -81,59 +81,41 @@
         <div class="bg-white rounded-2xl p-6 shadow-sm">
           <h3 class="font-semibold text-dark mb-2">Add-on Services</h3>
           <p class="text-gray-400 text-xs mb-5">
-            Optional extras offered by this property.
+            Select as many as you like, then confirm below.
           </p>
 
           {% with cart.booking_property.extras.all as available_extras %}
             {% if available_extras %}
-              <div class="flex flex-col gap-3">
-                {% for extra in available_extras %}
-                  {% if extra.is_available %}
-                    <div class="flex items-center justify-between p-4 rounded-xl border-2
-                      {% for item in cart.items.all %}
-                        {% if item.extra == extra %}border-accent bg-orange-50
-                        {% endif %}
-                      {% endfor %}
-                      border-gray-200">
-
-                      <div>
-                        <p class="font-semibold text-dark text-sm">{{ extra.name }}</p>
-                        <p class="text-xs text-gray-400 mt-0.5">
-                          <span class="bms-price" data-usd="{{ extra.price }}">{% if currency == 'TZS' %}TSh {{ extra.price|floatformat:0 }}{% else %}${{ extra.price }}{% endif %}</span> · {{ extra.get_charge_type_display }}
-                          {% if extra.description %} · {{ extra.description }}{% endif %}
-                        </p>
-                      </div>
-
-                      <div class="flex gap-2">
-                        {% comment %}Check if this extra is in cart{% endcomment %}
-                        {% with in_cart=False %}
-                          {% for item in cart.items.all %}
-                            {% if item.extra.pk == extra.pk %}
-                              <form method="POST" action="{% url 'bookings:remove_extra' extra.pk %}">
-                                {% csrf_token %}
-                                <button type="submit"
-                                        class="text-xs font-semibold px-4 py-2 rounded-xl bg-red-50 text-red-400 hover:bg-red-100 transition">
-                                  Remove
-                                </button>
-                              </form>
-                            {% endif %}
-                          {% endfor %}
-
-                          {% with found=cart.items.filter %}
-                            <form method="POST" action="{% url 'bookings:add_extra' extra.pk %}">
-                              {% csrf_token %}
-                              <button type="submit"
-                                      class="text-xs font-semibold px-4 py-2 rounded-xl bg-accent/10 text-accent hover:bg-accent hover:text-white transition">
-                                + Add
-                              </button>
-                            </form>
-                          {% endwith %}
-                        {% endwith %}
-                      </div>
-                    </div>
-                  {% endif %}
-                {% endfor %}
-              </div>
+              <form method="POST" action="{% url 'bookings:sync_extras' %}" id="extras-form">
+                {% csrf_token %}
+                <div class="flex flex-col gap-3 mb-5">
+                  {% for extra in available_extras %}
+                    {% if extra.is_available %}
+                      {% with is_selected=False %}
+                        <label class="flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition
+                          has-[:checked]:border-accent has-[:checked]:bg-orange-50 border-gray-200 hover:border-accent/40">
+                          <div class="flex items-center gap-3">
+                            <input type="checkbox" name="extra_ids" value="{{ extra.pk }}"
+                                   class="w-5 h-5 accent-accent flex-shrink-0"
+                                   {% for item in cart.items.all %}{% if item.extra_id == extra.pk %}checked{% endif %}{% endfor %}/>
+                            <div>
+                              <p class="font-semibold text-dark text-sm">{{ extra.name }}</p>
+                              <p class="text-xs text-gray-400 mt-0.5">
+                                <span class="bms-price" data-usd="{{ extra.price }}">{% if currency == 'TZS' %}TSh {{ extra.price|floatformat:0 }}{% else %}${{ extra.price }}{% endif %}</span> · {{ extra.get_charge_type_display }}
+                                {% if extra.description %} · {{ extra.description }}{% endif %}
+                              </p>
+                            </div>
+                          </div>
+                        </label>
+                      {% endwith %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <button type="submit"
+                        class="w-full bg-accent text-white text-sm font-semibold py-3 rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                  Confirm Extras
+                </button>
+              </form>
             {% else %}
               <p class="text-gray-400 text-sm text-center py-4">
                 This property has no add-ons available.
@@ -237,7 +219,55 @@
     </div>
   {% endif %}
 
+  {% if suggested_extra %}
+    <div id="upsell-modal" class="fixed inset-0 z-[70] flex items-center justify-center px-4">
+      <div id="upsell-backdrop" class="absolute inset-0 bg-dark/60 backdrop-blur-sm"></div>
+      <div class="relative bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center pop-in" style="animation-delay:.05s;">
+        <button type="button" id="upsell-close" aria-label="Close"
+                class="absolute top-4 right-4 text-gray-300 hover:text-gray-500 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+
+        <div class="text-4xl mb-3">
+          {% if 'breakfast' in suggested_extra.name|lower %}🥐
+          {% elif 'dinner' in suggested_extra.name|lower or 'meal' in suggested_extra.name|lower or 'food' in suggested_extra.name|lower %}🍽️
+          {% else %}✨{% endif %}
+        </div>
+
+        <h3 class="font-display text-2xl font-bold text-dark mb-2">
+          {% if 'breakfast' in suggested_extra.name|lower %}
+            One more thing before you go...
+          {% else %}
+            Since you're treating yourself...
+          {% endif %}
+        </h3>
+
+        <p class="text-gray-500 text-sm leading-relaxed mb-6">
+          {% if 'breakfast' in suggested_extra.name|lower %}
+            Would you like to wake up to <strong>{{ suggested_extra.name }}</strong> too?
+            Mornings are simply better with something warm waiting for you. ☕
+          {% else %}
+            <strong>{{ suggested_extra.name }}</strong> tends to be a favorite with this stay —
+            a little extra sweetness never hurt anyone. 💫
+          {% endif %}
+        </p>
+
+        <div class="flex flex-col gap-2">
+          <button type="button" id="upsell-add"
+                  class="w-full bg-accent text-white text-sm font-semibold py-3 rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all">
+            Yes, add it — <span class="bms-price" data-usd="{{ suggested_extra.price }}">{% if currency == 'TZS' %}TSh {{ suggested_extra.price|floatformat:0 }}{% else %}${{ suggested_extra.price }}{% endif %}</span>
+          </button>
+          <button type="button" id="upsell-skip"
+                  class="w-full text-gray-400 text-xs font-medium py-2 hover:text-gray-600 transition">
+            Maybe next time
+          </button>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
 </div>
+{% endblock %}
 
 {% block extra_js %}
 <script>
@@ -260,7 +290,32 @@
       window.setCurrency('{{ currency|default:"USD" }}');
     });
   })();
-</script>
-{% endblock %}
 
+  // ── Upsell modal ──────────────────────────────────────────────────────
+  (function() {
+    const modal = document.getElementById('upsell-modal');
+    if (!modal) return;
+
+    function closeModal() { modal.remove(); }
+
+    document.getElementById('upsell-close').addEventListener('click', closeModal);
+    document.getElementById('upsell-backdrop').addEventListener('click', closeModal);
+    document.getElementById('upsell-skip').addEventListener('click', closeModal);
+
+    document.getElementById('upsell-add').addEventListener('click', function() {
+      const targetId = '{{ suggested_extra.pk|default:"" }}';
+      const form = document.getElementById('extras-form');
+      const checkbox = form ? form.querySelector(`input[value="${targetId}"]`) : null;
+      if (checkbox) {
+        // Check the box for the suggested extra without touching any
+        // other checkbox — sync_extras adds exactly what's checked here,
+        // so existing selections are preserved automatically.
+        checkbox.checked = true;
+        form.submit();
+      } else {
+        closeModal();
+      }
+    });
+  })();
+</script>
 {% endblock %}

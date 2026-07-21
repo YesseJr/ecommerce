@@ -1,14 +1,27 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import PasswordResetConfirmView
 from django.contrib import messages
 from django.conf import settings
 from .models import User
 from .forms import RegisterForm, LoginForm, ProfileUpdateForm
 from .utils import (
     send_verification_email, read_verification_token,
-    record_login_attempt, is_locked_out,
+    record_login_attempt, is_locked_out, send_password_changed_notice,
 )
+
+
+class NotifyingPasswordResetConfirmView(PasswordResetConfirmView):
+    """Identical to Django's built-in view, except it emails the account
+    holder once the password is actually changed — so a successful
+    reset always comes with a 'was this you?' security notice, the
+    same way the rest of the app treats sensitive account changes."""
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        send_password_changed_notice(self.user)
+        return response
 
 
 def register_view(request):

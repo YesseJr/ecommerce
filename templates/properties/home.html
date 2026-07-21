@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}BookMyStay — Find Your Perfect Stay{% endblock %}
 {% block body_class %}has-hero{% endblock %}
@@ -66,29 +67,26 @@
     </div>
     <div class="text-left">
       <div class="text-white font-bold text-sm leading-tight">
-        {% if avg_rating %}{{ avg_rating }} ★ Rated{% else %}Newly Launched{% endif %}
+        {% if avg_rating %}{{ avg_rating }} ★ {% trans "Rated" %}{% else %}{% trans "Newly Launched" %}{% endif %}
       </div>
-      <div class="text-white/50 text-xs">by {{ total_guests|default:"our" }} happy guests</div>
+      <div class="text-white/50 text-xs">{% blocktrans %}by {{ total_guests }} happy guests{% endblocktrans %}</div>
     </div>
   </div>
 
   <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
     <div class="pop-in pop-in-1 inline-flex items-center gap-2 bg-dark/80 border border-accent/40 text-accent px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6">
-      <i data-lucide="sparkles" class="w-4 h-4"></i> Tanzania's Trusted Accommodation Platform
+      <i data-lucide="sparkles" class="w-4 h-4"></i> {% trans "Tanzania's Trusted Accommodation Platform" %}
     </div>
 
     <h1 class="font-display font-bold text-white leading-[0.95] mb-6"
         style="font-size: clamp(2.75rem, 11vw, 7.5rem); text-shadow: 0 8px 40px rgba(0,0,0,0.35);">
-      <span class="pop-in pop-in-2">Find</span>
-      <span class="pop-in pop-in-2">Your</span>
-      <span class="hero-word-shimmer underline-accent">Perfect</span><br/>
-      <span class="pop-in pop-in-4">Place</span>
-      <span class="pop-in pop-in-4">to</span>
-      <span class="pop-in pop-in-4">Stay</span>
+      <span class="pop-in pop-in-2">{% trans "Find Your" %}</span>
+      <span class="hero-word-shimmer underline-accent">{% trans "Perfect" %}</span><br/>
+      <span class="pop-in pop-in-4">{% trans "Place to Stay" %}</span>
     </h1>
 
     <p class="pop-in pop-in-5 text-white/70 text-lg font-light max-w-xl mx-auto mb-10 leading-relaxed">
-      Browse verified hotels, villas and apartments across Tanzania.<br/>Book in minutes, stay in comfort.
+      {% trans "Browse verified hotels, villas and apartments across Tanzania." %}<br/>{% trans "Book in minutes, stay in comfort." %}
     </p>
 
     <!-- Search Bar -->
@@ -97,8 +95,8 @@
       <div class="flex-1 flex items-center gap-3 px-4 py-2.5 sm:py-2">
         <i data-lucide="map-pin" class="w-4 h-4 text-accent flex-shrink-0"></i>
         <div class="flex flex-col text-left w-full">
-          <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">Destination</label>
-          <input type="text" name="q" list="hero-destinations" placeholder="Try 'Kigamboni' or 'Masaki'..." autocomplete="off"
+          <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">{% trans "Destination" %}</label>
+          <input type="text" name="q" list="hero-destinations" placeholder="{% trans "Try 'Kigamboni' or 'Masaki'..." %}" autocomplete="off"
                  class="outline-none text-sm font-medium text-dark bg-transparent w-full"/>
           <datalist id="hero-destinations">
             {% for c in city_gallery %}<option value="{{ c.city }}">{% endfor %}
@@ -109,9 +107,9 @@
       <div class="flex items-center gap-3 px-4 py-2.5 sm:py-2">
         <i data-lucide="building-2" class="w-4 h-4 text-accent flex-shrink-0"></i>
         <div class="flex flex-col text-left w-full sm:w-auto">
-          <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">Type</label>
+          <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">{% trans "Type" %}</label>
           <select name="type" class="outline-none text-sm font-medium text-dark bg-transparent cursor-pointer w-full">
-            <option value="">All Types</option>
+            <option value="">{% trans "All Types" %}</option>
             {% for value, label in property_types %}
               <option value="{{ value }}">{{ label }}</option>
             {% endfor %}
@@ -121,14 +119,14 @@
       <div class="flex items-center gap-3 px-4 py-2.5 sm:py-2">
         <i data-lucide="users" class="w-4 h-4 text-accent flex-shrink-0"></i>
         <div class="flex flex-col text-left w-full sm:w-auto">
-          <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">Guests</label>
+          <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">{% trans "Guests" %}</label>
           <input type="number" name="guests" placeholder="2" min="1"
                  class="outline-none text-sm font-medium text-dark bg-transparent w-full sm:w-14"/>
         </div>
       </div>
       <button type="submit"
               class="bg-accent text-white px-6 py-3 rounded-xl font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 hover:bg-orange-600 transition-all whitespace-nowrap flex items-center justify-center gap-2 w-full sm:w-auto mt-1 sm:mt-0">
-        <i data-lucide="search" class="w-4 h-4"></i> Search
+        <i data-lucide="search" class="w-4 h-4"></i> {% trans "Search" %}
       </button>
     </form>
 
@@ -163,19 +161,19 @@
       <div class="font-bebas text-5xl text-accent">
         <span class="count-up" data-target="{{ total_properties }}">0</span><span class="text-white/30">+</span>
       </div>
-      <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Properties</div>
+      <div class="text-white/40 text-xs tracking-widest uppercase mt-1">{% trans "Properties" %}</div>
     </div>
     <div class="text-center">
       <div class="font-bebas text-5xl text-accent">
         <span class="count-up" data-target="{{ total_cities }}">0</span><span class="text-white/30">+</span>
       </div>
-      <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Cities</div>
+      <div class="text-white/40 text-xs tracking-widest uppercase mt-1">{% trans "Cities" %}</div>
     </div>
     <div class="text-center">
       <div class="font-bebas text-5xl text-accent">
         <span class="count-up" data-target="{{ total_guests }}">0</span><span class="text-white/30">+</span>
       </div>
-      <div class="text-white/40 text-xs tracking-widest uppercase mt-1">Happy Guests</div>
+      <div class="text-white/40 text-xs tracking-widest uppercase mt-1">{% trans "Happy Guests" %}</div>
     </div>
     <div class="text-center">
       {% if avg_rating %}
@@ -242,11 +240,11 @@
 <!-- ─── EXPLORE BY NEIGHBORHOOD (bento gallery) ─── -->
 <section class="py-24 px-4 sm:px-6 md:px-10 lg:px-16 bg-cream">
   <div class="reveal text-center mb-12">
-    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Explore Dar es Salaam</span>
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ {% trans "Explore Dar es Salaam" %}</span>
     <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-dark mt-2 heading-reveal">
-      Stays Across <em class="text-primary">Dar es Salaam</em>
+      {% trans "Stays Across" %} <em class="text-primary">Dar es Salaam</em>
     </h2>
-    <p class="text-gray-500 mt-2 max-w-md mx-auto">From Kigamboni's beaches to Masaki's city energy — find your area.</p>
+    <p class="text-gray-500 mt-2 max-w-md mx-auto">{% trans "From Kigamboni's beaches to Masaki's city energy — find your area." %}</p>
   </div>
 
   <div class="reveal grid grid-cols-2 auto-rows-[140px] sm:auto-rows-[180px] md:grid-cols-4 md:grid-rows-2 md:auto-rows-auto gap-3 md:gap-4 md:h-[520px]">
@@ -278,15 +276,15 @@
 <section class="py-24 px-4 sm:px-6 md:px-10 lg:px-16 bg-cream">
   <div class="reveal flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-12">
     <div>
-      <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Hand Picked</span>
+      <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ {% trans "Hand Picked" %}</span>
       <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-dark mt-2 heading-reveal">
-        Featured <em class="text-primary">Stays</em>
+        {% trans "Featured" %} <em class="text-primary">{% trans "Stays" %}</em>
       </h2>
       <p class="text-gray-500 mt-2 max-w-md">Top-rated properties loved by our guests.</p>
     </div>
     <a href="{% url 'properties:list' %}"
        class="text-accent font-semibold text-sm flex items-center gap-2 hover:gap-4 transition-all">
-      View all properties →
+      {% trans "View all properties" %} →
     </a>
   </div>
 
@@ -389,9 +387,9 @@
        style="bottom:-160px; right:-80px; background: radial-gradient(circle, #0891B2 0%, transparent 70%); filter: blur(60px);"></div>
 
   <div class="relative reveal text-center mb-14">
-    <span class="text-xs font-bold tracking-widest uppercase text-gold">✦ Why BookMyStay</span>
+    <span class="text-xs font-bold tracking-widest uppercase text-gold">✦ {% trans "Why BookMyStay" %}</span>
     <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-2 heading-reveal">
-      The Smarter Way to <em class="text-accent">Book</em>
+      {% trans "The Smarter Way to" %} <em class="text-accent">{% trans "Book" %}</em>
     </h2>
   </div>
   <div class="relative reveal grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
@@ -435,9 +433,9 @@
 <!-- ─── TESTIMONIALS ─── -->
 <section class="py-20 bg-white overflow-hidden">
   <div class="reveal text-center mb-14 px-4 sm:px-6 md:px-10 lg:px-16">
-    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ Guest Stories</span>
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ {% trans "Guest Stories" %}</span>
     <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-dark mt-2 heading-reveal">
-      Loved by <em class="text-primary">Travellers</em>
+      {% trans "Loved by" %} <em class="text-primary">{% trans "Travellers" %}</em>
     </h2>
     <p class="text-gray-500 mt-2 max-w-md mx-auto">Real words from guests who found their perfect stay.</p>
   </div>
@@ -513,28 +511,27 @@
     </div>
 
     <div class="relative z-10">
-      <span class="text-xs font-bold tracking-widest uppercase text-white/70">✦ For Property Owners</span>
+      <span class="text-xs font-bold tracking-widest uppercase text-white/70">✦ {% trans "For Property Owners" %}</span>
       <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-2 mb-4">
-        Ready to List Your Property?
+        {% trans "Ready to List Your Property?" %}
       </h2>
       <p class="text-white/80 max-w-md mx-auto mb-8 leading-relaxed">
-        Join hundreds of property owners earning more by listing on BookMyStay.
-        It's free to get started.
+        {% blocktrans %}Join hundreds of property owners earning more by listing on BookMyStay. It's free to get started.{% endblocktrans %}
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         {% if user.is_authenticated and user.is_owner %}
           <a href="{% url 'properties:add_property' %}"
              class="bg-white text-accent font-bold px-8 py-3.5 rounded-full hover:shadow-xl hover:-translate-y-1 transition-all">
-            + Add a Property
+            + {% trans "Add a Property" %}
           </a>
         {% else %}
           <a href="{% url 'users:register' %}"
              class="bg-white text-accent font-bold px-8 py-3.5 rounded-full hover:shadow-xl hover:-translate-y-1 transition-all">
-            Get Started Free
+            {% trans "Get Started Free" %}
           </a>
           <a href="{% url 'properties:list' %}"
              class="border-2 border-white/70 text-white font-semibold px-8 py-3.5 rounded-full hover:bg-white/10 hover:border-white transition-all">
-            Browse Properties
+            {% trans "Browse Properties" %}
           </a>
         {% endif %}
       </div>

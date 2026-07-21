@@ -1,8 +1,9 @@
+{% load i18n %}
 {# Shared between the desktop nav and mobile drawer — pass mobile=True/False #}
 {# so both stay in sync automatically; the link LOGIC never duplicates.   #}
 
 {% if mobile %}
-  <div class="flex items-center gap-1 bg-white/10 rounded-full px-1 py-1 mb-6 w-fit">
+  <div class="flex items-center gap-1 bg-white/10 rounded-full px-1 py-1 mb-3 w-fit">
 {% else %}
   <div class="flex items-center gap-1 bg-white/10 rounded-full px-1 py-1">
 {% endif %}
@@ -16,24 +17,39 @@
   </button>
 </div>
 
+{% get_current_language as CURRENT_LANG %}
+<form action="{% url 'set_language' %}" method="POST"
+      class="flex items-center gap-1 bg-white/10 rounded-full px-1 py-1 {% if mobile %}mb-6 w-fit{% endif %}">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.path }}"/>
+  <button type="submit" name="language" value="en"
+          class="lang-btn text-xs font-bold px-3 py-1.5 rounded-full transition-all {% if CURRENT_LANG == 'en' %}bg-white/20 text-white{% else %}text-white/60 hover:text-white{% endif %}">
+    EN
+  </button>
+  <button type="submit" name="language" value="sw"
+          class="lang-btn text-xs font-bold px-3 py-1.5 rounded-full transition-all {% if CURRENT_LANG == 'sw' %}bg-white/20 text-white{% else %}text-white/60 hover:text-white{% endif %}">
+    SW
+  </button>
+</form>
+
 {% if not user.is_authenticated %}
   <a href="{% url 'properties:home' %}"
      class="{% if mobile %}block w-full py-3 border-b border-white/10{% endif %} text-white/80 hover:text-accent text-sm font-medium transition">
-    Home
+    {% trans "Home" %}
   </a>
 {% endif %}
 
 {% if user.is_traveller %}
   <a href="{% url 'properties:traveller_dashboard' %}"
      class="{% if mobile %}block w-full py-3 border-b border-white/10{% endif %} text-white/80 hover:text-accent text-sm font-medium transition">
-    Dashboard
+    {% trans "Dashboard" %}
   </a>
 {% endif %}
 
 {% if not user.is_owner %}
   <a href="{% url 'properties:list' %}"
      class="{% if mobile %}block w-full py-3 border-b border-white/10{% endif %} text-white/80 hover:text-accent text-sm font-medium transition">
-    Properties
+    {% trans "Properties" %}
   </a>
 {% endif %}
 
@@ -42,10 +58,10 @@
   {% if user.is_superuser %}
     <a href="{% url 'admin:index' %}"
        class="{% if mobile %}block w-full py-3 border-b border-white/10{% endif %} text-white/80 hover:text-accent text-sm font-medium transition">
-      Admin Panel
+      {% trans "Admin Panel" %}
     </a>
     <span class="{% if mobile %}inline-block mb-3{% endif %} text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
-      Admin
+      {% trans "Admin" %}
     </span>
 
   {% elif user.is_owner %}
@@ -55,30 +71,30 @@
     </a>
     <a href="{% url 'properties:owner_revenue' %}"
        class="{% if mobile %}block w-full py-3 border-b border-white/10{% endif %} text-white/80 hover:text-accent text-sm font-medium transition">
-      Revenue Analytics
+      {% trans "Revenue Analytics" %}
     </a>
     <a href="{% url 'properties:add_property' %}"
        class="{% if mobile %}block w-full py-3 border-b border-white/10{% endif %} text-white/80 hover:text-accent text-sm font-medium transition">
-      List Property
+      {% trans "List Property" %}
     </a>
     <span class="{% if mobile %}inline-block mb-3{% endif %} text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
-      Owner
+      {% trans "Owner" %}
     </span>
 
   {% elif user.is_traveller %}
     <a href="{% url 'payments:my_bookings' %}"
        class="{% if mobile %}block w-full py-3 border-b border-white/10{% endif %} text-white/80 hover:text-accent text-sm font-medium transition">
-      My Bookings
+      {% trans "My Bookings" %}
     </a>
     <a href="{% url 'bookings:cart' %}"
        class="{% if mobile %}block w-full py-3 border-b border-white/10{% endif %} text-white/80 hover:text-accent text-sm font-medium transition">
-      🛒 Cart
+      🛒 {% trans "Cart" %}
     </a>
 
   {% elif user.is_staff_role %}
     <a href="{% url 'staff:hub' %}"
        class="{% if mobile %}block w-full py-3 border-b border-white/10{% endif %} text-white/80 hover:text-accent text-sm font-medium transition">
-      Staff Panel
+      {% trans "Staff Panel" %}
     </a>
     <span class="{% if mobile %}inline-block mb-3{% endif %} text-white/30 text-xs border border-white/20 px-3 py-1 rounded-full">
       {{ user.get_role_display }}
@@ -89,23 +105,23 @@
   {% if mobile %}
     <div class="flex items-center gap-6 py-3 border-b border-white/10">
       <a href="{% url 'properties:wishlist' %}" class="flex items-center gap-2 text-white/70 hover:text-accent transition text-sm">
-        <i data-lucide="heart" class="w-[18px] h-[18px]"></i> Wishlist
+        <i data-lucide="heart" class="w-[18px] h-[18px]"></i> {% trans "Wishlist" %}
       </a>
       <a href="{% url 'inbox:inbox' %}" class="flex items-center gap-2 text-white/70 hover:text-accent transition text-sm">
-        <i data-lucide="message-circle" class="w-[18px] h-[18px]"></i> Messages
+        <i data-lucide="message-circle" class="w-[18px] h-[18px]"></i> {% trans "Messages" %}
       </a>
     </div>
   {% else %}
-    <a href="{% url 'properties:wishlist' %}" title="Wishlist"
+    <a href="{% url 'properties:wishlist' %}" title="{% trans 'Wishlist' %}"
        class="text-white/70 hover:text-accent transition">
       <i data-lucide="heart" class="w-[18px] h-[18px]"></i>
     </a>
-    <a href="{% url 'inbox:inbox' %}" title="Messages"
+    <a href="{% url 'inbox:inbox' %}" title="{% trans 'Messages' %}"
        class="text-white/70 hover:text-accent transition">
       <i data-lucide="message-circle" class="w-[18px] h-[18px]"></i>
     </a>
     <div class="relative">
-      <button type="button" id="notif-bell-btn" title="Notifications"
+      <button type="button" id="notif-bell-btn" title="{% trans 'Notifications' %}"
               class="relative text-white/70 hover:text-accent transition">
         <i data-lucide="bell" class="w-[18px] h-[18px]"></i>
         <span id="notif-badge" class="hidden absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-accent text-white text-[9px] font-bold flex items-center justify-center"></span>
@@ -120,18 +136,18 @@
   </a>
   <a href="{% url 'users:logout' %}"
      class="{% if mobile %}block w-full text-center mt-4{% else %}inline-block{% endif %} bg-white/10 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-white/20 transition">
-    Logout
+    {% trans "Logout" %}
   </a>
 
 {% else %}
 
   <a href="{% url 'users:login' %}"
      class="{% if mobile %}block w-full py-3 border-b border-white/10{% endif %} text-white/80 hover:text-accent text-sm font-medium transition">
-    Login
+    {% trans "Login" %}
   </a>
   <a href="{% url 'users:register' %}"
      class="{% if mobile %}block w-full text-center mt-4{% else %}inline-block{% endif %} bg-accent text-white px-5 py-2 rounded-full text-sm font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all">
-    Get Started
+    {% trans "Get Started" %}
   </a>
 
 {% endif %}

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -68,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
             ],
         },
     },
@@ -81,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('DB_NAME', 'BookMyStay'),
         'USER': os.environ.get('DB_USER', 'root'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'wayone'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': os.environ.get('DB_PORT', '3306'),
         'OPTIONS': {
@@ -103,6 +105,13 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE     = 'Africa/Dar_es_Salaam'
 USE_I18N      = True
 USE_TZ        = True
+
+# ─── LANGUAGES ──────────────────────────────────────────
+LANGUAGES = [
+    ('en', 'English'),
+    ('sw', 'Kiswahili'),
+]
+LOCALE_PATHS = [BASE_DIR / 'locale']
 
 # ─── STATIC & MEDIA ─────────────────────────────────────
 STATIC_URL       = '/static/'
@@ -131,18 +140,10 @@ if BREVO_API_KEY:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# IMPORTANT: this address must be a verified sender in your Brevo account
-# (Settings → Senders & IP), or Brevo will reject the send. Update it to
-# whatever address/domain you've verified there.
 DEFAULT_FROM_EMAIL = 'BookMyStay <waythonny@gmail.com>'
 SITE_NAME          = 'BookMyStay'
-SITE_URL           = 'http://localhost:8000'  # update for production
+SITE_URL           = 'http://localhost:8000'  
 
-# ─── SCHEDULED TASK FALLBACK ─────────────────────────────────────────────
-# Only needed if your hosting doesn't give you cron/Task Scheduler access.
-# Set this in your .env, then point a free external cron service (e.g.
-# cron-job.org) at /bookings/cron/send-stay-emails/<CRON_SECRET>/ once a
-# day. Leave blank to disable the endpoint entirely (it 404s if unset).
 CRON_SECRET = os.environ.get('CRON_SECRET', '')
 
 # ─── LOGIN SECURITY ─────────────────────────────────────────────────────
@@ -175,7 +176,7 @@ JAZZMIN_SETTINGS = {
     "site_header":  "BookMyStay",
     "site_brand":   "BookMyStay",
     "welcome_sign": "Welcome to BookMyStay Admin Panel",
-    "copyright":    "BookMyStay Tanzania © 2026",
+    #"copyright":    "BookMyStay Tanzania © 2026",
 
     # Logo & Icon
     "site_icon": None,

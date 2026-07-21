@@ -1,0 +1,236 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: BookMyStay 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-20 03:13+0300\n"
+"PO-Revision-Date: 2026-07-20 03:13+0300\n"
+"Last-Translator: BookMyStay\n"
+"Language-Team: Kiswahili\n"
+"Language: sw\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: templates/partials/_nav_links.html:38
+msgid "Home"
+msgstr "Nyumbani"
+
+#: templates/partials/_nav_links.html:45
+msgid "Dashboard"
+msgstr "Dashibodi"
+
+#: templates/partials/_nav_links.html:52 templates/properties/home.html:164
+msgid "Properties"
+msgstr "Malazi"
+
+#: templates/partials/_nav_links.html:61
+msgid "Admin Panel"
+msgstr "Dirisha la Msimamizi"
+
+#: templates/partials/_nav_links.html:64
+msgid "Admin"
+msgstr "Msimamizi"
+
+#: templates/partials/_nav_links.html:74
+msgid "Revenue Analytics"
+msgstr "Uchambuzi wa Mapato"
+
+#: templates/partials/_nav_links.html:78
+msgid "List Property"
+msgstr "Orodhesha Nyumba"
+
+#: templates/partials/_nav_links.html:81
+msgid "Owner"
+msgstr "Mmiliki"
+
+#: templates/partials/_nav_links.html:87
+msgid "My Bookings"
+msgstr "Uhifadhi Wangu"
+
+#: templates/partials/_nav_links.html:91
+msgid "Cart"
+msgstr "Kikapu"
+
+#: templates/partials/_nav_links.html:97
+msgid "Staff Panel"
+msgstr "Dirisha la Wafanyakazi"
+
+#: templates/partials/_nav_links.html:108
+#: templates/partials/_nav_links.html:115
+msgid "Wishlist"
+msgstr "Vipendwa"
+
+#: templates/partials/_nav_links.html:111
+#: templates/partials/_nav_links.html:119
+msgid "Messages"
+msgstr "Ujumbe"
+
+#: templates/partials/_nav_links.html:124
+msgid "Notifications"
+msgstr "Arifa"
+
+#: templates/partials/_nav_links.html:139
+msgid "Logout"
+msgstr "Toka"
+
+#: templates/partials/_nav_links.html:146
+msgid "Login"
+msgstr "Ingia"
+
+#: templates/partials/_nav_links.html:150
+msgid "Get Started"
+msgstr "Anza"
+
+#: templates/properties/home.html:70
+msgid "Rated"
+msgstr "Imekadiriwa"
+
+#: templates/properties/home.html:70
+msgid "Newly Launched"
+msgstr "Mpya Kuzinduliwa"
+
+#: templates/properties/home.html:72
+#, python-format
+msgid "by %(total_guests)s happy guests"
+msgstr "na wageni %(total_guests)s wenye furaha"
+
+#: templates/properties/home.html:78
+msgid "Tanzania's Trusted Accommodation Platform"
+msgstr "Jukwaa la Malazi Linaloaminika Tanzania"
+
+#: templates/properties/home.html:83
+msgid "Find Your"
+msgstr "Tafuta Mahali"
+
+#: templates/properties/home.html:84
+msgid "Perfect"
+msgstr "Pazuri"
+
+#: templates/properties/home.html:85
+msgid "Place to Stay"
+msgstr "pa Kukaa"
+
+#: templates/properties/home.html:89
+msgid "Browse verified hotels, villas and apartments across Tanzania."
+msgstr "Vinjari hoteli, villa na ghorofa zilizothibitishwa kote Tanzania."
+
+#: templates/properties/home.html:89
+msgid "Book in minutes, stay in comfort."
+msgstr "Hifadhi kwa dakika chache, ishi kwa starehe."
+
+#: templates/properties/home.html:98
+msgid "Destination"
+msgstr "Unakoenda"
+
+#: templates/properties/home.html:99
+msgid "Try 'Kigamboni' or 'Masaki'..."
+msgstr "Jaribu 'Kigamboni' au 'Masaki'..."
+
+#: templates/properties/home.html:110
+msgid "Type"
+msgstr "Aina"
+
+#: templates/properties/home.html:112
+msgid "All Types"
+msgstr "Aina Zote"
+
+#: templates/properties/home.html:122
+msgid "Guests"
+msgstr "Wageni"
+
+#: templates/properties/home.html:129
+msgid "Search"
+msgstr "Tafuta"
+
+#: templates/properties/home.html:170
+msgid "Cities"
+msgstr "Miji"
+
+#: templates/properties/home.html:176
+msgid "Happy Guests"
+msgstr "Wageni Wenye Furaha"
+
+#: templates/properties/home.html:243
+msgid "Explore Dar es Salaam"
+msgstr "Gundua Dar es Salaam"
+
+#: templates/properties/home.html:245
+msgid "Stays Across"
+msgstr "Malazi Kote"
+
+#: templates/properties/home.html:247
+msgid "From Kigamboni's beaches to Masaki's city energy — find your area."
+msgstr "Kutoka fukwe za Kigamboni hadi mienendo ya jiji la Masaki — pata eneo lako."
+
+#: templates/properties/home.html:279
+msgid "Hand Picked"
+msgstr "Teule"
+
+#: templates/properties/home.html:281
+msgid "Featured"
+msgstr "Maalum"
+
+#: templates/properties/home.html:281
+msgid "Stays"
+msgstr "Malazi"
+
+#: templates/properties/home.html:287
+msgid "View all properties"
+msgstr "Angalia malazi yote"
+
+#: templates/properties/home.html:390
+msgid "Why BookMyStay"
+msgstr "Kwa Nini BookMyStay"
+
+#: templates/properties/home.html:392
+msgid "The Smarter Way to"
+msgstr "Njia Bora ya"
+
+#: templates/properties/home.html:392
+msgid "Book"
+msgstr "Kuhifadhi"
+
+#: templates/properties/home.html:436
+msgid "Guest Stories"
+msgstr "Hadithi za Wageni"
+
+#: templates/properties/home.html:438
+msgid "Loved by"
+msgstr "Wanaopendwa na"
+
+#: templates/properties/home.html:438
+msgid "Travellers"
+msgstr "Wasafiri"
+
+#: templates/properties/home.html:514
+msgid "For Property Owners"
+msgstr "Kwa Wamiliki wa Nyumba"
+
+#: templates/properties/home.html:516
+msgid "Ready to List Your Property?"
+msgstr "Uko Tayari Kuorodhesha Nyumba Yako?"
+
+#: templates/properties/home.html:519
+msgid ""
+"Join hundreds of property owners earning more by listing on BookMyStay. It's "
+"free to get started."
+msgstr ""
+"Jiunge na mamia ya wamiliki wa nyumba wanaopata mapato zaidi kwa "
+"kuorodhesha kwenye BookMyStay. Ni bure kuanza."
+
+#: templates/properties/home.html:525
+msgid "Add a Property"
+msgstr "Ongeza Nyumba"
+
+#: templates/properties/home.html:530
+msgid "Get Started Free"
+msgstr "Anza Bila Malipo"
+
+#: templates/properties/home.html:534
+msgid "Browse Properties"
+msgstr "Vinjari Nyumba"
