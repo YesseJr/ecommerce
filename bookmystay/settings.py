@@ -140,10 +140,18 @@ if BREVO_API_KEY:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# IMPORTANT: this address must be a verified sender in your Brevo account
+# (Settings → Senders & IP), or Brevo will reject the send. Update it to
+# whatever address/domain you've verified there.
 DEFAULT_FROM_EMAIL = 'BookMyStay <waythonny@gmail.com>'
 SITE_NAME          = 'BookMyStay'
-SITE_URL           = 'http://localhost:8000'  
+SITE_URL           = 'http://localhost:8000'  # update for production
 
+# ─── SCHEDULED TASK FALLBACK ─────────────────────────────────────────────
+# Only needed if your hosting doesn't give you cron/Task Scheduler access.
+# Set this in your .env, then point a free external cron service (e.g.
+# cron-job.org) at /bookings/cron/send-stay-emails/<CRON_SECRET>/ once a
+# day. Leave blank to disable the endpoint entirely (it 404s if unset).
 CRON_SECRET = os.environ.get('CRON_SECRET', '')
 
 # ─── LOGIN SECURITY ─────────────────────────────────────────────────────
@@ -176,7 +184,7 @@ JAZZMIN_SETTINGS = {
     "site_header":  "BookMyStay",
     "site_brand":   "BookMyStay",
     "welcome_sign": "Welcome to BookMyStay Admin Panel",
-    #"copyright":    "BookMyStay Tanzania © 2026",
+    "copyright":    "BookMyStay Tanzania © 2026",
 
     # Logo & Icon
     "site_icon": None,

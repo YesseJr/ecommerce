@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block title %}Browse Properties — BookMyStay{% endblock %}
 
@@ -7,9 +8,9 @@
 
   <!-- Page Header -->
   <div class="mb-10">
-    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ All Properties</span>
+    <span class="text-xs font-bold tracking-widest uppercase text-accent">✦ {% trans "All Properties" %}</span>
     <h1 class="font-display text-5xl font-bold text-dark mt-1">
-      Find Your <em class="text-primary">Stay</em>
+      {% trans "Find Your" %} <em class="text-primary">{% trans "Stay" %}</em>
     </h1>
   </div>
 
@@ -17,15 +18,15 @@
   <form method="GET" class="bg-white rounded-2xl p-6 shadow-sm mb-10 flex flex-col gap-4">
     <div class="flex flex-wrap gap-4 items-end">
       <div class="flex flex-col gap-1 flex-1 min-w-[180px]">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Search</label>
-        <input type="text" name="q" value="{{ filters.q }}" placeholder="Name or city..."
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">{% trans "Search" %}</label>
+        <input type="text" name="q" value="{{ filters.q }}" placeholder="{% trans "Name or city..." %}"
                class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition"/>
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">City</label>
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">{% trans "City" %}</label>
         <select name="city" class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition cursor-pointer">
-          <option value="">All Cities</option>
+          <option value="">{% trans "All Cities" %}</option>
           {% for c in cities %}
             <option value="{{ c }}" {% if filters.city == c %}selected{% endif %}>{{ c }}</option>
           {% endfor %}
@@ -33,9 +34,9 @@
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Type</label>
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">{% trans "Type" %}</label>
         <select name="type" class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition cursor-pointer">
-          <option value="">All Types</option>
+          <option value="">{% trans "All Types" %}</option>
           {% for value, label in property_types %}
             <option value="{{ value }}" {% if filters.type == value %}selected{% endif %}>{{ label }}</option>
           {% endfor %}
@@ -43,48 +44,48 @@
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Check-in</label>
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">{% trans "Check-in" %}</label>
         <input type="date" name="check_in" value="{{ filters.check_in }}"
                class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition"/>
       </div>
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Check-out</label>
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">{% trans "Check-out" %}</label>
         <input type="date" name="check_out" value="{{ filters.check_out }}"
                class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition"/>
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Min Price</label>
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">{% trans "Min Price" %}</label>
         <input type="number" name="min_price" value="{{ filters.min_price }}" placeholder="$0"
                class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition w-24"/>
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Max Price</label>
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">{% trans "Max Price" %}</label>
         <input type="number" name="max_price" value="{{ filters.max_price }}" placeholder="$999"
                class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition w-24"/>
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Guests</label>
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">{% trans "Guests" %}</label>
         <input type="number" name="guests" value="{{ filters.guests }}" placeholder="1" min="1"
                class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition w-20"/>
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">Sort by</label>
+        <label class="text-xs font-bold uppercase tracking-widest text-gray-400">{% trans "Sort by" %}</label>
         <select name="sort" class="border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent transition cursor-pointer">
-          <option value="newest"     {% if filters.sort == 'newest' %}selected{% endif %}>Newest</option>
-          <option value="price_low"  {% if filters.sort == 'price_low' %}selected{% endif %}>Price: Low → High</option>
-          <option value="price_high" {% if filters.sort == 'price_high' %}selected{% endif %}>Price: High → Low</option>
-          <option value="rating"     {% if filters.sort == 'rating' %}selected{% endif %}>Top Rated</option>
+          <option value="newest"     {% if filters.sort == 'newest' %}selected{% endif %}>{% trans "Newest" %}</option>
+          <option value="price_low"  {% if filters.sort == 'price_low' %}selected{% endif %}>{% trans "Price: Low to High" %}</option>
+          <option value="price_high" {% if filters.sort == 'price_high' %}selected{% endif %}>{% trans "Price: High to Low" %}</option>
+          <option value="rating"     {% if filters.sort == 'rating' %}selected{% endif %}>{% trans "Top Rated" %}</option>
         </select>
       </div>
     </div>
 
     {% if all_amenities %}
       <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-gray-400 self-center mr-1">Amenities:</span>
+        <span class="text-xs font-bold uppercase tracking-widest text-gray-400 self-center mr-1">{% trans "Amenities:" %}</span>
         {% for a in all_amenities %}
           <label class="inline-flex items-center gap-1.5 bg-cream border-2 border-transparent has-[:checked]:border-accent has-[:checked]:bg-accent/5 rounded-full px-3 py-1.5 text-xs font-medium text-dark cursor-pointer transition">
             <input type="checkbox" name="amenities" value="{{ a.id }}" class="accent-accent" {% if a.id in filters.amenities %}checked{% endif %}/>
@@ -97,18 +98,18 @@
     <div class="flex items-center gap-4 pt-1">
       <button type="submit"
               class="bg-accent text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition-all">
-        Filter ✦
+        {% trans "Filter" %} ✦
       </button>
       <a href="{% url 'properties:list' %}"
          class="text-gray-400 text-sm font-medium hover:text-accent transition">
-        Clear all
+        {% trans "Clear all" %}
       </a>
     </div>
   </form>
 
   <!-- Results Count -->
   <p class="text-sm text-gray-400 mb-6 font-medium">
-    {{ properties.count }} propert{{ properties.count|pluralize:"y,ies" }} found
+    {% blocktrans count counter=properties.count %}{{ counter }} property found{% plural %}{{ counter }} properties found{% endblocktrans %}
   </p>
 
   <!-- Grid -->
@@ -136,7 +137,7 @@
               </span>
               {% if prop.is_featured %}
                 <span class="bg-accent text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Featured
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> {% trans "Featured" %}
                 </span>
               {% endif %}
             </div>
@@ -170,22 +171,22 @@
                 <span class="font-display font-bold text-dark text-xl bms-price" data-usd="{{ prop.price_per_night }}">
                   {% if currency == 'TZS' %}TSh {{ prop.price_per_night|floatformat:0 }}{% else %}${{ prop.price_per_night }}{% endif %}
                 </span>
-                <span class="text-gray-500 text-xs font-medium">/ night</span>
+                <span class="text-gray-500 text-xs font-medium">/ {% trans "night" %}</span>
               </div>
 
               <!-- (Amenities Badges) -->
               <div class="flex items-center gap-3.5 text-xs text-gray-500 mt-2.5 pt-2.5 border-t border-gray-100">
                 <span class="inline-flex items-center gap-1 hover:text-dark transition-colors">
                   <i data-lucide="bed" class="w-4 h-4 text-purple-500"></i>
-                  <span class="font-semibold text-dark">{{ prop.bedrooms }}</span><span>bd</span>
+                  <span class="font-semibold text-dark">{{ prop.bedrooms }}</span><span>{% trans "bd" %}</span>
                 </span>
                 <span class="inline-flex items-center gap-1 hover:text-dark transition-colors">
                   <i data-lucide="bath" class="w-4 h-4 text-blue-500"></i>
-                  <span class="font-semibold text-dark">{{ prop.bathrooms }}</span><span>ba</span>
+                  <span class="font-semibold text-dark">{{ prop.bathrooms }}</span><span>{% trans "ba" %}</span>
                 </span>
                 <span class="inline-flex items-center gap-1 hover:text-dark transition-colors">
                   <i data-lucide="users" class="w-4 h-4 text-orange-500"></i>
-                  <span class="font-semibold text-dark">{{ prop.max_guests }}</span><span>guests</span>
+                  <span class="font-semibold text-dark">{{ prop.max_guests }}</span><span>{% trans "guests" %}</span>
                 </span>
               </div>
             </div>
@@ -197,16 +198,17 @@
   {% else %}
     <div class="text-center py-24 text-gray-400">
       <div class="text-7xl mb-6"><i data-lucide="search" class="w-4 h-4"></i></div>
-      <h3 class="text-xl font-semibold text-dark mb-2">No properties found</h3>
-      <p class="text-sm">Try adjusting your filters or search terms.</p>
+      <h3 class="text-xl font-semibold text-dark mb-2">{% trans "No properties found" %}</h3>
+      <p class="text-sm">{% trans "Try adjusting your filters or search terms." %}</p>
       <a href="{% url 'properties:list' %}"
          class="inline-block mt-6 bg-accent text-white px-6 py-3 rounded-full font-semibold text-sm hover:shadow-lg transition">
-        Clear Filters
+        {% trans "Clear Filters" %}
       </a>
     </div>
   {% endif %}
 
 </div>
+{% endblock %}
 
 {% block extra_js %}
 <script>
@@ -250,6 +252,4 @@
     });
   })();
 </script>
-{% endblock %}
-
 {% endblock %}

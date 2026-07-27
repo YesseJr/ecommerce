@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BookMyStay 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-20 03:13+0300\n"
+"POT-Creation-Date: 2026-07-26 10:45+0300\n"
 "PO-Revision-Date: 2026-07-20 03:13+0300\n"
 "Last-Translator: BookMyStay\n"
 "Language-Team: Kiswahili\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #: templates/partials/_nav_links.html:38
 msgid "Home"
 msgstr "Nyumbani"
@@ -86,6 +87,194 @@ msgstr "Ingia"
 msgid "Get Started"
 msgstr "Anza"
 
+#: templates/properties/detail.html:65
+msgid "Verified"
+msgstr "Imethibitishwa"
+
+#: templates/properties/detail.html:73
+msgid "per night"
+msgstr "kwa usiku"
+
+#: templates/properties/detail.html:75
+msgid "%(counter)s review"
+msgid_plural "%(counter)s reviews"
+msgstr[0] "tathmini %(counter)s"
+msgstr[1] "tathmini %(counter)s"
+
+#: templates/properties/detail.html:110 templates/properties/detail.html:338
+#: templates/properties/home.html:122 templates/properties/list.html:70
+msgid "Guests"
+msgstr "Wageni"
+
+#: templates/properties/detail.html:119
+msgid "Bedrooms"
+msgstr "Vyumba vya Kulala"
+
+#: templates/properties/detail.html:128
+msgid "Bathrooms"
+msgstr "Bafu"
+
+#: templates/properties/detail.html:143
+msgid "Available"
+msgstr "Inapatikana"
+
+#: templates/properties/detail.html:143
+msgid "Unavailable"
+msgstr "Haipatikani"
+
+#: templates/properties/detail.html:145
+msgid "Status"
+msgstr "Hali"
+
+#: templates/properties/detail.html:158
+msgid "About this place"
+msgstr "Kuhusu Mahali Hapa"
+
+#: templates/properties/detail.html:175
+msgid "House Rules"
+msgstr "Kanuni za Nyumbani"
+
+#: templates/properties/detail.html:186
+msgid "Accessibility"
+msgstr "Ufikivu"
+
+#: templates/properties/detail.html:197
+msgid "Available Add-ons"
+msgstr "Huduma za Ziada Zinazopatikana"
+
+#: templates/properties/detail.html:199
+msgid "Select extras when booking — charged based on your stay."
+msgstr "Chagua huduma za ziada wakati wa kuhifadhi — malipo yanategemea muda wa kukaa kwako."
+
+#: templates/properties/detail.html:223
+msgid "Guest Reviews"
+msgstr "Tathmini za Wageni"
+
+#: templates/properties/detail.html:260
+msgid "Delete this review?"
+msgstr "Futa tathmini hii?"
+
+#: templates/properties/detail.html:284
+msgid "Cleanliness:"
+msgstr "Usafi:"
+
+#: templates/properties/detail.html:287
+msgid "Location:"
+msgstr "Mahali:"
+
+#: templates/properties/detail.html:290
+msgid "Value:"
+msgstr "Thamani:"
+
+#: templates/properties/detail.html:302
+msgid "No reviews yet"
+msgstr "Hakuna tathmini bado"
+
+#: templates/properties/detail.html:303
+msgid "Be the first to share your experience and help future travellers!"
+msgstr "Kuwa wa kwanza kushiriki uzoefu wako na kuwasaidia wasafiri wengine!"
+
+#: templates/properties/detail.html:315 templates/properties/detail.html:454
+#: templates/properties/list.html:174
+msgid "night"
+msgstr "usiku"
+
+#: templates/properties/detail.html:326 templates/properties/list.html:47
+msgid "Check-in"
+msgstr "Kuwasili"
+
+#: templates/properties/detail.html:331 templates/properties/list.html:52
+msgid "Check-out"
+msgstr "Kuondoka"
+
+#: templates/properties/detail.html:346
+msgid "Children"
+msgstr "Watoto"
+
+#: templates/properties/detail.html:355
+msgid "Special requests"
+msgstr "Maombi Maalum"
+
+#: templates/properties/detail.html:355
+msgid "optional"
+msgstr "hiari"
+
+#: templates/properties/detail.html:356
+msgid "e.g. late check-in, ground floor room…"
+msgstr "mfano: kuwasili usiku, chumba cha chini…"
+
+#: templates/properties/detail.html:362
+msgid "Reserve"
+msgstr "Hifadhi"
+
+#: templates/properties/detail.html:362
+msgid "Add to Cart"
+msgstr "Ongeza kwenye Kikapu"
+
+#: templates/properties/detail.html:364
+msgid "You won't be charged yet"
+msgstr "Hutatozwa bado"
+
+#: templates/properties/detail.html:373
+msgid "Not Available"
+msgstr "Haipatikani"
+
+#: templates/properties/detail.html:374
+msgid "This property is currently unavailable."
+msgstr "Nyumba hii kwa sasa haipatikani."
+
+#: templates/properties/detail.html:382
+msgid "Booking Restricted"
+msgstr "Uhifadhi Umezuiliwa"
+
+#: templates/properties/detail.html:383
+msgid ""
+"Property owners cannot make bookings. Switch to a traveller account to book "
+"properties."
+msgstr ""
+
+#: templates/properties/detail.html:387
+msgid "Admin accounts cannot make bookings."
+msgstr "Akaunti za msimamizi haziwezi kufanya uhifadhi."
+
+#: templates/properties/detail.html:392
+msgid "Login to Book"
+msgstr "Ingia Kuhifadhi"
+
+#: templates/properties/detail.html:395
+msgid "Don't have an account?"
+msgstr "Huna akaunti?"
+
+#: templates/properties/detail.html:396
+msgid "Sign up free"
+msgstr "Jisajili Bure"
+
+#: templates/properties/detail.html:410
+#, python-format
+msgid "Hosted by %(owner_name)s"
+msgstr "Mwenyeji ni %(owner_name)s"
+
+#: templates/properties/detail.html:412
+#, python-format
+msgid "Member since %(year)s"
+msgstr "Mwanachama tangu %(year)s"
+
+#: templates/properties/detail.html:419
+msgid "Message Host"
+msgstr "Tuma Ujumbe kwa Mwenyeji"
+
+#: templates/properties/detail.html:423
+msgid "Hi! I have a question about this place…"
+msgstr "Habari! Nina swali kuhusu mahali hapa…"
+
+#: templates/properties/detail.html:425
+msgid "Send Message"
+msgstr "Tuma Ujumbe"
+
+#: templates/properties/detail.html:435
+msgid "You might also like"
+msgstr "Unaweza pia kupenda"
+
 #: templates/properties/home.html:70
 msgid "Rated"
 msgstr "Imekadiriwa"
@@ -103,7 +292,7 @@ msgstr "na wageni %(total_guests)s wenye furaha"
 msgid "Tanzania's Trusted Accommodation Platform"
 msgstr "Jukwaa la Malazi Linaloaminika Tanzania"
 
-#: templates/properties/home.html:83
+#: templates/properties/home.html:83 templates/properties/list.html:13
 msgid "Find Your"
 msgstr "Tafuta Mahali"
 
@@ -131,19 +320,15 @@ msgstr "Unakoenda"
 msgid "Try 'Kigamboni' or 'Masaki'..."
 msgstr "Jaribu 'Kigamboni' au 'Masaki'..."
 
-#: templates/properties/home.html:110
+#: templates/properties/home.html:110 templates/properties/list.html:37
 msgid "Type"
 msgstr "Aina"
 
-#: templates/properties/home.html:112
+#: templates/properties/home.html:112 templates/properties/list.html:39
 msgid "All Types"
 msgstr "Aina Zote"
 
-#: templates/properties/home.html:122
-msgid "Guests"
-msgstr "Wageni"
-
-#: templates/properties/home.html:129
+#: templates/properties/home.html:129 templates/properties/list.html:21
 msgid "Search"
 msgstr "Tafuta"
 
@@ -165,13 +350,14 @@ msgstr "Malazi Kote"
 
 #: templates/properties/home.html:247
 msgid "From Kigamboni's beaches to Masaki's city energy — find your area."
-msgstr "Kutoka fukwe za Kigamboni hadi mienendo ya jiji la Masaki — pata eneo lako."
+msgstr ""
+"Kutoka fukwe za Kigamboni hadi mienendo ya jiji la Masaki — pata eneo lako."
 
 #: templates/properties/home.html:279
 msgid "Hand Picked"
 msgstr "Teule"
 
-#: templates/properties/home.html:281
+#: templates/properties/home.html:281 templates/properties/list.html:140
 msgid "Featured"
 msgstr "Maalum"
 
@@ -220,8 +406,8 @@ msgid ""
 "Join hundreds of property owners earning more by listing on BookMyStay. It's "
 "free to get started."
 msgstr ""
-"Jiunge na mamia ya wamiliki wa nyumba wanaopata mapato zaidi kwa "
-"kuorodhesha kwenye BookMyStay. Ni bure kuanza."
+"Jiunge na mamia ya wamiliki wa nyumba wanaopata mapato zaidi kwa kuorodhesha "
+"kwenye BookMyStay. Ni bure kuanza."
 
 #: templates/properties/home.html:525
 msgid "Add a Property"
@@ -234,3 +420,94 @@ msgstr "Anza Bila Malipo"
 #: templates/properties/home.html:534
 msgid "Browse Properties"
 msgstr "Vinjari Nyumba"
+
+#: templates/properties/list.html:11
+msgid "All Properties"
+msgstr "Malazi Yote"
+
+#: templates/properties/list.html:13
+msgid "Stay"
+msgstr "Kukaa"
+
+#: templates/properties/list.html:22
+msgid "Name or city..."
+msgstr "Jina au mji..."
+
+#: templates/properties/list.html:27
+msgid "City"
+msgstr "Mji"
+
+#: templates/properties/list.html:29
+msgid "All Cities"
+msgstr "Miji Yote"
+
+#: templates/properties/list.html:58
+msgid "Min Price"
+msgstr "Bei ya Chini"
+
+#: templates/properties/list.html:64
+msgid "Max Price"
+msgstr "Bei ya Juu"
+
+#: templates/properties/list.html:76
+msgid "Sort by"
+msgstr "Panga kwa"
+
+#: templates/properties/list.html:78
+msgid "Newest"
+msgstr "Mpya Zaidi"
+
+#: templates/properties/list.html:79
+msgid "Price: Low to High"
+msgstr "Bei: Chini hadi Juu"
+
+#: templates/properties/list.html:80
+msgid "Price: High to Low"
+msgstr "Bei: Juu hadi Chini"
+
+#: templates/properties/list.html:81
+msgid "Top Rated"
+msgstr "Zenye Ukadiriaji wa Juu"
+
+#: templates/properties/list.html:88
+msgid "Amenities:"
+msgstr "Huduma:"
+
+#: templates/properties/list.html:101
+msgid "Filter"
+msgstr "Chuja"
+
+#: templates/properties/list.html:105
+msgid "Clear all"
+msgstr "Futa Yote"
+
+#: templates/properties/list.html:112
+#, python-format
+msgid "%(counter)s property found"
+msgid_plural "%(counter)s properties found"
+msgstr[0] "Malazi %(counter)s yamepatikana"
+msgstr[1] "Malazi %(counter)s yamepatikana"
+
+#: templates/properties/list.html:181
+msgid "bd"
+msgstr "vyumba"
+
+#: templates/properties/list.html:185
+msgid "ba"
+msgstr "bafu"
+
+#: templates/properties/list.html:189
+msgid "guests"
+msgstr "wageni"
+
+#: templates/properties/list.html:201
+msgid "No properties found"
+msgstr "Hakuna malazi yaliyopatikana"
+
+#: templates/properties/list.html:202
+msgid "Try adjusting your filters or search terms."
+msgstr "Jaribu kurekebisha vichujio au maneno ya utafutaji."
+
+#: templates/properties/list.html:205
+msgid "Clear Filters"
+msgstr "Futa Vichujio"
